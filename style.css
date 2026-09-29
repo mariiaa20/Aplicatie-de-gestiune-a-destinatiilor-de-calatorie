@@ -4,19 +4,19 @@
 }
 
 :root {
-  --bg: #f4f5f7;          
-  --card: #ffffff;      
-  --text: #1f2933;        
-  --muted: #6b7280;     
-  --accent: #0ea5e9;     
-  --accent-dark: #0284c7; 
-  --accent-soft: #e0f2fe;
-  --border: #e5e7eb;     
+  --bg: #fff1f2;         
+  --card: #ffffff;       
+  --text: #4c1d2e;       
+  --muted: #9f7a83;      
+  --accent: #ec4899;      
+  --accent-dark: #be185d; 
+  --accent-soft: #fce7f3; 
+  --border: #f4d9e1;    
 
   /* Culori pentru etichete (badge-uri) */
-  --color-city-break: #8b5cf6;
+  --color-city-break: #a855f7; 
   --color-plaja: #f59e0b;      
-  --color-munte: #10b981;    
+  --color-munte: #14b8a6;    
 }
 
 body {
@@ -194,14 +194,14 @@ body {
   }
 }
 
-/* 5. Tema intunecata */
+/* 5. Tema intunecata (Dark Mode) */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #14121d;
-    --card: #1e1b2e;
-    --text: #e5e7eb;
-    --muted: #9ca3af;
-    --border: #352f4d;
-    --accent-soft: #2a2342;
+    --bg: #1a1014;        /* fundal foarte închis cu o ușoară tentă roz/bordo */
+    --card: #2b1720;      /* fundalul panourilor, puțin mai deschis decât fundalul principal */
+    --text: #fdf2f8;      /* text aproape alb, ușor roze */
+    --muted: #a1808d;     /* text secundar */
+    --border: #4d2d3d;    /* culoarea bordurilor */
+    --accent-soft: #421c2c; /* fundalul cardului la hover în modul întunecat */
   }
 }
