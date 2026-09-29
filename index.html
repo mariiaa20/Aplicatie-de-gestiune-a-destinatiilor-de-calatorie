@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Travel Manager - mockup</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>Travel Destinations Manager</h1>
+    <p>Gestionează și planifică destinațiile tale de călătorie.</p>
+    <p class="app-count">3 destinații, dintre care 2 planificate</p>
+  </header>
+
+  <main class="container">
+    <section class="panel">
+      <h2>Adaugă destinație</h2>
+      <form class="item-form">
+        <label>Destinație 
+          <input type="text" name="titlu" placeholder="Ex: Roma, Italia" />
+        </label>
+        
+        <label>Tip locație
+          <select name="eticheta">
+            <option value="city-break">City Break</option>
+            <option value="plaja">Plajă</option>
+            <option value="munte">Munte</option>
+          </select>
+        </label>
+        
+        <button type="submit">Adaugă</button>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2>Lista mea de călătorii</h2>
+      <!-- Când lista e goală: <p class="empty">Nu există nicio destinație.</p> -->
+      <ul class="item-list">
+        
+        <li class="item-card">
+          <div>
+            <h3>Tokyo, Japonia</h3>
+            <span class="badge badge-city-break">City Break</span>
+          </div>
+          <span class="status">Planificat</span>
+        </li>
+
+        <li class="item-card done">
+          <div>
+            <h3>Santorini, Grecia</h3>
+            <span class="badge badge-plaja">Plajă</span>
+          </div>
+          <span class="status">Vizitat</span>
+        </li>
+
+        <li class="item-card">
+          <div>
+            <h3>Parcul Național Banff</h3>
+            <span class="badge badge-munte">Munte</span>
+          </div>
+          <span class="status">Planificat</span>
+        </li>
+
+      </ul>
+    </section>
+  </main>
+
+  <footer class="app-footer">Proiect Tehnologii Web</footer>
+</body>
+</html>
