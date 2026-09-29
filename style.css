@@ -4,19 +4,19 @@
 }
 
 :root {
-  --bg: #f4f5f7;          /* fundalul paginii */
-  --card: #ffffff;        /* fundalul panourilor */
-  --text: #1f2933;        /* textul principal */
-  --muted: #6b7280;       /* text secundar/gri */
-  --accent: #0ea5e9;      /* culoarea de accent (albastru calatorie) */
-  --accent-dark: #0284c7; /* culoarea de accent la hover */
-  --accent-soft: #e0f2fe; /* fundal usor colorat la hover pe card */
-  --border: #e5e7eb;      /* bordurile */
+  --bg: #f4f5f7;          
+  --card: #ffffff;      
+  --text: #1f2933;        
+  --muted: #6b7280;     
+  --accent: #0ea5e9;     
+  --accent-dark: #0284c7; 
+  --accent-soft: #e0f2fe;
+  --border: #e5e7eb;     
 
   /* Culori pentru etichete (badge-uri) */
-  --color-city-break: #8b5cf6; /* mov */
-  --color-plaja: #f59e0b;      /* portocaliu */
-  --color-munte: #10b981;      /* verde */
+  --color-city-break: #8b5cf6;
+  --color-plaja: #f59e0b;      
+  --color-munte: #10b981;    
 }
 
 body {
