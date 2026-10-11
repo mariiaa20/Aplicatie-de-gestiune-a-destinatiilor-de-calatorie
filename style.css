@@ -1,4 +1,4 @@
-/* --- 1. Variabile de culoare --- */
+/* --- 1. CSS Variables & Reset --- */
 * {
   box-sizing: border-box;
 }
@@ -19,26 +19,16 @@
   --color-munte: #8abeb7;     
 }
 
-/* --- Nou: Fundal animat fluid cu gradient roz, mov, albastru --- */
 body {
   margin: 0;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  background: linear-gradient(-45deg, #fbc2eb, #a18cd1, #8fd3f4, #f8cdda);
-  background-size: 400% 400%;
-  animation: gradientBG 15s ease infinite;
-  min-height: 100vh;
+  background: var(--bg);
   color: var(--text);
   line-height: 1.5;
   overflow-x: hidden;
 }
 
-/* --- 2. Animații --- */
-@keyframes gradientBG {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
+/* --- 2. Animations (Keyframes) --- */
 @keyframes slideDown {
   from { opacity: 0; transform: translateY(-30px); }
   to { opacity: 1; transform: translateY(0); }
@@ -50,62 +40,41 @@ body {
 }
 
 @keyframes popIn {
-  0% { opacity: 0; transform: scale(0.96); }
+  0% { opacity: 0; transform: scale(0.95); }
   100% { opacity: 1; transform: scale(1); }
 }
 
-@keyframes flyHeaderPlane {
-  0% { transform: translate(0, 0) rotate(0deg); }
-  50% { transform: translate(8px, -8px) rotate(10deg); }
-  100% { transform: translate(0, 0) rotate(0deg); }
-}
-
-/* --- 3. Antet cu Avion lângă Titlu --- */
+/* --- 3. Header --- */
 .app-header {
-  background: linear-gradient(135deg, rgba(216, 139, 160, 0.9), rgba(189, 109, 131, 0.9));
-  backdrop-filter: blur(10px); /* Efect de sticlă pe fundalul colorat */
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
   color: #ffffff;
   text-align: center;
-  padding: 42px 16px;
-  box-shadow: 0 4px 20px rgba(189, 109, 131, 0.28);
+  padding: 40px 16px;
+  box-shadow: 0 4px 20px rgba(189, 109, 131, 0.3);
   animation: slideDown 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
 .app-header h1 {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin: 0 0 10px 0;
-  font-size: 2rem;
+  margin: 0 0 8px 0;
   letter-spacing: -0.5px;
-}
-
-.app-header h1::after {
-  content: "✈️";
-  display: inline-block;
-  font-size: 1.8rem;
-  filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.2));
-  animation: flyHeaderPlane 3s ease-in-out infinite;
 }
 
 .app-header p {
   margin: 0;
-  opacity: 0.92;
+  opacity: 0.9;
 }
 
 .app-count {
   font-weight: 600;
-  background: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.2);
   display: inline-block;
-  padding: 6px 18px;
-  border-radius: 9999px;
-  margin-top: 14px !important;
-  backdrop-filter: blur(6px);
-  border: 1px dashed rgba(255, 255, 255, 0.45);
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-top: 12px !important;
+  backdrop-filter: blur(4px);
 }
 
-/* --- 4. Structura / Layout --- */
+/* --- 4. Layout --- */
 .container {
   max-width: 1000px;
   margin: 32px auto;
@@ -116,44 +85,35 @@ body {
   align-items: start;
 }
 
-/* --- 5. Panouri --- */
+/* --- 5. Panels --- */
 .panel {
-  background-color: rgba(255, 255, 255, 0.85); /* Ușor transparent pentru a lăsa fundalul să se vadă */
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 20px;
-  padding: 26px;
-  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 24px var(--shadow);
   animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
+/* Stagger animation for the second panel */
 .panel:nth-child(2) {
   animation-delay: 0.15s;
 }
 
 .panel h2 {
   margin-top: 0;
-  margin-bottom: 22px;
-  font-size: 1.35rem;
-  color: var(--accent-dark);
-}
-
-.panel:nth-child(2) h2 {
+  margin-bottom: 24px;
+  font-size: 1.25rem;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.panel:nth-child(2) h2::before {
-  content: "🗺️";
-  font-size: 1.4rem;
-}
-
-/* --- 6. Formular --- */
+/* --- 6. Form elements --- */
 .item-form {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
 }
 
 .item-form label {
@@ -167,21 +127,20 @@ body {
 .item-form input,
 .item-form select {
   padding: 12px;
-  border: 2px dashed rgba(235, 220, 224, 0.8);
-  border-radius: 12px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
   font-family: inherit;
   font-size: 1rem;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: var(--bg);
   color: var(--text);
-  transition: all 0.25s ease;
+  transition: all 0.3s ease;
 }
 
 .item-form input:focus,
 .item-form select:focus {
   outline: none;
-  border-style: solid;
   border-color: var(--accent);
-  background-color: #ffffff;
+  background-color: var(--card);
   box-shadow: 0 0 0 4px var(--accent-soft);
 }
 
@@ -190,21 +149,25 @@ body {
   color: #ffffff;
   border: none;
   padding: 14px;
-  border-radius: 12px;
+  border-radius: 8px;
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-  box-shadow: 0 4px 14px rgba(216, 139, 160, 0.35);
+  box-shadow: 0 4px 12px rgba(216, 139, 160, 0.3);
 }
 
 .item-form button:hover {
   background-color: var(--accent-dark);
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(216, 139, 160, 0.45);
+  box-shadow: 0 6px 16px rgba(216, 139, 160, 0.4);
 }
 
-/* --- 7. My Travel List --- */
+.item-form button:active {
+  transform: translateY(0);
+}
+
+/* --- 7. List & Cards --- */
 .item-list {
   list-style: none;
   padding: 0;
@@ -215,78 +178,68 @@ body {
 }
 
 .item-card {
-  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 22px;
-  background-color: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-left: 6px solid var(--accent);
-  border-radius: 14px;
-  box-shadow: 0 4px 14px rgba(31, 38, 135, 0.05);
+  padding: 16px 20px;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  background-color: var(--bg);
   transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
   animation: popIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
-.item-card:nth-child(1) { animation-delay: 0.15s; }
-.item-card:nth-child(2) { animation-delay: 0.25s; }
-.item-card:nth-child(3) { animation-delay: 0.35s; }
+/* Stagger list items slightly */
+.item-card:nth-child(1) { animation-delay: 0.2s; }
+.item-card:nth-child(2) { animation-delay: 0.3s; }
+.item-card:nth-child(3) { animation-delay: 0.4s; }
 
 .item-card:hover {
-  transform: translateY(-4px) scale(1.01);
-  box-shadow: 0 10px 24px rgba(216, 139, 160, 0.2);
   border-color: var(--accent);
-  border-left-width: 8px;
-  background-color: #ffffff;
+  background-color: var(--card);
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 12px 24px var(--shadow);
+  cursor: pointer;
 }
 
 .item-card h3 {
-  margin: 0 0 6px 0;
-  font-size: 1.15rem;
-  color: var(--text);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.item-card h3::before {
-  content: "📍";
-  font-size: 0.95rem;
+  margin: 0 0 8px 0;
+  font-size: 1.1rem;
+  transition: color 0.3s ease;
 }
 
 .status {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: var(--muted);
   font-weight: 600;
-  background: rgba(250, 245, 246, 0.8);
-  padding: 5px 12px;
-  border-radius: 9999px;
+  background: var(--card);
+  padding: 4px 10px;
+  border-radius: 8px;
   border: 1px solid var(--border);
 }
 
-/* --- 8. Etichete / Badges --- */
+/* --- 8. Badges --- */
 .badge {
   display: inline-block;
   color: #ffffff;
-  padding: 3px 12px;
+  padding: 4px 12px;
   border-radius: 9999px;
   font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .badge-city-break { background-color: var(--color-city-break); }
 .badge-plaja { background-color: var(--color-plaja); }
 .badge-munte { background-color: var(--color-munte); }
 
-/* --- 9. Element Vizitat --- */
+/* --- 9. Done State --- */
 .item-card.done {
   opacity: 0.7;
-  background-color: rgba(255, 255, 255, 0.5);
-  border-left-color: var(--muted);
+  background-color: transparent;
+  border: 1px dashed var(--muted);
 }
 
 .item-card.done h3 {
@@ -295,21 +248,20 @@ body {
 }
 
 .item-card.done:hover {
-  opacity: 0.95;
+  opacity: 1;
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(31, 38, 135, 0.1);
+  border-style: solid;
 }
 
-/* --- 10. Subsol --- */
+/* --- 10. Footer --- */
 .app-footer {
   text-align: center;
   padding: 24px;
-  color: #4a3e42;
-  font-weight: 500;
+  color: var(--muted);
   font-size: 0.9rem;
   margin-top: 32px;
   animation: slideUp 1s both;
-  animation-delay: 0.4s;
+  animation-delay: 0.5s;
 }
 
 /* --- 11. Responsive --- */
@@ -317,12 +269,12 @@ body {
   .container {
     grid-template-columns: 1fr;
   }
-  .app-header h1 {
-    font-size: 1.6rem;
+  .app-header {
+    padding: 30px 16px;
   }
 }
 
-/* --- 12. Dark Mode (Gradient adaptat, mai închis) --- */
+/* --- 12. Dark Mode --- */
 @media (prefers-color-scheme: dark) {
   :root {
     --bg: #1a1617;          
@@ -334,33 +286,18 @@ body {
     --shadow: rgba(0, 0, 0, 0.3);
   }
   
-  body {
-    background: linear-gradient(-45deg, #2f1d2a, #201a2b, #1b2730, #2c1e23);
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
-  }
-  
-  .panel {
-    background-color: rgba(42, 36, 38, 0.85);
-    border-color: rgba(255, 255, 255, 0.1);
-  }
-
   .item-card {
-    background-color: rgba(42, 36, 38, 0.9);
-    border-color: rgba(255, 255, 255, 0.05);
+    background-color: var(--card);
   }
-  
+  .item-card.done {
+    border-color: var(--border);
+  }
   .item-form input,
   .item-form select {
-    background-color: rgba(26, 22, 23, 0.7);
+    background-color: var(--bg);
   }
-  
   .status {
-    background-color: rgba(26, 22, 23, 0.8);
+    background-color: var(--bg);
     border-color: transparent;
-  }
-  
-  .app-footer {
-    color: var(--muted);
   }
 }
