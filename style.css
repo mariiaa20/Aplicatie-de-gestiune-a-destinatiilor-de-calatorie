@@ -1,83 +1,120 @@
-/* 4.1. Variabilele de culoare */
+/* 1. Reset & Variabile Premium */
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 :root {
-  --bg: #faf5f6;       
-  --card: #ffffff;      
-  --text: #594a4e;        
-  --muted: #9e8b90;     
-  --accent: #d88ba0;     
-  --accent-dark: #bd6d83; 
-  --accent-soft: #f4e8eb; 
-  --border: #ebdce0;     
+  /* Tema de culori: Ocean & Nisip */
+  --bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+  --card-bg: rgba(255, 255, 255, 0.7);
+  --card-shadow: 0 8px 32px rgba(31, 38, 135, 0.07);
+  
+  --text-main: #2d3748;        
+  --text-muted: #718096;     
+  --accent: #0ea5e9; /* Ocean Blue */
+  --accent-hover: #0284c7; 
+  --border: rgba(255, 255, 255, 0.4);     
 
-  --color-city-break: #b19cd9; 
-  --color-plaja: #f6c094;      
-  --color-munte: #8abeb7;     
+  --color-city-break: #8b5cf6; 
+  --color-plaja: #f59e0b;      
+  --color-munte: #10b981;     
 }
 
 body {
-  margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.5;
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg-gradient);
+  color: var(--text-main);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-/* 4.2. Antetul */
+/* 2. Animații Globale */
+@keyframes slideUpFade {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  0% { opacity: 0; transform: translateY(-20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* 3. Antetul */
 .app-header {
-  background-color: var(--accent);
+  background: var(--accent);
+  background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
   color: #ffffff;
+  padding: 40px 20px;
   text-align: center;
-  padding: 32px 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  animation: fadeInDown 0.6s ease-out;
 }
 
-.app-header h1 {
-  margin: 0 0 8px 0;
+.header-content h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
 }
 
-.app-header p {
-  margin: 0;
+.header-content p {
+  font-size: 1.1rem;
+  opacity: 0.9;
 }
 
 .app-count {
+  display: inline-block;
+  margin-top: 16px !important;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 6px 16px;
+  border-radius: 20px;
   font-weight: 600;
-  opacity: 0.9;
-  margin-top: 8px !important;
+  font-size: 0.9rem;
+  backdrop-filter: blur(4px);
 }
 
-/* 4.3. Cele doua coloane (Grid) */
+/* 4. Layout Container */
 .container {
-  max-width: 1000px;
-  margin: 24px auto;
-  padding: 0 16px;
+  max-width: 1100px;
+  margin: -30px auto 40px;
+  padding: 0 20px;
   display: grid;
   grid-template-columns: 1fr 2fr;
-  gap: 24px;
+  gap: 30px;
   align-items: start;
+  flex: 1;
 }
 
-/* 4.4. Panourile */
+/* 5. Panouri (Glassmorphism effect) */
 .panel {
-  background-color: var(--card);
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 24px;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: var(--card-shadow);
+  animation: slideUpFade 0.6s ease-out;
 }
 
 .panel h2 {
-  margin-top: 0;
-  margin-bottom: 20px;
-  font-size: 1.25rem;
+  font-size: 1.4rem;
+  margin-bottom: 24px;
+  color: var(--text-main);
+  font-weight: 600;
+  border-bottom: 2px solid rgba(14, 165, 233, 0.1);
+  padding-bottom: 10px;
 }
 
-/* 4.5. Formularul (Flexbox) */
+/* 6. Formular */
 .item-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 }
 
 .item-form label {
@@ -85,122 +122,196 @@ body {
   flex-direction: column;
   gap: 8px;
   font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--text-muted);
 }
 
 .item-form input,
 .item-form select {
-  padding: 10px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
+  padding: 12px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
   font-family: inherit;
   font-size: 1rem;
-  background-color: var(--card);
-  color: var(--text);
+  background-color: #ffffff;
+  color: var(--text-main);
+  transition: all 0.3s ease;
+}
+
+.item-form input:focus,
+.item-form select:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
 }
 
 .item-form button {
-  background-color: var(--accent);
+  background: var(--accent);
   color: #ffffff;
   border: none;
-  padding: 12px;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: bold;
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 1.05rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+  box-shadow: 0 4px 10px rgba(14, 165, 233, 0.3);
 }
 
-/* 4.6. Cardul (Flexbox) */
+.item-form button:hover {
+  background: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(14, 165, 233, 0.4);
+}
+
+.item-form button:active {
+  transform: translateY(0);
+}
+
+/* 7. Lista și Cardurile */
 .item-list {
   list-style: none;
-  padding: 0;
-  margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .item-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 16px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background-color: var(--card);
-  transition: all 0.2s ease;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Staggered animation effect for initial load */
+  opacity: 0;
+  animation: slideUpFade 0.5s ease-out forwards;
+}
+
+.item-card:nth-child(1) { animation-delay: 0.1s; }
+.item-card:nth-child(2) { animation-delay: 0.2s; }
+.item-card:nth-child(3) { animation-delay: 0.3s; }
+.item-card:nth-child(4) { animation-delay: 0.4s; }
+
+.item-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 12px 20px rgba(0,0,0,0.08);
+  border-color: var(--accent);
 }
 
 .item-card h3 {
-  margin: 0 0 8px 0;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--text-main);
+  transition: color 0.3s ease;
 }
 
 .status {
   font-size: 0.9rem;
-  color: var(--muted);
+  color: var(--text-muted);
   font-weight: 500;
+  background: #f1f5f9;
+  padding: 4px 12px;
+  border-radius: 20px;
 }
 
-/* 4.7. Etichetele colorate */
+/* 8. Etichete (Badges) */
 .badge {
   display: inline-block;
   color: #ffffff;
-  padding: 2px 10px;
-  border-radius: 9999px; /* colțuri complet rotunjite */
+  padding: 4px 12px;
+  border-radius: 20px;
   font-size: 0.75rem;
-  font-weight: bold;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .badge-city-break { background-color: var(--color-city-break); }
 .badge-plaja { background-color: var(--color-plaja); }
 .badge-munte { background-color: var(--color-munte); }
 
-/* 4.8. Elementul finalizat (done) */
+/* 9. Starea "Visited" (done) */
+.item-card.done {
+  background-color: #f8fafc;
+  border-style: dashed;
+}
+
 .item-card.done h3 {
   text-decoration: line-through;
-  color: var(--muted);
+  color: var(--text-muted);
+  opacity: 0.7;
 }
 
-/* 5. Starile interactive si focus vizibil */
-.item-form button:hover {
-  background-color: var(--accent-dark);
+.item-card.done .status {
+  background: #dcfce7;
+  color: #166534;
 }
 
-.item-card:hover {
-  border-color: var(--accent);
-  background-color: var(--accent-soft);
+.item-card.done .badge {
+  opacity: 0.6;
 }
 
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-/* Subsol */
+/* 10. Footer */
 .app-footer {
   text-align: center;
-  padding: 24px;
-  color: var(--muted);
+  padding: 30px;
+  color: var(--text-muted);
   font-size: 0.9rem;
-  margin-top: 32px;
+  margin-top: auto;
 }
 
-/* 4.9. Ecranele inguste (Mobile) */
-@media (max-width: 700px) {
+/* 11. Responsive Design */
+@media (max-width: 768px) {
   .container {
     grid-template-columns: 1fr;
+    margin-top: 20px;
+  }
+  
+  .app-header {
+    padding: 30px 15px 50px;
   }
 }
 
-/* 5. Tema intunecata (Dark Mode) */
+/* 12. Dark Mode Suport */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #2a2426;          
-    --card: #362e31;       
-    --text: #f2e8eb;        
-    --muted: #ab9b9f;
-    --border: #4f4347;
-    --accent-soft: #453539; 
+    --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    --card-bg: rgba(30, 41, 59, 0.7);
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --border: rgba(255, 255, 255, 0.1);
+  }
+
+  .item-card {
+    background-color: #1e293b;
+    border-color: #334155;
+  }
+
+  .item-card.done {
+    background-color: #0f172a;
+  }
+
+  .item-card.done .status {
+    background: rgba(22, 101, 52, 0.3);
+    color: #4ade80;
+  }
+
+  .item-form input,
+  .item-form select {
+    background-color: #1e293b;
+    border-color: #334155;
+    color: #f8fafc;
+  }
+
+  .status {
+    background: #334155;
+    color: #cbd5e1;
   }
 }
