@@ -1,4 +1,4 @@
-/* --- 1. CSS Variables & Reset --- */
+/* --- 1. Variabile & Reset (Culorile tale originale) --- */
 * {
   box-sizing: border-box;
 }
@@ -28,7 +28,7 @@ body {
   overflow-x: hidden;
 }
 
-/* --- 2. Animations (Keyframes) --- */
+/* --- 2. Animații --- */
 @keyframes slideDown {
   from { opacity: 0; transform: translateY(-30px); }
   to { opacity: 1; transform: translateY(0); }
@@ -44,6 +44,19 @@ body {
   100% { opacity: 1; transform: scale(1); }
 }
 
+/* Nou: Animație plutire pentru text */
+@keyframes floatText {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Nou: Animație zbor pentru iconița de la listă */
+@keyframes flyIcon {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(4px, -4px) rotate(10deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
 /* --- 3. Header --- */
 .app-header {
   background: linear-gradient(135deg, var(--accent), var(--accent-dark));
@@ -57,6 +70,8 @@ body {
 .app-header h1 {
   margin: 0 0 8px 0;
   letter-spacing: -0.5px;
+  /* Aplicăm mișcarea de plutire pe titlu */
+  animation: floatText 3s ease-in-out infinite;
 }
 
 .app-header p {
@@ -66,12 +81,13 @@ body {
 
 .app-count {
   font-weight: 600;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.25);
   display: inline-block;
-  padding: 4px 12px;
+  padding: 6px 16px;
   border-radius: 20px;
   margin-top: 12px !important;
   backdrop-filter: blur(4px);
+  border: 1px dashed rgba(255,255,255,0.4);
 }
 
 /* --- 4. Layout --- */
@@ -89,13 +105,12 @@ body {
 .panel {
   background-color: var(--card);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: 20px;
   padding: 24px;
   box-shadow: 0 8px 24px var(--shadow);
   animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
-/* Stagger animation for the second panel */
 .panel:nth-child(2) {
   animation-delay: 0.15s;
 }
@@ -103,13 +118,19 @@ body {
 .panel h2 {
   margin-top: 0;
   margin-bottom: 24px;
-  font-size: 1.25rem;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  font-size: 1.35rem;
+  color: var(--accent-dark);
 }
 
-/* --- 6. Form elements --- */
+/* Adăugăm un avion animat drăguț la titlul "My travel list" */
+.panel:nth-child(2) h2::before {
+  content: "✈️ ";
+  display: inline-block;
+  animation: flyIcon 3s ease-in-out infinite;
+  margin-right: 4px;
+}
+
+/* --- 6. Formular --- */
 .item-form {
   display: flex;
   flex-direction: column;
@@ -127,8 +148,8 @@ body {
 .item-form input,
 .item-form select {
   padding: 12px;
-  border: 2px solid var(--border);
-  border-radius: 8px;
+  border: 2px dashed var(--border);
+  border-radius: 12px;
   font-family: inherit;
   font-size: 1rem;
   background-color: var(--bg);
@@ -139,6 +160,7 @@ body {
 .item-form input:focus,
 .item-form select:focus {
   outline: none;
+  border-style: solid;
   border-color: var(--accent);
   background-color: var(--card);
   box-shadow: 0 0 0 4px var(--accent-soft);
@@ -149,7 +171,7 @@ body {
   color: #ffffff;
   border: none;
   padding: 14px;
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
@@ -159,15 +181,11 @@ body {
 
 .item-form button:hover {
   background-color: var(--accent-dark);
-  transform: translateY(-2px);
+  transform: translateY(-3px) scale(1.02);
   box-shadow: 0 6px 16px rgba(216, 139, 160, 0.4);
 }
 
-.item-form button:active {
-  transform: translateY(0);
-}
-
-/* --- 7. List & Cards --- */
+/* --- 7. Lista & Carduri (Aspect drăguț de jurnal) --- */
 .item-list {
   list-style: none;
   padding: 0;
@@ -182,30 +200,32 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 16px 20px;
-  border: 2px solid transparent;
-  border-radius: 12px;
+  /* Margine punctată drăguță */
+  border: 2px dashed var(--accent-soft);
+  border-radius: 16px;
   background-color: var(--bg);
   transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
   animation: popIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
-/* Stagger list items slightly */
 .item-card:nth-child(1) { animation-delay: 0.2s; }
 .item-card:nth-child(2) { animation-delay: 0.3s; }
 .item-card:nth-child(3) { animation-delay: 0.4s; }
 
 .item-card:hover {
+  /* Marginea devine solidă și cardul se înclină foarte puțin (wobble) */
+  border-style: solid;
   border-color: var(--accent);
   background-color: var(--card);
-  transform: translateY(-4px) scale(1.01);
+  transform: translateY(-5px) rotate(1deg) scale(1.02);
   box-shadow: 0 12px 24px var(--shadow);
   cursor: pointer;
 }
 
 .item-card h3 {
   margin: 0 0 8px 0;
-  font-size: 1.1rem;
-  transition: color 0.3s ease;
+  font-size: 1.15rem;
+  color: var(--accent-dark);
 }
 
 .status {
@@ -213,17 +233,17 @@ body {
   color: var(--muted);
   font-weight: 600;
   background: var(--card);
-  padding: 4px 10px;
-  border-radius: 8px;
+  padding: 4px 12px;
+  border-radius: 12px;
   border: 1px solid var(--border);
 }
 
-/* --- 8. Badges --- */
+/* --- 8. Etichete (Badges) --- */
 .badge {
   display: inline-block;
   color: #ffffff;
   padding: 4px 12px;
-  border-radius: 9999px;
+  border-radius: 12px;
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -235,11 +255,11 @@ body {
 .badge-plaja { background-color: var(--color-plaja); }
 .badge-munte { background-color: var(--color-munte); }
 
-/* --- 9. Done State --- */
+/* --- 9. Finalizat (Done) --- */
 .item-card.done {
-  opacity: 0.7;
+  opacity: 0.6;
   background-color: transparent;
-  border: 1px dashed var(--muted);
+  border-color: var(--border);
 }
 
 .item-card.done h3 {
@@ -249,8 +269,8 @@ body {
 
 .item-card.done:hover {
   opacity: 1;
-  transform: translateY(-2px);
-  border-style: solid;
+  transform: translateY(-2px) rotate(-1deg);
+  border-color: var(--accent-soft);
 }
 
 /* --- 10. Footer --- */
@@ -268,9 +288,6 @@ body {
 @media (max-width: 700px) {
   .container {
     grid-template-columns: 1fr;
-  }
-  .app-header {
-    padding: 30px 16px;
   }
 }
 
