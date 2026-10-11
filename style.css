@@ -6,25 +6,55 @@
 }
 
 :root {
-  /* Tema de culori: Ocean & Nisip */
-  --bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
-  --card-bg: rgba(255, 255, 255, 0.7);
+  --card-bg: rgba(255, 255, 255, 0.75);
   --card-shadow: 0 8px 32px rgba(31, 38, 135, 0.07);
   
   --text-main: #2d3748;        
   --text-muted: #718096;     
-  --accent: #0ea5e9; /* Ocean Blue */
+  --accent: #0ea5e9; 
   --accent-hover: #0284c7; 
-  --border: rgba(255, 255, 255, 0.4);     
+  --border: rgba(255, 255, 255, 0.5);     
 
   --color-city-break: #8b5cf6; 
   --color-plaja: #f59e0b;      
   --color-munte: #10b981;     
 }
 
+/* --- ANIMAȚII NOI ȘI CREATIVE --- */
+@keyframes gradientBackground {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes textShine {
+  to { background-position: 200% center; }
+}
+
+@keyframes floatText {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes pulseBadge {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes slideUpFade {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+/* --------------------------------- */
+
 body {
   font-family: 'Poppins', sans-serif;
-  background: var(--bg-gradient);
+  /* Fundal animat fluid */
+  background: linear-gradient(-45deg, #fdfbfb, #e0f2fe, #ebedee, #dbeafe);
+  background-size: 400% 400%;
+  animation: gradientBackground 15s ease infinite;
+  
   color: var(--text-main);
   line-height: 1.6;
   min-height: 100vh;
@@ -32,38 +62,35 @@ body {
   flex-direction: column;
 }
 
-/* 2. Animații Globale */
-@keyframes slideUpFade {
-  0% { opacity: 0; transform: translateY(20px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeInDown {
-  0% { opacity: 0; transform: translateY(-20px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-
 /* 3. Antetul */
 .app-header {
-  background: var(--accent);
   background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
   color: #ffffff;
   padding: 40px 20px;
   text-align: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  animation: fadeInDown 0.6s ease-out;
+  box-shadow: 0 4px 20px rgba(14, 165, 233, 0.2);
 }
 
 .header-content h1 {
-  font-size: 2.2rem;
+  font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 8px;
   letter-spacing: -0.5px;
+  
+  /* Efect de lumină care se plimbă pe text */
+  background: linear-gradient(to right, #ffffff 20%, #a5f3fc 50%, #ffffff 80%);
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: textShine 3s linear infinite;
 }
 
 .header-content p {
   font-size: 1.1rem;
-  opacity: 0.9;
+  opacity: 0.95;
+  /* Textul plutește ușor */
+  animation: floatText 3s ease-in-out infinite;
 }
 
 .app-count {
@@ -75,6 +102,7 @@ body {
   font-weight: 600;
   font-size: 0.9rem;
   backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 /* 4. Layout Container */
@@ -89,16 +117,16 @@ body {
   flex: 1;
 }
 
-/* 5. Panouri (Glassmorphism effect) */
+/* 5. Panouri */
 .panel {
   background: var(--card-bg);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 30px;
   box-shadow: var(--card-shadow);
-  animation: slideUpFade 0.6s ease-out;
+  animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .panel h2 {
@@ -106,7 +134,7 @@ body {
   margin-bottom: 24px;
   color: var(--text-main);
   font-weight: 600;
-  border-bottom: 2px solid rgba(14, 165, 233, 0.1);
+  border-bottom: 2px solid rgba(14, 165, 233, 0.15);
   padding-bottom: 10px;
 }
 
@@ -129,20 +157,21 @@ body {
 .item-form input,
 .item-form select {
   padding: 12px 16px;
-  border: 2px solid #e2e8f0;
+  border: 2px solid rgba(226, 232, 240, 0.8);
   border-radius: 10px;
   font-family: inherit;
   font-size: 1rem;
-  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.9);
   color: var(--text-main);
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .item-form input:focus,
 .item-form select:focus {
   border-color: var(--accent);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+  box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15);
+  transform: translateY(-2px);
 }
 
 .item-form button {
@@ -156,17 +185,17 @@ body {
   cursor: pointer;
   transition: all 0.3s ease;
   margin-top: 10px;
-  box-shadow: 0 4px 10px rgba(14, 165, 233, 0.3);
+  box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
 }
 
 .item-form button:hover {
   background: var(--accent-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(14, 165, 233, 0.4);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4);
 }
 
 .item-form button:active {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.98);
 }
 
 /* 7. Lista și Cardurile */
@@ -182,42 +211,40 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.85);
   border-radius: 12px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   
-  /* Staggered animation effect for initial load */
   opacity: 0;
-  animation: slideUpFade 0.5s ease-out forwards;
+  animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .item-card:nth-child(1) { animation-delay: 0.1s; }
 .item-card:nth-child(2) { animation-delay: 0.2s; }
 .item-card:nth-child(3) { animation-delay: 0.3s; }
-.item-card:nth-child(4) { animation-delay: 0.4s; }
 
 .item-card:hover {
-  transform: translateY(-4px) scale(1.01);
-  box-shadow: 0 12px 20px rgba(0,0,0,0.08);
+  transform: translateY(-5px) scale(1.015);
+  box-shadow: 0 15px 30px rgba(14, 165, 233, 0.1);
   border-color: var(--accent);
+  background-color: #ffffff;
 }
 
 .item-card h3 {
   font-size: 1.15rem;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   font-weight: 600;
   color: var(--text-main);
-  transition: color 0.3s ease;
 }
 
 .status {
   font-size: 0.9rem;
-  color: var(--text-muted);
-  font-weight: 500;
-  background: #f1f5f9;
-  padding: 4px 12px;
+  color: var(--accent);
+  font-weight: 600;
+  background: rgba(14, 165, 233, 0.1);
+  padding: 6px 14px;
   border-radius: 20px;
 }
 
@@ -231,31 +258,39 @@ body {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  /* Animație de pulsare ușoară pentru etichete */
+  animation: pulseBadge 3s infinite ease-in-out;
 }
 
-.badge-city-break { background-color: var(--color-city-break); }
-.badge-plaja { background-color: var(--color-plaja); }
-.badge-munte { background-color: var(--color-munte); }
+/* Decalăm animațiile etichetelor ca să nu pulseze toate fix în același timp */
+.item-card:nth-child(2) .badge { animation-delay: 0.5s; }
+.item-card:nth-child(3) .badge { animation-delay: 1s; }
+
+.badge-city-break { background-color: var(--color-city-break); box-shadow: 0 0 10px rgba(139, 92, 246, 0.4); }
+.badge-plaja { background-color: var(--color-plaja); box-shadow: 0 0 10px rgba(245, 158, 11, 0.4); }
+.badge-munte { background-color: var(--color-munte); box-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
 
 /* 9. Starea "Visited" (done) */
 .item-card.done {
-  background-color: #f8fafc;
+  background-color: rgba(248, 250, 252, 0.6);
   border-style: dashed;
 }
 
 .item-card.done h3 {
   text-decoration: line-through;
   color: var(--text-muted);
-  opacity: 0.7;
+  opacity: 0.6;
 }
 
 .item-card.done .status {
-  background: #dcfce7;
-  color: #166534;
+  background: rgba(34, 197, 94, 0.15);
+  color: #15803d;
 }
 
 .item-card.done .badge {
-  opacity: 0.6;
+  animation: none; /* Oprim pulsarea pentru cele deja vizitate */
+  opacity: 0.7;
+  box-shadow: none;
 }
 
 /* 10. Footer */
@@ -265,6 +300,7 @@ body {
   color: var(--text-muted);
   font-size: 0.9rem;
   margin-top: auto;
+  font-weight: 500;
 }
 
 /* 11. Responsive Design */
@@ -272,46 +308,5 @@ body {
   .container {
     grid-template-columns: 1fr;
     margin-top: 20px;
-  }
-  
-  .app-header {
-    padding: 30px 15px 50px;
-  }
-}
-
-/* 12. Dark Mode Suport */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-    --card-bg: rgba(30, 41, 59, 0.7);
-    --text-main: #f8fafc;
-    --text-muted: #94a3b8;
-    --border: rgba(255, 255, 255, 0.1);
-  }
-
-  .item-card {
-    background-color: #1e293b;
-    border-color: #334155;
-  }
-
-  .item-card.done {
-    background-color: #0f172a;
-  }
-
-  .item-card.done .status {
-    background: rgba(22, 101, 52, 0.3);
-    color: #4ade80;
-  }
-
-  .item-form input,
-  .item-form select {
-    background-color: #1e293b;
-    border-color: #334155;
-    color: #f8fafc;
-  }
-
-  .status {
-    background: #334155;
-    color: #cbd5e1;
   }
 }
