@@ -1,4 +1,4 @@
-/* --- 1. Variabile & Reset --- */
+/* --- 1. Variabile de culoare (Originale) --- */
 * {
   box-sizing: border-box;
 }
@@ -22,7 +22,6 @@
 body {
   margin: 0;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  /* Jocul de culori pe fundal: un gradient fin */
   background: linear-gradient(135deg, var(--bg) 0%, var(--accent-soft) 100%);
   min-height: 100vh;
   color: var(--text);
@@ -42,55 +41,69 @@ body {
 }
 
 @keyframes popIn {
-  0% { opacity: 0; transform: scale(0.95); }
+  0% { opacity: 0; transform: scale(0.96); }
   100% { opacity: 1; transform: scale(1); }
 }
 
-@keyframes floatText {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-6px); }
+/* Zbor lin pentru avionul de lângă titlu */
+@keyframes flyHeaderPlane {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate(8px, -8px) rotate(10deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
 }
 
-/* Avionul zboară mai sus și mai vizibil */
-@keyframes flyIcon {
-  0% { transform: translate(0, 0) rotate(0deg) scale(1); }
-  50% { transform: translate(8px, -10px) rotate(15deg) scale(1.1); }
-  100% { transform: translate(0, 0) rotate(0deg) scale(1); }
-}
-
-/* --- 3. Header --- */
+/* --- 3. Antet cu Avion lângă Titlu --- */
 .app-header {
   background: linear-gradient(135deg, var(--accent), var(--accent-dark));
   color: #ffffff;
   text-align: center;
-  padding: 40px 16px;
-  box-shadow: 0 4px 20px rgba(189, 109, 131, 0.3);
+  padding: 42px 16px;
+  box-shadow: 0 4px 20px rgba(189, 109, 131, 0.28);
   animation: slideDown 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
 .app-header h1 {
-  margin: 0 0 8px 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 0 0 10px 0;
+  font-size: 2rem;
   letter-spacing: -0.5px;
-  animation: floatText 3s ease-in-out infinite;
+}
+
+/* Avionul plasat imediat după titlu */
+.app-header h1::after {
+  content: "✈️";
+  display: inline-block;
+  font-size: 1.8rem;
+  filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.2));
+  animation: flyHeaderPlane 3s ease-in-out infinite;
 }
 
 .app-header p {
   margin: 0;
-  opacity: 0.9;
+  opacity: 0.92;
 }
 
 .app-count {
   font-weight: 600;
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.22);
   display: inline-block;
-  padding: 6px 16px;
-  border-radius: 20px;
-  margin-top: 12px !important;
-  backdrop-filter: blur(4px);
-  border: 1px dashed rgba(255,255,255,0.4);
+  padding: 6px 18px;
+  border-radius: 9999px;
+  margin-top: 14px !important;
+  backdrop-filter: blur(6px);
+  border: 1px dashed rgba(255, 255, 255, 0.45);
 }
 
-/* --- 4. Layout --- */
+/* --- 4. Structura / Layout --- */
 .container {
   max-width: 1000px;
   margin: 32px auto;
@@ -101,12 +114,12 @@ body {
   align-items: start;
 }
 
-/* --- 5. Panels --- */
+/* --- 5. Panouri --- */
 .panel {
   background-color: var(--card);
   border: 1px solid var(--border);
   border-radius: 20px;
-  padding: 24px;
+  padding: 26px;
   box-shadow: 0 8px 24px var(--shadow);
   animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
@@ -117,26 +130,28 @@ body {
 
 .panel h2 {
   margin-top: 0;
-  margin-bottom: 24px;
+  margin-bottom: 22px;
   font-size: 1.35rem;
   color: var(--accent-dark);
 }
 
-/* Avionul mult mai mare, umbrit și zburdalnic */
+/* Titlul panoului de destinații */
+.panel:nth-child(2) h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .panel:nth-child(2) h2::before {
-  content: "✈️";
-  display: inline-block;
-  font-size: 1.8rem;
-  margin-right: 12px;
-  filter: drop-shadow(2px 4px 4px rgba(0,0,0,0.15));
-  animation: flyIcon 2.5s ease-in-out infinite;
+  content: "🗺️";
+  font-size: 1.4rem;
 }
 
 /* --- 6. Formular --- */
 .item-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 18px;
 }
 
 .item-form label {
@@ -156,7 +171,7 @@ body {
   font-size: 1rem;
   background-color: var(--bg);
   color: var(--text);
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
 }
 
 .item-form input:focus,
@@ -178,16 +193,16 @@ body {
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-  box-shadow: 0 4px 12px rgba(216, 139, 160, 0.3);
+  box-shadow: 0 4px 14px rgba(216, 139, 160, 0.35);
 }
 
 .item-form button:hover {
   background-color: var(--accent-dark);
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 6px 16px rgba(216, 139, 160, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(216, 139, 160, 0.45);
 }
 
-/* --- 7. Lista & Carduri --- */
+/* --- 7. My Travel List (Stil bilet / jurnal de călătorie) --- */
 .item-list {
   list-style: none;
   padding: 0;
@@ -198,68 +213,78 @@ body {
 }
 
 .item-card {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
-  border: 2px dashed var(--accent-soft);
-  border-radius: 16px;
-  background-color: var(--bg);
+  padding: 18px 22px;
+  background-color: #ffffff;
+  border: 1px solid var(--border);
+  border-left: 6px solid var(--accent);
+  border-radius: 14px;
+  box-shadow: 0 4px 14px var(--shadow);
   transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
   animation: popIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
-.item-card:nth-child(1) { animation-delay: 0.2s; }
-.item-card:nth-child(2) { animation-delay: 0.3s; }
-.item-card:nth-child(3) { animation-delay: 0.4s; }
+.item-card:nth-child(1) { animation-delay: 0.15s; }
+.item-card:nth-child(2) { animation-delay: 0.25s; }
+.item-card:nth-child(3) { animation-delay: 0.35s; }
 
+/* Efect la hover: cardul plutește lin și prinde o nuanță caldă */
 .item-card:hover {
-  border-style: solid;
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 10px 24px rgba(216, 139, 160, 0.2);
   border-color: var(--accent);
-  background-color: var(--card);
-  transform: translateY(-5px) rotate(1deg) scale(1.02);
-  box-shadow: 0 12px 24px var(--shadow);
-  cursor: pointer;
+  border-left-width: 8px;
 }
 
 .item-card h3 {
-  margin: 0 0 8px 0;
+  margin: 0 0 6px 0;
   font-size: 1.15rem;
-  color: var(--accent-dark);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.item-card h3::before {
+  content: "📍";
+  font-size: 0.95rem;
 }
 
 .status {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--muted);
   font-weight: 600;
-  background: var(--card);
-  padding: 4px 12px;
-  border-radius: 12px;
+  background: var(--bg);
+  padding: 5px 12px;
+  border-radius: 9999px;
   border: 1px solid var(--border);
 }
 
-/* --- 8. Etichete --- */
+/* --- 8. Etichete / Badges --- */
 .badge {
   display: inline-block;
   color: #ffffff;
-  padding: 4px 12px;
-  border-radius: 12px;
+  padding: 3px 12px;
+  border-radius: 9999px;
   font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
   text-transform: uppercase;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
 
 .badge-city-break { background-color: var(--color-city-break); }
 .badge-plaja { background-color: var(--color-plaja); }
 .badge-munte { background-color: var(--color-munte); }
 
-/* --- 9. Finalizat (Done) --- */
+/* --- 9. Element Vizitat / Finalizat (Done) --- */
 .item-card.done {
-  opacity: 0.6;
-  background-color: transparent;
-  border-color: var(--border);
+  opacity: 0.65;
+  background-color: rgba(250, 245, 246, 0.6);
+  border-left-color: var(--muted);
 }
 
 .item-card.done h3 {
@@ -268,12 +293,12 @@ body {
 }
 
 .item-card.done:hover {
-  opacity: 1;
-  transform: translateY(-2px) rotate(-1deg);
-  border-color: var(--accent-soft);
+  opacity: 0.95;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px var(--shadow);
 }
 
-/* --- 10. Footer --- */
+/* --- 10. Subsol --- */
 .app-footer {
   text-align: center;
   padding: 24px;
@@ -281,13 +306,16 @@ body {
   font-size: 0.9rem;
   margin-top: 32px;
   animation: slideUp 1s both;
-  animation-delay: 0.5s;
+  animation-delay: 0.4s;
 }
 
 /* --- 11. Responsive --- */
 @media (max-width: 700px) {
   .container {
     grid-template-columns: 1fr;
+  }
+  .app-header h1 {
+    font-size: 1.6rem;
   }
 }
 
@@ -303,20 +331,14 @@ body {
     --shadow: rgba(0, 0, 0, 0.3);
   }
   body {
-    background: linear-gradient(135deg, var(--bg) 0%, #201a1c 100%);
+    background: linear-gradient(135deg, var(--bg) 0%, #221a1d 100%);
   }
   .item-card {
     background-color: var(--card);
   }
-  .item-card.done {
-    border-color: var(--border);
-  }
   .item-form input,
-  .item-form select {
-    background-color: var(--bg);
-  }
+  .item-form select,
   .status {
     background-color: var(--bg);
-    border-color: transparent;
   }
 }
