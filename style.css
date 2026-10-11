@@ -19,11 +19,11 @@
   --color-munte: #8abeb7;     
 }
 
+/* --- Nou: Fundal animat fluid cu gradient roz, mov, albastru --- */
 body {
   margin: 0;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  /* Fundal animat: gradient în 3 nuanțe, mărit și mișcat */
-  background: linear-gradient(135deg, var(--bg), var(--accent-soft), #f9ebef, var(--bg));
+  background: linear-gradient(-45deg, #fbc2eb, #a18cd1, #8fd3f4, #f8cdda);
   background-size: 400% 400%;
   animation: gradientBG 15s ease infinite;
   min-height: 100vh;
@@ -33,7 +33,6 @@ body {
 }
 
 /* --- 2. Animații --- */
-/* Mișcarea culorilor pe fundal */
 @keyframes gradientBG {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -63,7 +62,8 @@ body {
 
 /* --- 3. Antet cu Avion lângă Titlu --- */
 .app-header {
-  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  background: linear-gradient(135deg, rgba(216, 139, 160, 0.9), rgba(189, 109, 131, 0.9));
+  backdrop-filter: blur(10px); /* Efect de sticlă pe fundalul colorat */
   color: #ffffff;
   text-align: center;
   padding: 42px 16px;
@@ -118,11 +118,12 @@ body {
 
 /* --- 5. Panouri --- */
 .panel {
-  background-color: var(--card);
-  border: 1px solid var(--border);
+  background-color: rgba(255, 255, 255, 0.85); /* Ușor transparent pentru a lăsa fundalul să se vadă */
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 20px;
   padding: 26px;
-  box-shadow: 0 8px 24px var(--shadow);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
   animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
@@ -166,11 +167,11 @@ body {
 .item-form input,
 .item-form select {
   padding: 12px;
-  border: 2px dashed var(--border);
+  border: 2px dashed rgba(235, 220, 224, 0.8);
   border-radius: 12px;
   font-family: inherit;
   font-size: 1rem;
-  background-color: var(--bg);
+  background-color: rgba(255, 255, 255, 0.7);
   color: var(--text);
   transition: all 0.25s ease;
 }
@@ -180,7 +181,7 @@ body {
   outline: none;
   border-style: solid;
   border-color: var(--accent);
-  background-color: var(--card);
+  background-color: #ffffff;
   box-shadow: 0 0 0 4px var(--accent-soft);
 }
 
@@ -219,11 +220,11 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 18px 22px;
-  background-color: #ffffff;
-  border: 1px solid var(--border);
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   border-left: 6px solid var(--accent);
   border-radius: 14px;
-  box-shadow: 0 4px 14px var(--shadow);
+  box-shadow: 0 4px 14px rgba(31, 38, 135, 0.05);
   transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
   animation: popIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
@@ -237,6 +238,7 @@ body {
   box-shadow: 0 10px 24px rgba(216, 139, 160, 0.2);
   border-color: var(--accent);
   border-left-width: 8px;
+  background-color: #ffffff;
 }
 
 .item-card h3 {
@@ -257,7 +259,7 @@ body {
   font-size: 0.85rem;
   color: var(--muted);
   font-weight: 600;
-  background: var(--bg);
+  background: rgba(250, 245, 246, 0.8);
   padding: 5px 12px;
   border-radius: 9999px;
   border: 1px solid var(--border);
@@ -280,10 +282,10 @@ body {
 .badge-plaja { background-color: var(--color-plaja); }
 .badge-munte { background-color: var(--color-munte); }
 
-/* --- 9. Element Vizitat (Done) --- */
+/* --- 9. Element Vizitat --- */
 .item-card.done {
-  opacity: 0.65;
-  background-color: rgba(250, 245, 246, 0.6);
+  opacity: 0.7;
+  background-color: rgba(255, 255, 255, 0.5);
   border-left-color: var(--muted);
 }
 
@@ -295,14 +297,15 @@ body {
 .item-card.done:hover {
   opacity: 0.95;
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px var(--shadow);
+  box-shadow: 0 6px 16px rgba(31, 38, 135, 0.1);
 }
 
 /* --- 10. Subsol --- */
 .app-footer {
   text-align: center;
   padding: 24px;
-  color: var(--muted);
+  color: #4a3e42;
+  font-weight: 500;
   font-size: 0.9rem;
   margin-top: 32px;
   animation: slideUp 1s both;
@@ -319,7 +322,7 @@ body {
   }
 }
 
-/* --- 12. Dark Mode --- */
+/* --- 12. Dark Mode (Gradient adaptat, mai închis) --- */
 @media (prefers-color-scheme: dark) {
   :root {
     --bg: #1a1617;          
@@ -330,17 +333,34 @@ body {
     --accent-soft: #382a2d; 
     --shadow: rgba(0, 0, 0, 0.3);
   }
+  
   body {
-    background: linear-gradient(135deg, var(--bg), #221a1d, var(--accent-soft), var(--bg));
+    background: linear-gradient(-45deg, #2f1d2a, #201a2b, #1b2730, #2c1e23);
     background-size: 400% 400%;
     animation: gradientBG 15s ease infinite;
   }
-  .item-card {
-    background-color: var(--card);
+  
+  .panel {
+    background-color: rgba(42, 36, 38, 0.85);
+    border-color: rgba(255, 255, 255, 0.1);
   }
+
+  .item-card {
+    background-color: rgba(42, 36, 38, 0.9);
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+  
   .item-form input,
-  .item-form select,
+  .item-form select {
+    background-color: rgba(26, 22, 23, 0.7);
+  }
+  
   .status {
-    background-color: var(--bg);
+    background-color: rgba(26, 22, 23, 0.8);
+    border-color: transparent;
+  }
+  
+  .app-footer {
+    color: var(--muted);
   }
 }
