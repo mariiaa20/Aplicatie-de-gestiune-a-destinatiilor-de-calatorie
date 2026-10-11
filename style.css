@@ -1,4 +1,4 @@
-/* --- 1. Variabile de culoare (Originale) --- */
+/* --- 1. Variabile de culoare --- */
 * {
   box-sizing: border-box;
 }
@@ -22,7 +22,10 @@
 body {
   margin: 0;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  background: linear-gradient(135deg, var(--bg) 0%, var(--accent-soft) 100%);
+  /* Fundal animat: gradient în 3 nuanțe, mărit și mișcat */
+  background: linear-gradient(135deg, var(--bg), var(--accent-soft), #f9ebef, var(--bg));
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
   min-height: 100vh;
   color: var(--text);
   line-height: 1.5;
@@ -30,6 +33,13 @@ body {
 }
 
 /* --- 2. Animații --- */
+/* Mișcarea culorilor pe fundal */
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 @keyframes slideDown {
   from { opacity: 0; transform: translateY(-30px); }
   to { opacity: 1; transform: translateY(0); }
@@ -45,17 +55,10 @@ body {
   100% { opacity: 1; transform: scale(1); }
 }
 
-/* Zbor lin pentru avionul de lângă titlu */
 @keyframes flyHeaderPlane {
-  0% {
-    transform: translate(0, 0) rotate(0deg);
-  }
-  50% {
-    transform: translate(8px, -8px) rotate(10deg);
-  }
-  100% {
-    transform: translate(0, 0) rotate(0deg);
-  }
+  0% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(8px, -8px) rotate(10deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
 }
 
 /* --- 3. Antet cu Avion lângă Titlu --- */
@@ -78,7 +81,6 @@ body {
   letter-spacing: -0.5px;
 }
 
-/* Avionul plasat imediat după titlu */
 .app-header h1::after {
   content: "✈️";
   display: inline-block;
@@ -135,7 +137,6 @@ body {
   color: var(--accent-dark);
 }
 
-/* Titlul panoului de destinații */
 .panel:nth-child(2) h2 {
   display: flex;
   align-items: center;
@@ -202,7 +203,7 @@ body {
   box-shadow: 0 6px 18px rgba(216, 139, 160, 0.45);
 }
 
-/* --- 7. My Travel List (Stil bilet / jurnal de călătorie) --- */
+/* --- 7. My Travel List --- */
 .item-list {
   list-style: none;
   padding: 0;
@@ -231,7 +232,6 @@ body {
 .item-card:nth-child(2) { animation-delay: 0.25s; }
 .item-card:nth-child(3) { animation-delay: 0.35s; }
 
-/* Efect la hover: cardul plutește lin și prinde o nuanță caldă */
 .item-card:hover {
   transform: translateY(-4px) scale(1.01);
   box-shadow: 0 10px 24px rgba(216, 139, 160, 0.2);
@@ -280,7 +280,7 @@ body {
 .badge-plaja { background-color: var(--color-plaja); }
 .badge-munte { background-color: var(--color-munte); }
 
-/* --- 9. Element Vizitat / Finalizat (Done) --- */
+/* --- 9. Element Vizitat (Done) --- */
 .item-card.done {
   opacity: 0.65;
   background-color: rgba(250, 245, 246, 0.6);
@@ -331,7 +331,9 @@ body {
     --shadow: rgba(0, 0, 0, 0.3);
   }
   body {
-    background: linear-gradient(135deg, var(--bg) 0%, #221a1d 100%);
+    background: linear-gradient(135deg, var(--bg), #221a1d, var(--accent-soft), var(--bg));
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
   }
   .item-card {
     background-color: var(--card);
