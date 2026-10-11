@@ -3,14 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Travel Manager - mockup</title>
+  <title>Travel Manager - Premium</title>
+  
+  <!-- Google Fonts: Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header class="app-header">
-    <h1>Travel Destinations Manager</h1>
-    <p>Manage and organize your travel destinations.</p>
-    <p class="app-count">3 destinations, 2 planned</p>
+    <div class="header-content">
+      <h1>Travel Destinations</h1>
+      <p>Manage and organize your next adventures.</p>
+      <p class="app-count">3 destinations, 2 planned</p>
+    </div>
   </header>
 
   <main class="container">
@@ -29,13 +37,12 @@
           </select>
         </label>
         
-        <button type="submit">Add</button>
+        <button type="submit">Add to list</button>
       </form>
     </section>
 
     <section class="panel">
       <h2>My travel list</h2>
-      <!-- Când lista e goală: <p class="empty">There are no destinations yet.</p> -->
       <ul class="item-list">
         
         <li class="item-card">
@@ -67,7 +74,6 @@
   </main>
 
   <footer class="app-footer">Web Technologies Project</footer>
-
   <script src="destinations.js"></script>
 </body>
 </html>
