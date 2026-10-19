@@ -44,3 +44,12 @@ Plain JavaScript, no DOM. `destinations.js` holds the array and the functions th
 | S2-R5 | original array unchanged after add | destinations.js#L.. | console line |
 | S2-R6 | README Stage 2 section + AI log | README.md, ai-log/etapa-02.md | read |
 | S2-R7 | commit "Stage 2" pushed | link to the commit | commit history |
+
+## Stage 3: Vite and React project
+The app now lives in `frontend/`, built with Vite and React. The data from stage 2 has been moved into the main component (`App.jsx`), and the destination list is temporarily rendered in raw JSON format.
+
+## How to run
+```bash
+cd frontend
+npm install
+npm run dev
