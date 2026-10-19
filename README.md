@@ -52,3 +52,10 @@ The app now lives in `frontend/`, built with Vite and React. The destination dat
 1. Navigate to the frontend directory:
    ```bash
    cd frontend
+The app now lives in `frontend/`, built with Vite and React. The data from stage 2 has been moved into the main component (`App.jsx`), and the destination list is temporarily rendered in raw JSON format.
+
+## How to run
+```bash
+cd frontend
+npm install
+npm run dev
