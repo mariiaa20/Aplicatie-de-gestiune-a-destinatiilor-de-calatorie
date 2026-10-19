@@ -1,4 +1,4 @@
-/* --- 1. Variabile și Reset --- */
+/* --- 1. Variabile si Reset --- */
 * {
   box-sizing: border-box;
 }
@@ -336,13 +336,13 @@ body {
 }
 
 body::before {
-  content: '✈️'; /* Poți schimba și cu 🛫 */
+  content: '✈️'; /* Poti schimba si cu 🛫 */
   position: fixed;
   top: 10%;
   left: 0;
   font-size: 4rem;
   z-index: 1000;
-  pointer-events: none; /* Asigură că poți da click pe carduri sub el */
+  pointer-events: none; /* Asigura ca poti da click pe carduri sub el */
   animation: flyAirplane 15s linear infinite;
   filter: drop-shadow(2px 10px 15px rgba(177, 156, 217, 0.5));
 }
