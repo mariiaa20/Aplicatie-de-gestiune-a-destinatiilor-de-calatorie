@@ -19,7 +19,7 @@ body {
 
 #root {
   width: 100%;
-  max-width: 900px;
+  max-width: 1050px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -28,7 +28,7 @@ body {
 .header-section {
   text-align: center;
   color: #ffffff;
-  margin-bottom: 30px;
+  margin-bottom: 24px;
 }
 
 .header-section h1 {
@@ -55,25 +55,6 @@ body {
   letter-spacing: 0.3px;
 }
 
-/* Card alb rotunjit din mockup */
-.card-container {
-  position: relative;
-  background: #ffffff;
-  border-radius: 24px;
-  padding: 30px 28px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
-  width: 100%;
-  max-width: 440px;
-}
-
-.card-title {
-  color: #933b66;
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 20px;
-}
-
-/* Avion aliniat perfect pe direcția zborului */
 .plane-badge {
   position: fixed;
   font-size: 2.8rem;
@@ -87,7 +68,6 @@ body {
   0% {
     left: -80px;
     top: calc(100vh + 40px);
-    /* Emoji-ul ✈️ este deja îndreptat spre dreapta-sus în mod nativ */
     transform: rotate(0deg);
   }
   100% {
@@ -97,14 +77,252 @@ body {
   }
 }
 
-/* Format JSON brut */
-.raw-json {
-  font-family: 'Consolas', 'Courier New', monospace;
+/* Layout vertical cu carduri SEPARATE */
+.main-content-layout {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  align-items: center;
+}
+
+/* Carduri distincte independente */
+.card-box {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 26px 28px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  width: 100%;
+}
+
+.card-box-primary {
+  max-width: 540px;
+}
+
+.card-box-secondary {
+  max-width: 1000px;
+}
+
+.card-title {
+  color: #933b66;
+  font-size: 1.45rem;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+
+/* Lista din primul card */
+.destinations-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.destination-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  background-color: #faf7fc;
+  border: 1px solid #ebdcf2;
+  border-radius: 16px;
+  transition: all 0.25s ease;
+}
+
+.destination-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(123, 82, 171, 0.1);
+}
+
+.destination-details h3 {
+  font-size: 1.05rem;
+  color: #333333;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.destination-category {
+  font-size: 0.8rem;
+  color: #8c7b99;
+  margin-bottom: 6px;
+}
+
+/* Text tăiat când destinația este vizitată */
+.destination-card.done {
+  background-color: #f3eff5;
+  border-color: #d8cde0;
+  opacity: 0.7;
+}
+
+.destination-card.done .destination-details h3 {
+  text-decoration: line-through;
+  color: #7b7382;
+}
+
+.toggle-btn {
+  border: 1px solid #ebdcf2;
+  background-color: #ffffff;
+  color: #7b52ab;
   font-size: 0.82rem;
-  line-height: 1.5;
-  color: #444;
-  white-space: pre-wrap;
-  word-break: break-word;
-  background: transparent;
-  border: none;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.toggle-btn:hover {
+  background-color: #f7effb;
+  transform: scale(1.04);
+}
+
+.destination-card.done .toggle-btn {
+  background-color: #e2fbe8;
+  color: #166534;
+  border-color: #bbf7d0;
+}
+
+/* Badge-uri categorii */
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-city-break {
+  background-color: #fce7f3;
+  color: #9d174d;
+}
+
+.badge-beach {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+
+.badge-mountain {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.empty-message {
+  text-align: center;
+  color: #8c7b99;
+  font-size: 0.95rem;
+  font-style: italic;
+  padding: 24px 0;
+}
+
+/* --- Al doilea card: My Travel List (3 tabele alăturate) --- */
+.my-travel-list-container {
+  width: 100%;
+}
+
+.side-by-side-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+@media (max-width: 820px) {
+  .side-by-side-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.category-column {
+  background: #faf7fc;
+  border: 1px solid #ebdcf2;
+  border-radius: 16px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.column-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #eee4f3;
+}
+
+.column-count {
+  font-size: 0.75rem;
+  color: #8c7b99;
+  font-weight: 600;
+}
+
+.single-category-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.single-category-table th {
+  padding: 6px 4px;
+  font-size: 0.74rem;
+  color: #7b52ab;
+  text-align: left;
+  border-bottom: 1px solid #ebdcf2;
+}
+
+.single-category-table td {
+  padding: 8px 4px;
+  font-size: 0.82rem;
+  border-bottom: 1px solid #f2e9f6;
+  vertical-align: middle;
+}
+
+.single-category-table tbody tr {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.single-category-table tbody tr:hover {
+  background-color: #f2eaf7;
+}
+
+/* Tăiere text în tabel când este bifat ca vizitat */
+.row-is-visited .dest-title-cell .dest-text {
+  text-decoration: line-through;
+  color: #8f8596;
+}
+
+.th-right {
+  text-align: right;
+}
+
+.dest-text {
+  font-weight: 600;
+  color: #333333;
+}
+
+.status-pill {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 8px;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.pill-planned {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
+.pill-visited {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.empty-category-cell {
+  text-align: center;
+  color: #ab9eb3;
+  font-style: italic;
+  font-size: 0.78rem;
+  padding: 12px 0;
 }

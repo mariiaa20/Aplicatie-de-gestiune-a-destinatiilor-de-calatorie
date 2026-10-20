@@ -1,4 +1,7 @@
-import './App.css'
+import { useState } from 'react';
+import './App.css';
+import DestinationList from './components/DestinationList.jsx';
+import DestinationsTable from './components/DestinationsTable.jsx';
 
 const initialDestinations = [
   {
@@ -25,12 +28,24 @@ const initialDestinations = [
 ];
 
 function App() {
+  const [destinations, setDestinations] = useState(initialDestinations);
+
   const appName = "Travel Destinations Manager";
-  const totalCount = initialDestinations.length;
-  const plannedCount = initialDestinations.filter(d => !d.visited).length;
+  const totalCount = destinations.length;
+  const plannedCount = destinations.filter((d) => !d.visited).length;
+
+  const handleToggleVisited = (id) => {
+    setDestinations((prev) =>
+      prev.map((dest) =>
+        dest.id === id ? { ...dest, visited: !dest.visited } : dest
+      )
+    );
+  };
 
   return (
     <>
+      <span className="plane-badge" role="img" aria-label="airplane">✈️</span>
+
       <header className="header-section">
         <h1>{appName}</h1>
         <p>Manage and organize your travel destinations.</p>
@@ -39,13 +54,24 @@ function App() {
         </div>
       </header>
 
-      <div className="card-container">
-        <h2 className="card-title">My Destinations</h2>
-        <span className="plane-badge" role="img" aria-label="airplane">✈️</span>
-        <pre className="raw-json">
-          {JSON.stringify(initialDestinations, null, 2)}
-        </pre>
-      </div>
+      <main className="main-content-layout">
+        {/* CARDUL 1: Lista principala cu actiuni */}
+        <section className="card-box card-box-primary">
+          <h2 className="card-title">My Destinations</h2>
+          <DestinationList
+            destinations={destinations}
+            onToggle={handleToggleVisited}
+          />
+        </section>
+
+        {/* CARDUL 2 COMPLET SEPARAT: My Travel List pe categorii */}
+        <section className="card-box card-box-secondary">
+          <DestinationsTable
+            destinations={destinations}
+            onToggle={handleToggleVisited}
+          />
+        </section>
+      </main>
     </>
   );
 }
