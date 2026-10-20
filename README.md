@@ -31,6 +31,7 @@ Details per stage:
 - [x] Stage 1: static mockup
 - [x] Stage 2: data logic in JavaScript
 - [x] Stage 3: Vite and React project
+- [x] Stage 4: components rendered from data
 
 ## Stage 2: data logic
 Plain JavaScript, no DOM. `destinations.js` holds the array and the functions that read and change it. Results are printed in the browser console (F12).
@@ -66,3 +67,20 @@ The app now lives in `frontend/`, built with Vite and React. The destination dat
 | S3-R5 | node_modules ignored, build passes | frontend/.gitignore | `npm run build` |
 | S3-R6 | README Stage 3 section + AI log | README.md, ai-log/etapa-03.md | read |
 | S3-R7 | commit "Stage 3" pushed | https://github.com/mariiaa20/Aplicatie-de-gestiune-a-destinatiilor-de-calatorie/commit/e92830a | commit history |
+
+## Stage 4: components rendered from data
+The raw JSON view was replaced with reusable React components rendering data:
+- `DestinationList` receives the destinations array and maps it to cards, handling the empty state message.
+- `DestinationCard` receives an individual destination object through props and formats title, category, type badge, and visit status.
+
+### Checklist
+
+| ID | Requirement | Where (permalink) | How to check |
+| :--- | :--- | :--- | :--- |
+| S4-R1 | 2+ components in src/components/ | frontend/src/components/ | open folder |
+| S4-R2 | card receives data through props | frontend/src/components/DestinationCard.jsx | read code |
+| S4-R3 | map + key={id}, no console warnings | frontend/src/components/DestinationList.jsx | F12, Console |
+| S4-R4 | message for empty list | frontend/src/components/DestinationList.jsx | pass `[]` as prop |
+| S4-R5 | state changes the card look | frontend/src/components/DestinationCard.jsx | toggle `visited` boolean |
+| S4-R6 | README Stage 4 section + AI log | README.md, ai-log/etapa-04.md | read |
+| S4-R7 | commit "Stage 4" pushed | [commit link] | commit history |
