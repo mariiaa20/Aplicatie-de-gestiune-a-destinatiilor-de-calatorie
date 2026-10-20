@@ -80,5 +80,5 @@ currentList = deleteDestination(currentList, 2);
 console.log("After deleting id 2, remaining titles:", listTitles(currentList).join(", "));
 
 console.log("--- Validation ---");
-addDestination(currentList, "   ", "beach"); // Should log empty name error
-addDestination(currentList, "London", "space"); 
+addDestination(currentList, "   ", "beach");
+addDestination(currentList, "London", "space");

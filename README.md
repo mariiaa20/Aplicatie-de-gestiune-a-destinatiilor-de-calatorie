@@ -30,7 +30,7 @@ Details per stage:
 ## Status
 - [x] Stage 1: static mockup
 - [x] Stage 2: data logic in JavaScript
-- [ ] Stage 3: Vite and React project
+- [x] Stage 3: Vite and React project
 
 ## Stage 2: data logic
 Plain JavaScript, no DOM. `destinations.js` holds the array and the functions that read and change it. Results are printed in the browser console (F12).
@@ -46,9 +46,23 @@ Plain JavaScript, no DOM. `destinations.js` holds the array and the functions th
 | S2-R7 | commit "Stage 2" pushed | link to the commit | commit history |
 
 ## Stage 3: Vite and React project
-The app now lives in `frontend/`, built with Vite and React. The destination data from stage 2 has been moved into the main component, and the list is temporarily rendered in raw JSON format.
+The app now lives in `frontend/`, built with Vite and React. The destination data from stage 2 has been moved into the main component (`App.jsx`), and the destination list is temporarily rendered in raw JSON format.
 
 ## How to run
 1. Navigate to the frontend directory:
    ```bash
    cd frontend
+   npm install
+   npm run dev
+
+### Checklist
+
+| ID | Requirement | Where (permalink) | How to check |
+| :--- | :--- | :--- | :--- |
+| S3-R1 | npm run dev starts without errors | frontend/package.json | `npm install`, `npm run dev` |
+| S3-R2 | app name and counter computed from data | frontend/src/App.jsx | edit data, save |
+| S3-R3 | data from README, not from the example | frontend/src/App.jsx | compare with README |
+| S3-R4 | stage 1 styles reused | frontend/src/App.css | look at the page |
+| S3-R5 | node_modules ignored, build passes | frontend/.gitignore | `npm run build` |
+| S3-R6 | README Stage 3 section + AI log | README.md, ai-log/etapa-03.md | read |
+| S3-R7 | commit "Stage 3" pushed | https://github.com/mariiaa20/Aplicatie-de-gestiune-a-destinatiilor-de-calatorie/commit/e92830a | commit history |

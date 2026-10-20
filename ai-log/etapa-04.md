@@ -24,4 +24,8 @@
 - Changed or rejected: Used `npm.cmd run dev` directly from the `frontend/` directory to run the development server without modifying system-wide execution policies.
 
 ## What I learned / what did not work
+<<<<<<< HEAD
 I learned how to structure and pass data via props between parent and child components (`App` -> `DestinationList` -> `DestinationCard`). I understood why React requires a unique `key` prop when rendering arrays with `.map()`, and how to implement conditional rendering for empty data states. I also learned how to troubleshoot Windows PowerShell script execution security policies when running npm tools.
+=======
+I learned how to structure and pass data via props between parent and child components (`App` -> `DestinationList` -> `DestinationCard`). I understood why React requires a unique `key` prop when rendering arrays with `.map()`, and how to implement conditional rendering for empty data states. I also learned how to troubleshoot Windows PowerShell script execution security policies when running npm tools.
+>>>>>>> 7cc760b1aaa038f36f6057335f2b348f3d8bc061

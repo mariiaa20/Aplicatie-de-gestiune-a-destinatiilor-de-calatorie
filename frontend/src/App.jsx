@@ -1,28 +1,53 @@
-const destinations = [
-  { id: 1, title: "Paris", visited: false, type: "city-break", category: "Vacation" },
-  { id: 2, title: "Maldives", visited: true, type: "beach", category: "Vacation" },
-  { id: 3, title: "Swiss Alps", visited: false, type: "mountain", category: "Vacation" }
+import './App.css'
+
+const initialDestinations = [
+  {
+    id: 1,
+    title: "Tokyo, Japan",
+    visited: false,
+    type: "city-break",
+    category: "Vacation"
+  },
+  {
+    id: 2,
+    title: "Santorini, Greece",
+    visited: true,
+    type: "beach",
+    category: "Vacation"
+  },
+  {
+    id: 3,
+    title: "Banff National Park",
+    visited: false,
+    type: "mountain",
+    category: "Vacation"
+  }
 ];
 
-export default function App() {
-  const plannedCount = destinations.filter((d) => !d.visited).length;
+function App() {
+  const appName = "Travel Destinations Manager";
+  const totalCount = initialDestinations.length;
+  const plannedCount = initialDestinations.filter(d => !d.visited).length;
 
   return (
     <>
-      <header className="app-header">
-        <h1>Travel Destinations Manager</h1>
-        <p>Organize, track, and plan your travel destinations.</p>
-        <p className="app-count">
-          {destinations.length} destinations, {plannedCount} planned
-        </p>
+      <header className="header-section">
+        <h1>{appName}</h1>
+        <p>Manage and organize your travel destinations.</p>
+        <div className="badge-counter">
+          {totalCount} destinations, {plannedCount} planned
+        </div>
       </header>
 
-      <main className="container">
-        <section className="panel">
-          <h2>My Destinations</h2>
-          <pre>{JSON.stringify(destinations, null, 2)}</pre>
-        </section>
-      </main>
+      <div className="card-container">
+        <h2 className="card-title">My Destinations</h2>
+        <span className="plane-badge" role="img" aria-label="airplane">✈️</span>
+        <pre className="raw-json">
+          {JSON.stringify(initialDestinations, null, 2)}
+        </pre>
+      </div>
     </>
   );
 }
+
+export default App;

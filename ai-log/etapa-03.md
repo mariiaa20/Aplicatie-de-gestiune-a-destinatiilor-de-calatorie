@@ -24,4 +24,8 @@
 - Changed or rejected: Accepted the localized structure directly as it aligned with the travel destinations theme and the naming conventions established in Stage 2.
 
 ## What I learned / what did not work
+<<<<<<< HEAD
 I learned how to set up and scaffold a React project using Vite alongside strict ESLint configurations. I also learned how to troubleshoot command line path issues when working within cloud-synced folders (OneDrive) and how the Node.js runtime links to system variables. On the frontend side, I understood how React components consume external-like static data arrays and dynamically compute derived states (such as active/planned counters) before rendering raw data blocks.
+=======
+I learned how to set up and scaffold a React project using Vite alongside strict ESLint configurations. I also learned how to troubleshoot command line path issues when working within cloud-synced folders (OneDrive) and how the Node.js runtime links to system variables. On the frontend side, I understood how React components consume external-like static data arrays and dynamically compute derived states (such as active/planned counters) before rendering raw data blocks.
+>>>>>>> 7cc760b1aaa038f36f6057335f2b348f3d8bc061
