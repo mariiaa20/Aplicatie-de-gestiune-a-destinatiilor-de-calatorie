@@ -1,26 +1,38 @@
+import StarRating from "./StarRating.jsx";
+
 const TYPE_LABELS = {
   "city-break": "City Break",
   beach: "Beach",
   mountain: "Mountain"
 };
 
-export default function DestinationCard({ destination, onToggle }) {
+export default function DestinationCard({ destination, onToggle, onRate }) {
+  const { id, title, category, type, visited, rating = 0 } = destination;
+
   return (
-    <li className={destination.visited ? "destination-card done" : "destination-card"}>
+    <li className={visited ? "destination-card done" : "destination-card"}>
       <div className="destination-details">
-        <h3>{destination.title}</h3>
-        <p className="destination-category">{destination.category}</p>
-        <span className={`badge badge-${destination.type}`}>
-          {TYPE_LABELS[destination.type] || destination.type}
-        </span>
+        <h3>{title}</h3>
+        <p className="destination-category">{category}</p>
+
+        <div className="card-meta">
+          <span className={`badge badge-${type}`}>
+            {TYPE_LABELS[type] || type}
+          </span>
+        </div>
+
+        {visited && onRate && (
+          <StarRating value={rating} onChange={(value) => onRate(id, value)} />
+        )}
       </div>
-      <button 
+
+      <button
         type="button"
         className="toggle-btn"
-        onClick={() => onToggle(destination.id)}
-        title="Schimbă starea"
+        onClick={() => onToggle(id)}
+        title={visited ? "Move back to planned" : "Mark as visited"}
       >
-        {destination.visited ? "✓ Visited" : "○ Planned"}
+        {visited ? "✓ Visited" : "○ Planned"}
       </button>
     </li>
   );
