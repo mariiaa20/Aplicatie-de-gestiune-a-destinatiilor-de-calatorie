@@ -1,8 +1,10 @@
 import DestinationCard from "./DestinationCard.jsx";
 
+// Receives the list and the functions and passes them to each card, without changing anything.
 export default function DestinationList({
   destinations,
   onToggle,
+  onDelete,
   onRate,
   emptyMessage = "No destinations found."
 }) {
@@ -17,6 +19,7 @@ export default function DestinationList({
           key={destination.id}
           destination={destination}
           onToggle={onToggle}
+          onDelete={onDelete}
           onRate={onRate}
         />
       ))}

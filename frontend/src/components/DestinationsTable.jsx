@@ -1,6 +1,7 @@
 import { Fragment, useRef, useState } from "react";
 import DestinationAvatar from "./DestinationAvatar.jsx";
 import DestinationPhoto from "./DestinationPhoto.jsx";
+import DeleteButton from "./DeleteButton.jsx";
 import { useWikiPhoto } from "../hooks/useWikiPhoto.js";
 import {
   BUDGET_OPTIONS,
@@ -37,7 +38,13 @@ const getMeta = (item) =>
     .filter(Boolean)
     .join(" · ");
 
-export default function DestinationsTable({ destinations, onToggle, onAdd, onUpdate }) {
+export default function DestinationsTable({
+  destinations,
+  onToggle,
+  onDelete,
+  onAdd,
+  onUpdate
+}) {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [type, setType] = useState(CATEGORIES[0].key);
@@ -395,6 +402,15 @@ export default function DestinationsTable({ destinations, onToggle, onAdd, onUpd
                           >
                             <td className="dest-title-cell">
                               <div className="title-cell-inner">
+                                {/* controlled checkbox: shows what the data says, changes it on click */}
+                                <input
+                                  type="checkbox"
+                                  className="row-check"
+                                  checked={item.visited}
+                                  onChange={() => onToggle(item.id)}
+                                  onClick={(e) => e.stopPropagation()}
+                                  aria-label={`Mark ${item.title} as visited`}
+                                />
                                 <DestinationAvatar title={item.title} photo={item.photo} />
                                 <div className="title-cell-text">
                                   <span className="dest-text">{item.title}</span>
@@ -413,9 +429,18 @@ export default function DestinationsTable({ destinations, onToggle, onAdd, onUpd
                               </div>
                             </td>
                             <td className="th-right">
-                              <span className={`status-pill ${item.visited ? "pill-visited" : "pill-planned"}`}>
-                                {item.visited ? "✓ Visited" : "○ Planned"}
-                              </span>
+                              <div className="status-cell">
+                                <span className={`status-pill ${item.visited ? "pill-visited" : "pill-planned"}`}>
+                                  {item.visited ? "✓ Visited" : "○ Planned"}
+                                </span>
+                                {onDelete && (
+                                  <DeleteButton
+                                    label={item.title}
+                                    small
+                                    onDelete={() => onDelete(item.id)}
+                                  />
+                                )}
+                              </div>
                             </td>
                           </tr>
 

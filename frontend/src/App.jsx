@@ -43,20 +43,35 @@ const initialDestinations = [
   }
 ];
 
+// Starting theme: the one set in the operating system.
+// Passed to useState without parentheses, so React calls it only on the first render.
+function getInitialTheme() {
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
 function App() {
   const [destinations, setDestinations] = useState(initialDestinations);
+  const [theme, setTheme] = useState(getInitialTheme);
 
   const appName = "Travel Destinations Manager";
+
+  // Derived values: recalculated on every render, never kept in state
   const totalCount = destinations.length;
   const plannedCount = destinations.filter((d) => !d.visited).length;
   const visitedDestinations = destinations.filter((d) => d.visited);
 
+  // Immutable update: new list, new object only for the changed item
   const handleToggleVisited = (id) => {
     setDestinations((prev) =>
       prev.map((dest) =>
         dest.id === id ? { ...dest, visited: !dest.visited } : dest
       )
     );
+  };
+
+  // Immutable delete: filter builds a new list without that item
+  const handleDeleteDestination = (id) => {
+    setDestinations((prev) => prev.filter((dest) => dest.id !== id));
   };
 
   // Changes some fields of one destination (period, budget, rating...)
@@ -77,9 +92,27 @@ function App() {
     });
   };
 
+  // Theme switch: state keeps the button label, the data-theme attribute drives the CSS
+  const handleToggleTheme = () => {
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    document.documentElement.dataset.theme = next;
+  };
+
   return (
     <>
       <span className="plane-badge" role="img" aria-label="airplane">✈️</span>
+
+      {/* outside <header>: its backdrop-filter would anchor a fixed button to the
+          header instead of to the page */}
+      <button
+        type="button"
+        className="theme-toggle"
+        onClick={handleToggleTheme}
+        aria-pressed={theme === "dark"}
+      >
+        {theme === "dark" ? "☀️ Light mode" : "🌙 Dark mode"}
+      </button>
 
       <header className="header-section">
         <h1>{appName}</h1>
@@ -96,8 +129,9 @@ function App() {
           <DestinationList
             destinations={visitedDestinations}
             onToggle={handleToggleVisited}
+            onDelete={handleDeleteDestination}
             onRate={handleRateDestination}
-            emptyMessage="No visited places yet. Click a destination in My Travel List to mark it as visited."
+            emptyMessage="No visited places yet. Tick a destination in My Travel List to mark it as visited."
           />
         </section>
 
@@ -106,6 +140,7 @@ function App() {
           <DestinationsTable
             destinations={destinations}
             onToggle={handleToggleVisited}
+            onDelete={handleDeleteDestination}
             onAdd={handleAddDestination}
             onUpdate={handleUpdateDestination}
           />

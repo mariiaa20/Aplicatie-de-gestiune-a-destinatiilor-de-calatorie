@@ -3,9 +3,12 @@
 /* =========================================================
    Travel Destinations Manager — elegant "Sky" theme
    Soft blues, drifting clouds, animated card borders
+   Stage 5: every colour comes from a variable, so the whole
+   page can switch between light and dark mode.
    ========================================================= */
 
 :root {
+  /* brand palette, the same in both themes */
   --sky-50: #f2f8fd;
   --sky-100: #e3f0fa;
   --sky-200: #c9e1f4;
@@ -15,10 +18,190 @@
   --sky-600: #2877b8;
   --sky-700: #1f5e96;
   --sky-800: #14436e;
-  --ink: #0f2a44;
-  --ink-soft: #5b7791;
   --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
   --font-body: 'Manrope', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  /* text */
+  --ink: #0f2a44;
+  --ink-soft: #5b7791;
+  --heading: #14436e;
+  --accent-text: #1f5e96;
+  --text-faint: #8fb0c6;
+  --title-gradient: linear-gradient(90deg, #14436e, #3d8fd1, #14436e);
+
+  /* page background */
+  --page-base: #c9e1f4;
+  --page-gradient: linear-gradient(160deg, #8dbfe8, #b5d6f0, #dcecf9, #a9d0ee, #8dbfe8);
+  --page-glow: radial-gradient(circle at 85% 0%, rgba(255, 255, 255, 0.85) 0, rgba(255, 255, 255, 0) 32%);
+  --cloud-opacity: 1;
+
+  /* surfaces */
+  --surface: #ffffff;
+  --surface-soft: #f2f8fd;
+  --surface-glass: rgba(255, 255, 255, 0.84);
+  --glass-top: rgba(255, 255, 255, 0.75);
+  --glass-bottom: rgba(255, 255, 255, 0.4);
+  --input-bg: #ffffff;
+  --pill-surface: #f4f9fd;
+  --border-faint: #e3f0fa;
+  --border-soft: #c9e1f4;
+  --border-strong: #a3cdec;
+  --row-hover: rgba(111, 176, 224, 0.14);
+
+  /* chips and pills */
+  --chip-bg: #e3f0fa;
+  --chip-fg: #1f5e96;
+
+  /* type badges */
+  --badge-city-bg: #e6e9fb;
+  --badge-city-fg: #3b45a8;
+  --badge-beach-bg: #d4f1f6;
+  --badge-beach-fg: #0e6a80;
+  --badge-mountain-bg: #dce8f6;
+  --badge-mountain-fg: #1d4a85;
+
+  /* visited state */
+  --visited-surface: #eaf6f5;
+  --visited-border: #b3dfda;
+  --visited-accent-top: #7fd8cd;
+  --visited-accent-bottom: #0f6b64;
+  --visited-fg: #0f6b64;
+  --visited-pill-bg: #dff1ef;
+  --visited-muted: #7d9bb0;
+
+  /* feedback */
+  --danger: #c0335c;
+  --danger-soft: rgba(192, 51, 92, 0.1);
+  --danger-glow: rgba(192, 51, 92, 0.35);
+  --star-empty: #c3d6e6;
+
+  /* shadows */
+  --shadow-header: 0 18px 44px rgba(20, 67, 110, 0.18);
+  --shadow-card: 0 16px 40px rgba(20, 67, 110, 0.16);
+  --shadow-card-hover: 0 24px 50px rgba(20, 67, 110, 0.22);
+  --shadow-item: 0 10px 22px rgba(40, 119, 184, 0.16);
+  --shadow-btn: 0 8px 18px rgba(40, 119, 184, 0.28);
+  --shadow-btn-hover: 0 12px 24px rgba(40, 119, 184, 0.38);
+  --inset-line: inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+/* Stage 5: night sky, used when the system asks for it and the user has not
+   explicitly chosen the light theme from the header button */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ink: #e6eefa;
+    --ink-soft: #9fb4cb;
+    --heading: #cfe4f8;
+    --accent-text: #8cc3ee;
+    --text-faint: #7d93ac;
+    --title-gradient: linear-gradient(90deg, #8dd8ee, #a9c8ff, #8dd8ee);
+
+    --page-base: #0b1322;
+    --page-gradient: linear-gradient(160deg, #0a1120, #111d33, #16263f, #0e182a, #0a1120);
+    --page-glow: radial-gradient(circle at 85% 0%, rgba(141, 216, 238, 0.18) 0, rgba(141, 216, 238, 0) 34%);
+    --cloud-opacity: 0.18;
+
+    --surface: #16213a;
+    --surface-soft: #121b30;
+    --surface-glass: rgba(22, 33, 58, 0.84);
+    --glass-top: rgba(30, 44, 74, 0.78);
+    --glass-bottom: rgba(18, 27, 48, 0.55);
+    --input-bg: #1b2744;
+    --pill-surface: #16213a;
+    --border-faint: #1f2b47;
+    --border-soft: #27375a;
+    --border-strong: #35486f;
+    --row-hover: rgba(141, 216, 238, 0.12);
+
+    --chip-bg: #1e2c4b;
+    --chip-fg: #a9cff0;
+
+    --badge-city-bg: #272b55;
+    --badge-city-fg: #c3c8ff;
+    --badge-beach-bg: #103a46;
+    --badge-beach-fg: #9fe3f2;
+    --badge-mountain-bg: #1b3356;
+    --badge-mountain-fg: #b3d2f7;
+
+    --visited-surface: #12302e;
+    --visited-border: #1f5a54;
+    --visited-accent-top: #4fd1c0;
+    --visited-accent-bottom: #0f6b64;
+    --visited-fg: #7fe0d2;
+    --visited-pill-bg: #143a36;
+    --visited-muted: #6c8aa3;
+
+    --danger: #ff7a95;
+    --danger-soft: rgba(255, 122, 149, 0.14);
+    --danger-glow: rgba(255, 122, 149, 0.3);
+    --star-empty: #3a4c66;
+
+    --shadow-header: 0 18px 44px rgba(0, 0, 0, 0.5);
+    --shadow-card: 0 16px 40px rgba(0, 0, 0, 0.45);
+    --shadow-card-hover: 0 24px 50px rgba(0, 0, 0, 0.55);
+    --shadow-item: 0 10px 22px rgba(0, 0, 0, 0.4);
+    --shadow-btn: 0 8px 18px rgba(0, 0, 0, 0.45);
+    --shadow-btn-hover: 0 12px 24px rgba(0, 0, 0, 0.55);
+    --inset-line: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+}
+
+/* Stage 5: the theme chosen from the button wins over the system one */
+:root[data-theme="dark"] {
+  --ink: #e6eefa;
+  --ink-soft: #9fb4cb;
+  --heading: #cfe4f8;
+  --accent-text: #8cc3ee;
+  --text-faint: #7d93ac;
+  --title-gradient: linear-gradient(90deg, #8dd8ee, #a9c8ff, #8dd8ee);
+
+  --page-base: #0b1322;
+  --page-gradient: linear-gradient(160deg, #0a1120, #111d33, #16263f, #0e182a, #0a1120);
+  --page-glow: radial-gradient(circle at 85% 0%, rgba(141, 216, 238, 0.18) 0, rgba(141, 216, 238, 0) 34%);
+  --cloud-opacity: 0.18;
+
+  --surface: #16213a;
+  --surface-soft: #121b30;
+  --surface-glass: rgba(22, 33, 58, 0.84);
+  --glass-top: rgba(30, 44, 74, 0.78);
+  --glass-bottom: rgba(18, 27, 48, 0.55);
+  --input-bg: #1b2744;
+  --pill-surface: #16213a;
+  --border-faint: #1f2b47;
+  --border-soft: #27375a;
+  --border-strong: #35486f;
+  --row-hover: rgba(141, 216, 238, 0.12);
+
+  --chip-bg: #1e2c4b;
+  --chip-fg: #a9cff0;
+
+  --badge-city-bg: #272b55;
+  --badge-city-fg: #c3c8ff;
+  --badge-beach-bg: #103a46;
+  --badge-beach-fg: #9fe3f2;
+  --badge-mountain-bg: #1b3356;
+  --badge-mountain-fg: #b3d2f7;
+
+  --visited-surface: #12302e;
+  --visited-border: #1f5a54;
+  --visited-accent-top: #4fd1c0;
+  --visited-accent-bottom: #0f6b64;
+  --visited-fg: #7fe0d2;
+  --visited-pill-bg: #143a36;
+  --visited-muted: #6c8aa3;
+
+  --danger: #ff7a95;
+  --danger-soft: rgba(255, 122, 149, 0.14);
+  --danger-glow: rgba(255, 122, 149, 0.3);
+  --star-empty: #3a4c66;
+
+  --shadow-header: 0 18px 44px rgba(0, 0, 0, 0.5);
+  --shadow-card: 0 16px 40px rgba(0, 0, 0, 0.45);
+  --shadow-card-hover: 0 24px 50px rgba(0, 0, 0, 0.55);
+  --shadow-item: 0 10px 22px rgba(0, 0, 0, 0.4);
+  --shadow-btn: 0 8px 18px rgba(0, 0, 0, 0.45);
+  --shadow-btn-hover: 0 12px 24px rgba(0, 0, 0, 0.55);
+  --inset-line: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 * {
@@ -28,7 +211,7 @@
 }
 
 html {
-  background: var(--sky-200);
+  background: var(--page-base);
   min-height: 100%;
 }
 
@@ -40,9 +223,7 @@ html {
 /* ---------- Sky background ---------- */
 body {
   min-height: 100vh;
-  background:
-    radial-gradient(circle at 85% 0%, rgba(255, 255, 255, 0.85) 0, rgba(255, 255, 255, 0) 32%),
-    linear-gradient(160deg, #8dbfe8, #b5d6f0, #dcecf9, #a9d0ee, #8dbfe8);
+  background: var(--page-glow), var(--page-gradient);
   background-size: 100% 100%, 300% 300%;
   animation: skyShift 30s ease-in-out infinite alternate;
   font-family: var(--font-body);
@@ -69,6 +250,7 @@ body::before {
   height: 100%;
   z-index: 0;
   pointer-events: none;
+  opacity: var(--cloud-opacity);
   background-image:
     radial-gradient(ellipse 150px 42px at 9% 15%, rgba(255, 255, 255, 0.7), transparent 72%),
     radial-gradient(ellipse 110px 36px at 13% 12%, rgba(255, 255, 255, 0.6), transparent 72%),
@@ -101,6 +283,7 @@ body::after {
   height: 100%;
   z-index: 0;
   pointer-events: none;
+  opacity: var(--cloud-opacity);
   background-image:
     radial-gradient(ellipse 260px 66px at 20% 30%, rgba(255, 255, 255, 0.35), transparent 72%),
     radial-gradient(ellipse 190px 52px at 26% 27%, rgba(255, 255, 255, 0.3), transparent 72%),
@@ -197,12 +380,10 @@ body::after {
   margin-bottom: 32px;
   padding: 30px 56px 26px;
   border-radius: 30px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.4));
+  background: linear-gradient(135deg, var(--glass-top), var(--glass-bottom));
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  box-shadow:
-    0 18px 44px rgba(20, 67, 110, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  box-shadow: var(--shadow-header), var(--inset-line);
   animation: fadeDown 0.9s cubic-bezier(0.2, 0.8, 0.25, 1) backwards;
 }
 
@@ -242,7 +423,7 @@ body::after {
   letter-spacing: 0.5px;
   line-height: 1.1;
   margin-bottom: 8px;
-  background: linear-gradient(90deg, #14436e, #3d8fd1, #14436e);
+  background: var(--title-gradient);
   background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
@@ -289,9 +470,9 @@ body::after {
   font-size: 0.84rem;
   font-weight: 700;
   letter-spacing: 0.3px;
-  color: var(--sky-800);
+  color: var(--heading);
   background:
-    linear-gradient(#f4f9fd, #f4f9fd) padding-box,
+    linear-gradient(var(--pill-surface), var(--pill-surface)) padding-box,
     linear-gradient(90deg, #8dd8ee, #3d8fd1, #8f9bff, #8dd8ee) border-box;
   background-size: 100% 100%, 200% 100%;
   animation: borderFlow 5s linear infinite;
@@ -300,6 +481,51 @@ body::after {
 @keyframes borderFlow {
   from { background-position: 0 0, 0% 0; }
   to   { background-position: 0 0, 200% 0; }
+}
+
+/* Stage 5: light / dark switch, floating in the top right corner of the page */
+.theme-toggle {
+  position: fixed;
+  top: 18px;
+  right: 20px;
+  z-index: 1000;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--surface-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-item);
+  color: var(--accent-text);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease,
+    color 0.25s ease;
+}
+
+.theme-toggle:hover {
+  transform: translateY(-2px);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+
+.theme-toggle:active {
+  transform: scale(0.96);
+}
+
+@media (max-width: 560px) {
+  .theme-toggle {
+    top: 10px;
+    right: 10px;
+    padding: 7px 12px;
+    font-size: 0.72rem;
+  }
 }
 
 /* ---------- Layout: list on the left, travel list on the right ---------- */
@@ -323,12 +549,10 @@ body::after {
   width: 100%;
   padding: 28px 28px 30px;
   border-radius: 28px;
-  background: rgba(255, 255, 255, 0.84);
+  background: var(--surface-glass);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow:
-    0 16px 40px rgba(20, 67, 110, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  box-shadow: var(--shadow-card), var(--inset-line);
   transition: transform 0.35s ease, box-shadow 0.35s ease;
   animation: riseIn 0.8s cubic-bezier(0.2, 0.8, 0.25, 1) backwards;
 }
@@ -342,9 +566,7 @@ body::after {
 
 .card-box:hover {
   transform: translateY(-3px);
-  box-shadow:
-    0 24px 50px rgba(20, 67, 110, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  box-shadow: var(--shadow-card-hover), var(--inset-line);
 }
 
 .card-box-primary {
@@ -358,7 +580,7 @@ body::after {
 .card-title {
   position: relative;
   font-family: var(--font-display);
-  color: var(--sky-800);
+  color: var(--heading);
   font-size: 1.9rem;
   font-weight: 700;
   line-height: 1.1;
@@ -394,12 +616,11 @@ body::after {
 .destination-card {
   position: relative;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  gap: 10px;
   padding: 15px 16px 15px 22px;
-  background: linear-gradient(135deg, #ffffff, var(--sky-50));
-  border: 1px solid var(--sky-200);
+  background: linear-gradient(135deg, var(--surface), var(--surface-soft));
+  border: 1px solid var(--border-soft);
   border-radius: 18px;
   transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, opacity 0.3s ease;
   animation: riseIn 0.7s cubic-bezier(0.2, 0.8, 0.25, 1) backwards;
@@ -426,11 +647,28 @@ body::after {
 
 .destination-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 22px rgba(40, 119, 184, 0.16);
+  box-shadow: var(--shadow-item);
 }
 
 .destination-card:hover::before {
   transform: scaleY(1);
+}
+
+/* Stage 5: checkbox + text on the left, delete button on the right */
+.card-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.card-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
 }
 
 .destination-details h3 {
@@ -453,57 +691,99 @@ body::after {
 
 /* visited places: teal accent bar always visible, no dimming */
 .destination-card.done {
-  background: linear-gradient(135deg, #ffffff, #eaf6f5);
-  border-color: #b3dfda;
+  background: linear-gradient(135deg, var(--surface), var(--visited-surface));
+  border-color: var(--visited-border);
 }
 
 .destination-card.done::before {
-  background: linear-gradient(180deg, #7fd8cd, #0f6b64);
+  background: linear-gradient(180deg, var(--visited-accent-top), var(--visited-accent-bottom));
   transform: scaleY(1);
 }
 
-.toggle-btn {
+/* ---------- Stage 5: controlled checkbox and delete button ---------- */
+.card-check,
+.row-check {
   flex-shrink: 0;
-  border: 1px solid var(--sky-300);
-  background: #ffffff;
-  color: var(--sky-700);
-  font-family: var(--font-body);
-  font-size: 0.8rem;
-  font-weight: 700;
-  padding: 8px 14px;
-  border-radius: 999px;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--sky-500);
   cursor: pointer;
-  transition: all 0.25s ease;
 }
 
-.toggle-btn:hover {
-  background: linear-gradient(135deg, var(--sky-500), var(--sky-700));
-  border-color: transparent;
+/* round icon button; the bin lid tilts open on hover */
+.btn-delete {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  background: var(--danger-soft);
+  color: var(--danger);
+  cursor: pointer;
+  opacity: 0.75;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.25, 1), background 0.25s ease,
+    color 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+}
+
+.btn-delete svg {
+  width: 18px;
+  height: 18px;
+  overflow: visible;
+}
+
+.btn-delete .bin-lid {
+  transform-box: fill-box;
+  transform-origin: 85% 50%;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.25, 1);
+}
+
+/* the button steps forward once the card or the row is under the pointer */
+.destination-card:hover .btn-delete,
+.single-category-table tbody tr:hover .btn-delete {
+  opacity: 1;
+}
+
+.btn-delete:hover {
+  opacity: 1;
+  background: var(--danger);
   color: #ffffff;
-  box-shadow: 0 8px 18px rgba(40, 119, 184, 0.3);
-  transform: translateY(-1px);
+  transform: translateY(-2px) scale(1.06);
+  box-shadow: 0 8px 18px var(--danger-glow);
 }
 
-.toggle-btn:active {
-  transform: scale(0.96);
+.btn-delete:hover .bin-lid {
+  transform: rotate(-22deg) translate(-1px, -1px);
 }
 
-.toggle-btn:focus-visible,
-.btn:focus-visible {
-  outline: 3px solid rgba(61, 143, 209, 0.45);
+.btn-delete:active {
+  transform: scale(0.9);
+}
+
+.btn-delete:focus-visible {
+  outline: 3px solid var(--danger-glow);
   outline-offset: 2px;
 }
 
-.destination-card.done .toggle-btn {
-  background: #dff1ef;
-  color: #0f6b64;
-  border-color: #b3dfda;
+/* smaller version, used inside the table rows */
+.btn-delete-small {
+  width: 28px;
+  height: 28px;
 }
 
-.destination-card.done .toggle-btn:hover {
-  background: linear-gradient(135deg, #3aa59b, #0f6b64);
-  color: #ffffff;
-  border-color: transparent;
+.btn-delete-small svg {
+  width: 15px;
+  height: 15px;
+}
+
+.card-check:focus-visible,
+.row-check:focus-visible,
+.theme-toggle:focus-visible,
+.btn:focus-visible {
+  outline: 3px solid rgba(61, 143, 209, 0.45);
+  outline-offset: 2px;
 }
 
 /* ---------- Category badges ---------- */
@@ -516,18 +796,18 @@ body::after {
 }
 
 .badge-city-break {
-  background-color: #e6e9fb;
-  color: #3b45a8;
+  background-color: var(--badge-city-bg);
+  color: var(--badge-city-fg);
 }
 
 .badge-beach {
-  background-color: #d4f1f6;
-  color: #0e6a80;
+  background-color: var(--badge-beach-bg);
+  color: var(--badge-beach-fg);
 }
 
 .badge-mountain {
-  background-color: #dce8f6;
-  color: #1d4a85;
+  background-color: var(--badge-mountain-bg);
+  color: var(--badge-mountain-fg);
 }
 
 .empty-message {
@@ -571,12 +851,12 @@ body::after {
   border: none;
   color: #ffffff;
   background: linear-gradient(135deg, var(--sky-500), var(--sky-700));
-  box-shadow: 0 8px 18px rgba(40, 119, 184, 0.28);
+  box-shadow: var(--shadow-btn);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 24px rgba(40, 119, 184, 0.38);
+  box-shadow: var(--shadow-btn-hover);
   filter: brightness(1.05);
 }
 
@@ -586,12 +866,12 @@ body::after {
 
 .btn-ghost {
   background: transparent;
-  color: var(--sky-700);
-  border: 1px solid var(--sky-300);
+  color: var(--accent-text);
+  border: 1px solid var(--border-strong);
 }
 
 .btn-ghost:hover {
-  background: var(--sky-100);
+  background: var(--chip-bg);
 }
 
 /* Add destination form */
@@ -601,8 +881,8 @@ body::after {
   gap: 14px;
   padding: 18px;
   margin-bottom: 20px;
-  background: linear-gradient(135deg, #ffffff, var(--sky-50));
-  border: 1px solid var(--sky-200);
+  background: linear-gradient(135deg, var(--surface), var(--surface-soft));
+  border: 1px solid var(--border-soft);
   border-radius: 20px;
   animation: formOpen 0.4s cubic-bezier(0.2, 0.8, 0.25, 1);
 }
@@ -627,7 +907,7 @@ body::after {
 .field label {
   font-size: 0.76rem;
   font-weight: 700;
-  color: var(--sky-700);
+  color: var(--accent-text);
 }
 
 .field input,
@@ -637,8 +917,8 @@ body::after {
   font-family: var(--font-body);
   font-size: 0.9rem;
   color: var(--ink);
-  background: #ffffff;
-  border: 1px solid var(--sky-300);
+  background: var(--input-bg);
+  border: 1px solid var(--border-strong);
   border-radius: 12px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -654,7 +934,7 @@ body::after {
   grid-column: 1 / -1;
   font-size: 0.82rem;
   font-weight: 600;
-  color: #b4234a;
+  color: var(--danger);
 }
 
 .form-actions {
@@ -679,8 +959,8 @@ body::after {
 }
 
 .category-column {
-  background: linear-gradient(180deg, #ffffff, var(--sky-50));
-  border: 1px solid var(--sky-200);
+  background: linear-gradient(180deg, var(--surface), var(--surface-soft));
+  border: 1px solid var(--border-soft);
   border-radius: 20px;
   padding: 14px;
   display: flex;
@@ -696,7 +976,7 @@ body::after {
 
 .category-column:hover {
   transform: translateY(-3px);
-  box-shadow: 0 12px 26px rgba(40, 119, 184, 0.16);
+  box-shadow: var(--shadow-item);
 }
 
 .column-header {
@@ -705,12 +985,12 @@ body::after {
   align-items: center;
   gap: 8px;
   padding-bottom: 8px;
-  border-bottom: 1px solid var(--sky-200);
+  border-bottom: 1px solid var(--border-soft);
 }
 
 .column-count {
   font-size: 0.74rem;
-  color: var(--sky-600);
+  color: var(--accent-text);
   font-weight: 700;
   white-space: nowrap;
 }
@@ -724,15 +1004,15 @@ body::after {
   padding: 6px;
   font-size: 0.72rem;
   font-weight: 700;
-  color: var(--sky-600);
+  color: var(--accent-text);
   text-align: left;
-  border-bottom: 1px solid var(--sky-200);
+  border-bottom: 1px solid var(--border-soft);
 }
 
 .single-category-table td {
   padding: 9px 6px;
   font-size: 0.82rem;
-  border-bottom: 1px solid var(--sky-100);
+  border-bottom: 1px solid var(--border-faint);
   vertical-align: middle;
   transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -742,7 +1022,7 @@ body::after {
 }
 
 .single-category-table tbody tr:hover td {
-  background-color: rgba(111, 176, 224, 0.14);
+  background-color: var(--row-hover);
 }
 
 .single-category-table tbody tr:hover td:first-child {
@@ -753,6 +1033,7 @@ body::after {
   display: inline-block;
   font-weight: 600;
   color: var(--ink);
+  overflow-wrap: anywhere;
   transition: transform 0.25s ease;
 }
 
@@ -763,11 +1044,23 @@ body::after {
 .row-is-visited .dest-title-cell .dest-text {
   text-decoration: line-through;
   text-decoration-color: var(--sky-500);
-  color: #7d9bb0;
+  color: var(--visited-muted);
 }
 
+/* width: 1% shrinks the status column to its content, so the row never
+   pushes past the edge of the category card */
 .th-right {
   text-align: right;
+  width: 1%;
+  white-space: nowrap;
+}
+
+/* status pill above the delete button, so the cell stays narrow */
+.status-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
 }
 
 .status-pill {
@@ -780,18 +1073,18 @@ body::after {
 }
 
 .pill-planned {
-  background-color: var(--sky-100);
-  color: var(--sky-700);
+  background-color: var(--chip-bg);
+  color: var(--chip-fg);
 }
 
 .pill-visited {
-  background-color: #dff1ef;
-  color: #0f6b64;
+  background-color: var(--visited-pill-bg);
+  color: var(--visited-fg);
 }
 
 .empty-category-cell {
   text-align: center;
-  color: #8fb0c6;
+  color: var(--text-faint);
   font-style: italic;
   font-size: 0.78rem;
   padding: 14px 0;
@@ -855,8 +1148,8 @@ body::after {
   border-radius: 999px;
   font-size: 0.72rem;
   font-weight: 700;
-  background: var(--sky-100);
-  color: var(--sky-700);
+  background: var(--chip-bg);
+  color: var(--chip-fg);
   white-space: nowrap;
 }
 
@@ -876,6 +1169,12 @@ body::after {
   margin-top: 12px;
 }
 
+/* inside a card the stars sit under the title, lined up with it */
+.destination-card .star-rating {
+  margin-top: 0;
+  margin-left: 30px;
+}
+
 .star-rating-label {
   margin-right: 8px;
   font-size: 0.72rem;
@@ -889,7 +1188,7 @@ body::after {
   background: none;
   font-size: 1.4rem;
   line-height: 1;
-  color: #c3d6e6;
+  color: var(--star-empty);
   cursor: pointer;
   transition: transform 0.15s ease, color 0.2s ease, text-shadow 0.2s ease;
 }
@@ -928,9 +1227,9 @@ body::after {
   gap: 8px;
   margin: 4px 2px 10px;
   padding: 10px 12px;
-  border: 1px solid var(--sky-200);
+  border: 1px solid var(--border-soft);
   border-radius: 12px;
-  background: linear-gradient(135deg, #ffffff, var(--sky-50));
+  background: linear-gradient(135deg, var(--surface), var(--surface-soft));
   font-size: 0.78rem;
   animation: formOpen 0.3s cubic-bezier(0.2, 0.8, 0.25, 1);
 }
@@ -956,7 +1255,7 @@ body::after {
   overflow: hidden;
   border-radius: 10px;
   aspect-ratio: 16 / 10;
-  background: var(--sky-100);
+  background: var(--chip-bg);
 }
 
 .dest-photo img {
@@ -989,7 +1288,7 @@ body::after {
 }
 
 .dest-photo-loading {
-  background: linear-gradient(100deg, var(--sky-100) 30%, #ffffff 50%, var(--sky-100) 70%);
+  background: linear-gradient(100deg, var(--chip-bg) 30%, var(--surface) 50%, var(--chip-bg) 70%);
   background-size: 200% 100%;
   animation: shimmer 1.4s linear infinite;
 }
@@ -1010,7 +1309,7 @@ body::after {
 .field-label {
   font-size: 0.76rem;
   font-weight: 700;
-  color: var(--sky-700);
+  color: var(--accent-text);
 }
 
 .photo-picker {
@@ -1030,9 +1329,9 @@ body::after {
   place-items: center;
   padding: 10px;
   aspect-ratio: 16 / 10;
-  border: 1px dashed var(--sky-300);
+  border: 1px dashed var(--border-strong);
   border-radius: 10px;
-  background: var(--sky-50);
+  background: var(--surface-soft);
   font-size: 0.74rem;
   text-align: center;
   color: var(--ink-soft);
@@ -1061,7 +1360,7 @@ body::after {
 .photo-error {
   font-size: 0.76rem;
   font-weight: 600;
-  color: #b4234a;
+  color: var(--danger);
 }
 
 
@@ -1073,6 +1372,7 @@ body::after {
   display: flex;
   align-items: center;
   gap: 10px;
+  min-width: 0;
 }
 
 .title-cell-text {
@@ -1100,7 +1400,7 @@ body::after {
   font-family: inherit;
   font-size: 0.68rem;
   font-weight: 700;
-  color: var(--sky-600);
+  color: var(--accent-text);
   cursor: pointer;
 }
 
@@ -1128,7 +1428,7 @@ body::after {
   flex-shrink: 0;
   width: 34px;
   height: 34px;
-  border: 2px solid #ffffff;
+  border: 2px solid var(--surface);
   border-radius: 50%;
   object-fit: cover;
   box-shadow: 0 2px 8px rgba(20, 67, 110, 0.22);
@@ -1149,7 +1449,7 @@ body::after {
 }
 
 .dest-avatar-loading {
-  background: linear-gradient(100deg, var(--sky-100) 30%, #ffffff 50%, var(--sky-100) 70%);
+  background: linear-gradient(100deg, var(--chip-bg) 30%, var(--surface) 50%, var(--chip-bg) 70%);
   background-size: 200% 100%;
   animation: shimmer 1.4s linear infinite;
 }
@@ -1162,9 +1462,9 @@ body::after {
   gap: 12px 16px;
   margin-bottom: 18px;
   padding: 12px 16px;
-  border: 1px solid var(--sky-200);
+  border: 1px solid var(--border-soft);
   border-radius: 16px;
-  background: linear-gradient(135deg, #ffffff, var(--sky-50));
+  background: linear-gradient(135deg, var(--surface), var(--surface-soft));
 }
 
 .filter-field {
@@ -1177,7 +1477,7 @@ body::after {
 .detail-label {
   font-size: 0.72rem;
   font-weight: 700;
-  color: var(--sky-700);
+  color: var(--accent-text);
 }
 
 .filter-field select,
@@ -1187,8 +1487,8 @@ body::after {
   font-family: var(--font-body);
   font-size: 0.82rem;
   color: var(--ink);
-  background: #ffffff;
-  border: 1px solid var(--sky-300);
+  background: var(--input-bg);
+  border: 1px solid var(--border-strong);
   border-radius: 10px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -1210,7 +1510,7 @@ body::after {
   align-self: center;
   font-size: 0.76rem;
   font-weight: 700;
-  color: var(--sky-600);
+  color: var(--accent-text);
 }
 
 /* Editable details (period + budget) */
@@ -1266,8 +1566,8 @@ body::after {
   flex-direction: column;
   gap: 10px;
   padding: 12px;
-  background: linear-gradient(180deg, #ffffff, var(--sky-50));
-  border: 1px solid var(--sky-200);
+  background: linear-gradient(180deg, var(--surface), var(--surface-soft));
+  border: 1px solid var(--border-soft);
   border-radius: 20px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   animation: riseIn 0.7s cubic-bezier(0.2, 0.8, 0.25, 1) backwards;
@@ -1281,7 +1581,7 @@ body::after {
 
 .inspire-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 14px 28px rgba(40, 119, 184, 0.18);
+  box-shadow: var(--shadow-item);
 }
 
 .inspire-card .dest-photo {
