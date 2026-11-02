@@ -16,19 +16,21 @@ Sample data used across all stages:
 2. Santorini, Greece — visited, Beach
 3. Banff National Park — planned, Mountain
 
+Since stage 6, the data lives in `frontend/db.json`, which also adds Lisbon, the Dolomites and Brussels.
+
 ## How to run
+The app needs two terminals, both in `frontend/`:
 ```bash
-cd frontend
 npm install
-npm run dev
+npm run api   # terminal 1, http://localhost:3001
+npm run dev   # terminal 2, http://localhost:5173
 ```
-Then open the address Vite prints, `http://localhost:5173` by default.
 
 ## AI usage
 | Tool | Used for |
 |---|---|
 | ChatGPT / Gemini | README structure, data model, stages 1-4 |
-| Claude | Stage 5: state, delete, light and dark theme |
+| Claude | Stage 5: state, delete, light and dark theme. Stage 6: loading data from json-server |
 
 Details per stage: see the `ai-log/` folder.
 
@@ -38,7 +40,8 @@ Details per stage: see the `ai-log/` folder.
 - [x] Stage 3: Vite and React project
 - [x] Stage 4: components rendered from data
 - [x] Stage 5: local state and events
-- [ ] Stage 6: loading data from a mock API
+- [x] Stage 6: data from a mock API
+- [ ] Stage 7: form and validation
 
 ## Stage 2: data logic
 Plain JavaScript, no DOM. `destinations.js` holds the array and the functions that read and change it. Results are printed in the browser console (F12).
@@ -86,7 +89,7 @@ The raw JSON view was replaced with reusable React components rendering data:
 | S4-R7 | commit "Stage 4" pushed | [commit link] | commit history |
 
 ## Stage 5: local state and events
-The destination list lives in React state, inside `App`. Ticking and deleting now work straight from the page, and the counters in the header follow on their own, because they are recalculated from the list on every render instead of being stored. A button in the top right corner of the page switches between light and dark mode. Changes are lost on refresh, which is what stage 6 and stage 10 fix.
+The destination list lives in React state, inside `App`. Ticking and deleting now work straight from the page, and the counters in the header follow on their own, because they are recalculated from the list on every render instead of being stored. A button in the top right corner of the page switches between light and dark mode.
 
 What the stage added:
 - `App` owns the list and both update functions. `handleToggleVisited` uses `map` and `handleDeleteDestination` uses `filter`, so a new array is built every time and nothing in state is changed in place.
@@ -107,3 +110,26 @@ What the stage added:
 | S5-R6 | light / dark toggle: state + data-theme on html | frontend/src/App.jsx#L..-L.., frontend/src/App.css#L..-L.. | click the button, both system themes |
 | S5-R7 | no console warnings; README + AI log | README.md, ai-log/etapa-05.md | F12, Console |
 | S5-R8 | commit "Stage 5" pushed | [commit link] | commit history |
+
+## Stage 6: data from a mock API
+The destinations no longer live in the React code. They are served by json-server from `frontend/db.json`, and the app asks for them when the page opens. Every load now has three possible outcomes, and each one shows something on screen: a "Loading destinations…" message while waiting, the list when the answer arrives, and an error message that says what to do when the server does not answer.
+
+What the stage added:
+- `db.json` holds six destinations, varied by type, category and status. json-server turns the `destinations` key into the `/destinations` route.
+- `src/api.js` is the only file that calls `fetch`. It checks `res.ok`, because `fetch` does not throw on a 404 or 500, only when it cannot reach the server at all. The address comes from `VITE_API_URL`, documented in `.env.example`, with `http://localhost:3001` as fallback.
+- In `App.jsx`, the list starts as an empty array, next to two new states, `loading` and `error`. A `useEffect` with an empty dependency list loads the data once, after the first render. The `ignore` flag cleans up the effect, so no state is set if the component is gone by the time the answer arrives.
+- The loading and error messages reuse the theme variables from stage 5, so they look right in dark mode too.
+
+Ticking and deleting still change only the state, so they are lost on refresh. They reach the server in stage 7.
+
+### Checklist
+
+| ID | Requirement | Where (permalink) | How to check |
+| :--- | :--- | :--- | :--- |
+| S6-R1 | npm run api starts, route shows JSON | frontend/package.json#L.., frontend/db.json | open localhost:3001/destinations |
+| S6-R2 | data no longer in React code | frontend/src/App.jsx#L.. (useState([])) | read |
+| S6-R3 | loading message while waiting | frontend/src/App.jsx#L.. | `--delay 4000` |
+| S6-R4 | error message when API is down | frontend/src/App.jsx#L..-L.. | stop npm run api, refresh |
+| S6-R5 | fetch only in api.js, URL from env | frontend/src/api.js#L..-L.., frontend/.env.example | search for fetch |
+| S6-R6 | README Stage 6 section + AI log | README.md, ai-log/etapa-06.md | read |
+| S6-R7 | commit "Stage 6" pushed | [commit link] | commit history |

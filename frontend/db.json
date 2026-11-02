@@ -1,0 +1,82 @@
+{
+  "destinations": [
+    {
+      "id": 1,
+      "title": "Tokyo, Japan",
+      "visited": false,
+      "type": "city-break",
+      "category": "Vacation",
+      "rating": 0,
+      "periodFrom": "4",
+      "periodTo": "",
+      "budget": "over-2000",
+      "highlight": "Temples, street food and neon nights, with cherry blossoms in spring.",
+      "photo": ""
+    },
+    {
+      "id": 2,
+      "title": "Santorini, Greece",
+      "visited": true,
+      "type": "beach",
+      "category": "Vacation",
+      "rating": 4,
+      "periodFrom": "",
+      "periodTo": "",
+      "budget": "500-1000",
+      "highlight": "Whitewashed villages and caldera sunsets in Oia.",
+      "photo": ""
+    },
+    {
+      "id": 3,
+      "title": "Banff National Park",
+      "visited": false,
+      "type": "mountain",
+      "category": "Vacation",
+      "rating": 0,
+      "periodFrom": "6",
+      "periodTo": "8",
+      "budget": "1000-2000",
+      "highlight": "Turquoise lakes and Rocky Mountain trails, with skiing in winter.",
+      "photo": ""
+    },
+    {
+      "id": 4,
+      "title": "Lisbon, Portugal",
+      "visited": true,
+      "type": "city-break",
+      "category": "Vacation",
+      "rating": 5,
+      "periodFrom": "9",
+      "periodTo": "10",
+      "budget": "500-1000",
+      "highlight": "Tiled streets, tram rides and sunset viewpoints.",
+      "photo": ""
+    },
+    {
+      "id": 5,
+      "title": "Dolomites, Italy",
+      "visited": false,
+      "type": "mountain",
+      "category": "Vacation",
+      "rating": 0,
+      "periodFrom": "7",
+      "periodTo": "9",
+      "budget": "500-1000",
+      "highlight": "Jagged peaks, mountain huts and alpine lakes.",
+      "photo": ""
+    },
+    {
+      "id": 6,
+      "title": "Brussels, Belgium",
+      "visited": false,
+      "type": "city-break",
+      "category": "Business",
+      "rating": 0,
+      "periodFrom": "3",
+      "periodTo": "",
+      "budget": "under-500",
+      "highlight": "EU institutions, Art Nouveau facades and a long lunch at the Grand-Place.",
+      "photo": ""
+    }
+  ]
+}
