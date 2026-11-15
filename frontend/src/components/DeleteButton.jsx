@@ -1,12 +1,14 @@
 // Round icon button. The lid tilts open on hover (see .bin-lid in App.css).
 // The name goes in aria-label, because the icon alone says nothing to a screen reader.
-export default function DeleteButton({ label, onDelete, small = false }) {
+// testId is set only where the automated check should find the button.
+export default function DeleteButton({ label, onDelete, small = false, testId }) {
   return (
     <button
       type="button"
       className={small ? "btn-delete btn-delete-small" : "btn-delete"}
       aria-label={`Delete ${label}`}
       title={`Delete ${label}`}
+      data-testid={testId}
       onClick={(event) => {
         event.stopPropagation(); // the table row toggles on click
         onDelete();

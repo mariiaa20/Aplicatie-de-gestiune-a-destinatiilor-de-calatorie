@@ -1,0 +1,11 @@
+{
+  "resource": "destinations",
+  "title": "title",
+  "done": "visited",
+  "sample": {
+    "type": "beach",
+    "category": "Business",
+    "budget": "1000-2000",
+    "highlight": "Quiet coves and a slow ferry between the islands."
+  }
+}

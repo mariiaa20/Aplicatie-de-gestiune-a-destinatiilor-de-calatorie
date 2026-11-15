@@ -30,7 +30,7 @@ npm run dev   # terminal 2, http://localhost:5173
 | Tool | Used for |
 |---|---|
 | ChatGPT / Gemini | README structure, data model, stages 1-4 |
-| Claude | Stage 5: state, delete, light and dark theme. Stage 6: loading data from json-server |
+| Claude | Stage 5: state, delete, light and dark theme. Stage 6: loading data from json-server. Stage 7: form, validation, saving to the API, plus the pages, the travel globe and the passport look |
 
 Details per stage: see the `ai-log/` folder.
 
@@ -41,7 +41,8 @@ Details per stage: see the `ai-log/` folder.
 - [x] Stage 4: components rendered from data
 - [x] Stage 5: local state and events
 - [x] Stage 6: data from a mock API
-- [ ] Stage 7: form and validation
+- [x] Stage 7: form and validation
+- [ ] Stage 8: routing and detail page
 
 ## Stage 2: data logic
 Plain JavaScript, no DOM. `destinations.js` holds the array and the functions that read and change it. Results are printed in the browser console (F12).
@@ -133,3 +134,18 @@ Ticking and deleting still change only the state, so they are lost on refresh. T
 | S6-R5 | fetch only in api.js, URL from env | frontend/src/api.js#L..-L.., frontend/.env.example | search for fetch |
 | S6-R6 | README Stage 6 section + AI log | README.md, ai-log/etapa-06.md | read |
 | S6-R7 | commit "Stage 6" pushed | [commit link] | commit history |
+
+## Stage 7: form and validation
+Destinations can be added from the page. The form is controlled and validated, and every change (add, tick, rate, delete) goes to the API before it shows up in the list, so nothing is lost on refresh.
+
+What the stage added:
+- `DestinationForm.jsx` is a controlled form: every field has `value` and `onChange`, and `noValidate` turns off the browser's own bubbles, so the messages come from the app. `validate()` checks that the name is not empty, has at most 100 characters, contains at least one letter and is not already in the list. If something is wrong, the message appears under the fields and no request is sent.
+- While saving, the button is disabled and says "Saving…". The form is cleared only after the server confirms the save; if the save fails, the text stays in the fields and the error says what happened.
+- `api.js` has three new functions, `createDestination` (POST), `updateDestination` (PATCH) and `deleteDestination` (DELETE), all going through the shared `request()`. `App` updates the list only after the server answers, with the object the server sends back.
+- `tw.json`, in the root of the repository, tells the automated check where the data is. The rows of My Travel List and the form have the `data-testid` attributes it looks for. The form and the list stay together on the home page, because the check adds a destination and looks for it on the same page.
+
+Extra work in the same stage:
+- Three pages with `react-router-dom`: My Travel List (`/`), Travel Globe (`/globe`) and Get inspired (`/inspiration`). An unknown address shows a "Page not found" page.
+- Travel Globe: a globe drawn with `d3-geo` and the `world-atlas` map. Ticking a destination hatches its country. The globe can be dragged and zoomed, and a click on a name flies there. The coordinates come from Wikipedia, and the places I have visited get a stamp and a rating on the next pages.
+- A passport look: leather cover, paper pages with a guilloché pattern, visited places shown as ink stamps, and page numbers from 2 onwards. On the globe page and on Get inspired, the pages turn with an animation (a simple fade on phones).
+- Get inspired is the visa section of the passport, with 40 ideas, filters (type, region, budget, month, search) and a "Surprise me" button. An idea is added with its best season already set as the period.
