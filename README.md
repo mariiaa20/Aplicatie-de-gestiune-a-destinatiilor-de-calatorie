@@ -149,3 +149,16 @@ Extra work in the same stage:
 - Travel Globe: a globe drawn with `d3-geo` and the `world-atlas` map. Ticking a destination hatches its country. The globe can be dragged and zoomed, and a click on a name flies there. The coordinates come from Wikipedia, and the places I have visited get a stamp and a rating on the next pages.
 - A passport look: leather cover, paper pages with a guilloché pattern, visited places shown as ink stamps, and page numbers from 2 onwards. On the globe page and on Get inspired, the pages turn with an animation (a simple fade on phones).
 - Get inspired is the visa section of the passport, with 40 ideas, filters (type, region, budget, month, search) and a "Surprise me" button. An idea is added with its best season already set as the period.
+
+### Checklist
+
+| ID | Requirement | Where (permalink) | How to check |
+| :--- | :--- | :--- | :--- |
+| S7-R1 | controlled form: value + onChange on every field | frontend/src/components/DestinationForm.jsx#L152-L347 | read |
+| S7-R2 | empty name shows an error, nothing is sent | frontend/src/components/DestinationForm.jsx#L64-L79 (validate), #L95-L102 | submit empty, watch Network |
+| S7-R3 | added item shows in the list and survives refresh | frontend/src/App.jsx#L61-L65 (handleAddDestination), frontend/src/api.js#L23-L29 | add, refresh |
+| S7-R4 | toggle and delete survive refresh | frontend/src/App.jsx#L77-L104 | toggle/delete, refresh |
+| S7-R5 | button disabled while sending, form cleared only on success | frontend/src/components/DestinationForm.jsx#L105-L123, #L338-L345 | `--delay 3000`; stop API and submit |
+| S7-R6 | tw.json and the data-testid attributes | tw.json, frontend/src/components/DestinationsTable.jsx#L139-L185 | querySelectorAll in the console |
+| S7-R7 | README Stage 7 section + AI log | README.md, ai-log/etapa-07.md | read |
+| S7-R8 | commit "Stage 7" pushed | [commit link] | commit history |
