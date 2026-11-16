@@ -1,4 +1,5 @@
 import { Fragment, useState } from "react";
+import { Link } from "react-router-dom";
 import DestinationAvatar from "./DestinationAvatar.jsx";
 import DestinationPhoto from "./DestinationPhoto.jsx";
 import DeleteButton from "./DeleteButton.jsx";
@@ -9,12 +10,8 @@ import {
   getBudget,
   periodIncludesMonth
 } from "../utils/travelOptions.js";
-
-const CATEGORIES = [
-  { key: "city-break", label: "City Break", badgeClass: "badge-city-break" },
-  { key: "beach", label: "Beach", badgeClass: "badge-beach" },
-  { key: "mountain", label: "Mountain", badgeClass: "badge-mountain" }
-];
+import { LOCATION_TYPES } from "../constants.js";
+import styles from "./DestinationsTable.module.css";
 
 const MONTH_OPTIONS = MONTH_NAMES.map((name, index) => (
   <option key={name} value={String(index + 1)}>
@@ -67,9 +64,9 @@ export default function DestinationsTable({ destinations, onToggle, onDelete, on
   };
 
   return (
-    <div className="my-travel-list-container">
-      <div className="filter-bar">
-        <div className="filter-field">
+    <div className={styles.myTravelListContainer}>
+      <div className={styles.filterBar}>
+        <div className={styles.filterField}>
           <label htmlFor="filter-budget">Budget</label>
           <select
             id="filter-budget"
@@ -81,7 +78,7 @@ export default function DestinationsTable({ destinations, onToggle, onDelete, on
           </select>
         </div>
 
-        <div className="filter-field">
+        <div className={styles.filterField}>
           <label htmlFor="filter-month">Travel month</label>
           <select
             id="filter-month"
@@ -95,7 +92,7 @@ export default function DestinationsTable({ destinations, onToggle, onDelete, on
 
         {filtersActive && (
           <>
-            <span className="filter-count">
+            <span className={styles.filterCount}>
               {visibleDestinations.length} of {destinations.length} shown
             </span>
             <button type="button" className="btn btn-ghost btn-small" onClick={clearFilters}>
@@ -105,23 +102,23 @@ export default function DestinationsTable({ destinations, onToggle, onDelete, on
         )}
       </div>
 
-      <div className="side-by-side-grid">
-        {CATEGORIES.map((cat) => {
-          const items = visibleDestinations.filter((d) => d.type === cat.key);
+      <div className={styles.sideBySideGrid}>
+        {LOCATION_TYPES.map((cat) => {
+          const items = visibleDestinations.filter((d) => d.type === cat.value);
           const planned = items.filter((d) => !d.visited).length;
 
           return (
-            <div key={cat.key} className="category-column">
-              <div className="column-header">
-                <span className={`badge ${cat.badgeClass}`}>{cat.label}</span>
-                <span className="column-count">{planned} planned</span>
+            <div key={cat.value} className={styles.categoryColumn}>
+              <div className={styles.columnHeader}>
+                <span className={`badge badge-${cat.value}`}>{cat.label}</span>
+                <span className={styles.columnCount}>{planned} planned</span>
               </div>
 
-              <table className="single-category-table">
+              <table className={styles.singleCategoryTable}>
                 <thead>
                   <tr>
                     <th>Destination</th>
-                    <th className="th-right">Status</th>
+                    <th className={styles.thRight}>Status</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -135,18 +132,18 @@ export default function DestinationsTable({ destinations, onToggle, onDelete, on
                           {/* Stage 7: the data-testid attributes are only on this list,
                               which holds every destination, so each one is counted once */}
                           <tr
-                            className={item.visited ? "row-is-visited" : ""}
+                            className={item.visited ? styles.rowIsVisited : undefined}
                             onClick={() => onToggle(item.id)}
                             title="Click to toggle status"
                             data-testid="item"
                             data-id={item.id}
                           >
-                            <td className="dest-title-cell">
-                              <div className="title-cell-inner">
+                            <td className={styles.destTitleCell}>
+                              <div className={styles.titleCellInner}>
                                 {/* controlled checkbox: shows what the data says, changes it on click */}
                                 <input
                                   type="checkbox"
-                                  className="row-check"
+                                  className={styles.rowCheck}
                                   checked={item.visited}
                                   onChange={() => onToggle(item.id)}
                                   onClick={(e) => e.stopPropagation()}
@@ -154,27 +151,38 @@ export default function DestinationsTable({ destinations, onToggle, onDelete, on
                                   data-testid="item-toggle"
                                 />
                                 <DestinationAvatar title={item.title} photo={item.photo} />
-                                <div className="title-cell-text">
-                                  <span className="dest-text" data-testid="item-title">
+                                <div className={styles.titleCellText}>
+                                  {/* Stage 8: the title opens the detail page; stopPropagation
+                                      keeps the click from also ticking the row */}
+                                  <Link
+                                    to={`/destinations/${item.id}`}
+                                    className={styles.destText}
+                                    onClick={(e) => e.stopPropagation()}
+                                    data-testid="item-link"
+                                  >
                                     {item.title}
-                                  </span>
-                                  <span className="dest-sub">
+                                  </Link>
+                                  <span className={styles.destSub}>
                                     {meta && <span>{meta}</span>}
                                     <button
                                       type="button"
-                                      className="details-link"
+                                      className={styles.detailsLink}
                                       aria-expanded={isExpanded}
                                       onClick={(e) => toggleDetails(e, item.id)}
                                     >
-                                      Details <span className="chev" aria-hidden="true">▾</span>
+                                      Details <span className={styles.chev} aria-hidden="true">▾</span>
                                     </button>
                                   </span>
                                 </div>
                               </div>
                             </td>
-                            <td className="th-right">
-                              <div className="status-cell">
-                                <span className={`status-pill ${item.visited ? "pill-visited" : "pill-planned"}`}>
+                            <td className={styles.thRight}>
+                              <div className={styles.statusCell}>
+                                <span
+                                  className={`${styles.statusPill} ${
+                                    item.visited ? styles.pillVisited : styles.pillPlanned
+                                  }`}
+                                >
                                   {item.visited ? "✓ Visited" : "○ Planned"}
                                 </span>
                                 <DeleteButton
@@ -188,16 +196,16 @@ export default function DestinationsTable({ destinations, onToggle, onDelete, on
                           </tr>
 
                           {isExpanded && (
-                            <tr className="detail-row">
+                            <tr className={styles.detailRow}>
                               <td colSpan="2">
-                                <div className="detail-box">
+                                <div className={styles.detailBox}>
                                   <DestinationPhoto title={item.title} photo={item.photo} />
                                   {item.highlight && (
-                                    <p className="detail-highlight">{item.highlight}</p>
+                                    <p className={styles.detailHighlight}>{item.highlight}</p>
                                   )}
 
-                                  <div className="detail-field">
-                                    <span className="detail-label">Desired period</span>
+                                  <div className={styles.detailField}>
+                                    <span className={styles.detailLabel}>Desired period</span>
                                     <div className="detail-pair">
                                       <select
                                         aria-label={`From month for ${item.title}`}
@@ -228,8 +236,8 @@ export default function DestinationsTable({ destinations, onToggle, onDelete, on
                                     </div>
                                   </div>
 
-                                  <div className="detail-field">
-                                    <label className="detail-label" htmlFor={`budget-${item.id}`}>
+                                  <div className={styles.detailField}>
+                                    <label className={styles.detailLabel} htmlFor={`budget-${item.id}`}>
                                       Budget
                                     </label>
                                     <select
@@ -252,7 +260,7 @@ export default function DestinationsTable({ destinations, onToggle, onDelete, on
                     })
                   ) : (
                     <tr>
-                      <td colSpan="2" className="empty-category-cell">
+                      <td colSpan="2" className={styles.emptyCategoryCell}>
                         No items
                       </td>
                     </tr>

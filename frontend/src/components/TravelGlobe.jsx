@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { startTransition, useEffect, useMemo, useRef, useState } from "react";
 import {
   geoBounds,
   geoContains,
@@ -12,6 +12,7 @@ import world110 from "world-atlas/countries-110m.json";
 import world50 from "world-atlas/countries-50m.json";
 import { useWikiCoordinates } from "../hooks/useWikiPhoto.js";
 import { BookPage } from "./PassportBook.jsx";
+import styles from "./TravelGlobe.module.css";
 
 const SIZE = 440;
 const RADIUS = SIZE / 2 - 6;
@@ -159,7 +160,12 @@ export default function TravelGlobe({ destinations, onToggle, firstPage = 4 }) {
       last = now;
       const hold = holdRef.current;
       if (!hold.hover && !hold.drag && !hold.fly && zoomRef.current <= 1.01) {
-        setRotation(([lambda, phi]) => [lambda + SPIN_SPEED * dt, phi]);
+        // Stage 8: a transition, so the spin never holds up a page change.
+        // React Router changes pages in a transition too, and a transition
+        // is not interrupted by another one, so a click in the menu wins.
+        startTransition(() => {
+          setRotation(([lambda, phi]) => [lambda + SPIN_SPEED * dt, phi]);
+        });
       }
       frame = requestAnimationFrame(tick);
     };
@@ -340,11 +346,11 @@ export default function TravelGlobe({ destinations, onToggle, firstPage = 4 }) {
   // two pages of the passport: the globe on the left, its notes on the right
   return (
     <>
-      <BookPage number={firstPage} className="globe-page-stage">
-        <div className="globe-stage">
+      <BookPage number={firstPage} className={styles.globePageStage}>
+        <div className={styles.globeStage}>
           <svg
             ref={svgRef}
-            className="globe-svg"
+            className={styles.globeSvg}
             viewBox={`0 0 ${SIZE} ${SIZE}`}
             role="img"
             aria-label={`Globe with ${visitedCountries.length} visited countries`}
@@ -364,8 +370,8 @@ export default function TravelGlobe({ destinations, onToggle, firstPage = 4 }) {
                 patternUnits="userSpaceOnUse"
                 patternTransform="rotate(45)"
               >
-                <rect width="5" height="5" className="globe-hatch-bg" />
-                <rect width="2" height="5" className="globe-hatch-line" />
+                <rect width="5" height="5" className={styles.globeHatchBg} />
+                <rect width="2" height="5" className={styles.globeHatchLine} />
               </pattern>
               <radialGradient id="globe-shine" cx="35%" cy="28%" r="75%">
                 <stop offset="0%" stopColor="#ffffff" stopOpacity="0.32" />
@@ -373,15 +379,15 @@ export default function TravelGlobe({ destinations, onToggle, firstPage = 4 }) {
               </radialGradient>
             </defs>
 
-            <path d={path(SPHERE)} className="globe-ocean" />
-            <path d={path(GRATICULE)} className="globe-graticule" />
+            <path d={path(SPHERE)} className={styles.globeOcean} />
+            <path d={path(GRATICULE)} className={styles.globeGraticule} />
 
             {land.map((country) => (
-              <path key={countryKey(country)} d={path(country)} className="globe-land" />
+              <path key={countryKey(country)} d={path(country)} className={styles.globeLand} />
             ))}
 
             {plannedCountries.map((country) => (
-              <path key={countryKey(country)} d={path(country)} className="globe-planned" />
+              <path key={countryKey(country)} d={path(country)} className={styles.globePlanned} />
             ))}
 
             {visitedCountries.map((country) => {
@@ -390,7 +396,7 @@ export default function TravelGlobe({ destinations, onToggle, firstPage = 4 }) {
                 <path
                   key={key}
                   d={path(country)}
-                  className={key === newKey ? "globe-visited is-new" : "globe-visited"}
+                  className={key === newKey ? `${styles.globeVisited} ${styles.isNew}` : styles.globeVisited}
                   fill="url(#globe-hatch)"
                 >
                   <title>{country.properties.name}</title>
@@ -405,24 +411,24 @@ export default function TravelGlobe({ destinations, onToggle, firstPage = 4 }) {
               return (
                 <g
                   key={place.id}
-                  className={place.visited ? "globe-pin is-visited" : "globe-pin"}
+                  className={place.visited ? `${styles.globePin} ${styles.isVisited}` : styles.globePin}
                   transform={`translate(${x} ${y})`}
                 >
-                  {place.visited && <circle r="9" className="globe-pin-halo" />}
-                  <circle r="5" className="globe-pin-dot" />
+                  {place.visited && <circle r="9" className={styles.globePinHalo} />}
+                  <circle r="5" className={styles.globePinDot} />
                   <title>{place.title}</title>
                 </g>
               );
             })}
 
-            <path d={path(SPHERE)} className="globe-shine" fill="url(#globe-shine)" />
-            <path d={path(SPHERE)} className="globe-outline" />
+            <path d={path(SPHERE)} className={styles.globeShine} fill="url(#globe-shine)" />
+            <path d={path(SPHERE)} className={styles.globeOutline} />
           </svg>
 
-          <div className="globe-controls">
+          <div className={styles.globeControls}>
             <button
               type="button"
-              className="globe-control"
+              className={styles.globeControl}
               onClick={() => zoomBy(1.4)}
               disabled={zoom >= MAX_ZOOM}
               aria-label="Zoom in"
@@ -431,7 +437,7 @@ export default function TravelGlobe({ destinations, onToggle, firstPage = 4 }) {
             </button>
             <button
               type="button"
-              className="globe-control"
+              className={styles.globeControl}
               onClick={() => zoomBy(1 / 1.4)}
               disabled={zoom <= MIN_ZOOM}
               aria-label="Zoom out"
@@ -440,7 +446,7 @@ export default function TravelGlobe({ destinations, onToggle, firstPage = 4 }) {
             </button>
             <button
               type="button"
-              className="globe-control"
+              className={styles.globeControl}
               onClick={resetView}
               aria-label="Back to the whole globe"
               title="Back to the whole globe"
@@ -452,32 +458,32 @@ export default function TravelGlobe({ destinations, onToggle, firstPage = 4 }) {
       </BookPage>
 
       <BookPage number={firstPage + 1}>
-        <div className="globe-info">
+        <div>
           <h2 className="card-title">Your travel globe</h2>
-          <p className="globe-lead">
+          <p className={styles.globeLead}>
             Tick a place and its country gets hatched. Click a name to fly there, drag to turn
             the globe, scroll or pinch to zoom.
           </p>
 
-          <div className="globe-stats">
-            <div className="globe-stat">
-              <span className="globe-stat-value">{visitedCountries.length}</span>
-              <span className="globe-stat-label">
+          <div className={styles.globeStats}>
+            <div className={styles.globeStat}>
+              <span className={styles.globeStatValue}>{visitedCountries.length}</span>
+              <span className={styles.globeStatLabel}>
                 {visitedCountries.length === 1 ? "country visited" : "countries visited"}
               </span>
             </div>
-            <div className="globe-stat">
-              <span className="globe-stat-value">{plannedCountries.length}</span>
-              <span className="globe-stat-label">still on the wish list</span>
+            <div className={styles.globeStat}>
+              <span className={styles.globeStatValue}>{plannedCountries.length}</span>
+              <span className={styles.globeStatLabel}>still on the wish list</span>
             </div>
           </div>
 
           {visitedCountries.length > 0 && (
-            <ul className="globe-chips" aria-label="Visited countries">
+            <ul className={styles.globeChips} aria-label="Visited countries">
               {visitedCountries.map((country) => {
                 const key = countryKey(country);
                 return (
-                  <li key={key} className={key === newKey ? "chip globe-chip is-new" : "chip globe-chip"}>
+                  <li key={key} className={key === newKey ? `${styles.chip} ${styles.globeChip} ${styles.isNew}` : `${styles.chip} ${styles.globeChip}`}>
                     {country.properties.name}
                   </li>
                 );
@@ -486,13 +492,13 @@ export default function TravelGlobe({ destinations, onToggle, firstPage = 4 }) {
           )}
 
           {destinations.length > 0 && (
-            <ul className="globe-places" aria-label="Your destinations">
+            <ul className={styles.globePlaces} aria-label="Your destinations">
               {destinations.map((d) => {
                 const place = placeById.get(d.id);
                 const lookedUp = typeof d.lat === "number" || coords[d.title.trim()] !== undefined;
                 const where = place?.country?.properties.name ?? (lookedUp ? "not found" : "looking…");
                 return (
-                  <li key={d.id} className={d.visited ? "globe-place is-visited" : "globe-place"}>
+                  <li key={d.id} className={d.visited ? `${styles.globePlace} ${styles.isVisited}` : styles.globePlace}>
                     <input
                       type="checkbox"
                       className="card-check"
@@ -502,12 +508,12 @@ export default function TravelGlobe({ destinations, onToggle, firstPage = 4 }) {
                     />
                     <button
                       type="button"
-                      className="globe-place-button"
+                      className={styles.globePlaceButton}
                       onClick={() => place && flyTo(place)}
                       disabled={!place}
                     >
-                      <span className="globe-place-name">{d.title}</span>
-                      <span className="globe-place-country">{where}</span>
+                      <span className={styles.globePlaceName}>{d.title}</span>
+                      <span className={styles.globePlaceCountry}>{where}</span>
                     </button>
                   </li>
                 );
@@ -515,27 +521,27 @@ export default function TravelGlobe({ destinations, onToggle, firstPage = 4 }) {
             </ul>
           )}
 
-          <ul className="globe-legend">
+          <ul className={styles.globeLegend}>
             <li>
-              <span className="legend-swatch swatch-visited" aria-hidden="true" />
+              <span className={`${styles.legendSwatch} ${styles.swatchVisited}`} aria-hidden="true" />
               Visited country
             </li>
             <li>
-              <span className="legend-swatch swatch-planned" aria-hidden="true" />
+              <span className={`${styles.legendSwatch} ${styles.swatchPlanned}`} aria-hidden="true" />
               Planned country
             </li>
             <li>
-              <span className="legend-dot dot-visited" aria-hidden="true" />
+              <span className={`${styles.legendDot} ${styles.dotVisited}`} aria-hidden="true" />
               Visited place
             </li>
             <li>
-              <span className="legend-dot dot-planned" aria-hidden="true" />
+              <span className={`${styles.legendDot} ${styles.dotPlanned}`} aria-hidden="true" />
               Planned place
             </li>
           </ul>
 
           {notFound > 0 && (
-            <p className="globe-note">
+            <p className={styles.globeNote}>
               {notFound === 1
                 ? "1 destination is not on the globe: no location was found for its name on Wikipedia."
                 : `${notFound} destinations are not on the globe: no location was found for their names on Wikipedia.`}

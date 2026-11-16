@@ -1,0 +1,63 @@
+/* =========================================================
+Destination photos (details row + add form preview)
+========================================================= */
+.destPhoto {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 10px;
+  aspect-ratio: 16 / 10;
+  background: var(--chip-bg);
+}
+
+.destPhoto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: photoFade 0.7s cubic-bezier(0.2, 0.8, 0.25, 1);
+}
+
+.destPhoto figcaption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 14px 8px 4px;
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.destPhoto figcaption a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.destPhoto figcaption a:hover {
+  text-decoration: underline;
+}
+
+.destPhotoLoading {
+  background: linear-gradient(100deg, var(--chip-bg) 30%, var(--surface) 50%, var(--chip-bg) 70%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+/* ---------- Small details ---------- */
+.destPhoto figcaption {
+  background: linear-gradient(to top, rgba(43, 36, 32, 0.65), transparent);
+}
+
+/* animations used in this file */
+@keyframes photoFade {
+  from {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}

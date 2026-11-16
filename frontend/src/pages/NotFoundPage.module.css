@@ -1,0 +1,4 @@
+.notFound p {
+  margin-bottom: 18px;
+  color: var(--ink-soft);
+}

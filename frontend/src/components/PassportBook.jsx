@@ -1,4 +1,5 @@
 import { useEffect, useImperativeHandle, useLayoutEffect, useRef } from "react";
+import styles from "./PassportBook.module.css";
 
 // How long one page takes to turn, in milliseconds
 const TURN_MS = 900;
@@ -6,9 +7,9 @@ const TURN_MS = 900;
 // One page of the open passport. The book shows two of them side by side.
 export function BookPage({ number, className = "", children }) {
   return (
-    <div className={`book-page ${className}`}>
+    <div className={`${styles.bookPage} ${className}`}>
       {children}
-      <span className="book-page-number">{number}</span>
+      <span className={styles.bookPageNumber}>{number}</span>
     </div>
   );
 }
@@ -31,12 +32,12 @@ function copyOf(page, side) {
     element.removeAttribute("data-visa");
   });
   copy.setAttribute("inert", "");
-  copy.classList.add(side === 0 ? "is-left" : "is-right");
+  copy.classList.add(side === 0 ? styles.isLeft : styles.isRight);
   return copy;
 }
 
 function pagesOf(book) {
-  return book ? [...book.querySelectorAll(":scope > .book-pages > .book-page")] : [];
+  return book ? [...book.querySelectorAll(`:scope > .${styles.bookPages} > .${styles.bookPage}`)] : [];
 }
 
 // where an element is, measured from the top left corner of the book
@@ -55,7 +56,7 @@ function putAt(element, place) {
 
 function addShade(page) {
   const shade = document.createElement("div");
-  shade.className = "book-shade";
+  shade.className = styles.bookShade;
   page.append(shade);
   return shade;
 }
@@ -129,9 +130,8 @@ export default function PassportBook({
     const back = copyOf(forward ? newPages[0] : newPages[1], forward ? 0 : 1);
 
     const leaf = document.createElement("div");
-    leaf.className = "book-leaf";
-    front.classList.add("book-leaf-front");
-    back.classList.add("book-leaf-back");
+    leaf.className = styles.bookLeaf;
+    back.classList.add(styles.bookLeafBack);
     leaf.append(front, back);
 
     putAt(still, forward ? places[0] : places[1]);
@@ -179,28 +179,28 @@ export default function PassportBook({
 
   return (
     <>
-      <div ref={bookRef} className={`passport-book ${className}`}>
-        <div className="book-pages">{children}</div>
+      <div ref={bookRef} className={`${styles.passportBook} ${className}`}>
+        <div className={styles.bookPages}>{children}</div>
         {/* filled by the effect above, only while a page turns */}
-        <div ref={layerRef} className="book-flip-layer" aria-hidden="true" />
+        <div ref={layerRef} className={styles.bookFlipLayer} aria-hidden="true" />
       </div>
 
       {spreadCount > 1 && (
-        <div className="book-pager">
+        <div className={styles.bookPager}>
           <button
             type="button"
-            className={hasPrevious ? "btn btn-ghost" : "btn btn-ghost is-hidden"}
+            className={hasPrevious ? "btn btn-ghost" : `btn btn-ghost ${styles.isHidden}`}
             disabled={!hasPrevious}
             onClick={() => turnTo(spread - 1)}
           >
             ‹ {labels?.[spread - 1] ?? "Previous pages"}
           </button>
-          <span className="book-pager-count">
+          <span className={styles.bookPagerCount}>
             {spread + 1} / {spreadCount}
           </span>
           <button
             type="button"
-            className={hasNext ? "btn btn-ghost" : "btn btn-ghost is-hidden"}
+            className={hasNext ? "btn btn-ghost" : `btn btn-ghost ${styles.isHidden}`}
             disabled={!hasNext}
             onClick={() => turnTo(spread + 1)}
           >

@@ -1,0 +1,213 @@
+/* The detail page: the data page of one destination, on a single sheet */
+.page {
+  width: 100%;
+  max-width: 980px;
+}
+
+.detail {
+  --record-ink: var(--stamp-mountain);
+  position: relative;
+  padding-bottom: 118px;
+  border-top: 4px solid var(--record-ink);
+}
+
+.inkCity {
+  --record-ink: var(--stamp-city);
+}
+
+.inkBeach {
+  --record-ink: var(--stamp-beach);
+}
+
+.inkMountain {
+  --record-ink: var(--stamp-mountain);
+}
+
+.back {
+  display: inline-block;
+  margin-bottom: 22px;
+  color: var(--ink-soft);
+  font-size: 0.86rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.back:hover {
+  color: var(--title-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-underline-offset: 3px;
+}
+
+/* photo on the left, like the holder's photo, everything else on the right */
+.record {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 36px;
+  align-items: start;
+}
+
+.photo > * {
+  aspect-ratio: 4 / 5;
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px var(--rule), 0 10px 24px rgba(43, 24, 20, 0.16);
+}
+
+.photo img {
+  filter: sepia(0.12) saturate(0.92);
+}
+
+/* no photo on Wikipedia: an empty frame, still waiting for one */
+.photo:empty {
+  aspect-ratio: 4 / 5;
+  border: 1px dashed var(--border-strong);
+  border-radius: 4px;
+}
+
+.info {
+  min-width: 0;
+}
+
+.kind {
+  color: var(--record-ink);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  font-variant: small-caps;
+  letter-spacing: 0.06em;
+}
+
+.title {
+  margin: 2px 0 10px;
+  color: var(--title-ink);
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 2.7rem);
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.highlight {
+  max-width: 52ch;
+  margin-bottom: 22px;
+  color: var(--ink-soft);
+  font-size: 1.02rem;
+  line-height: 1.55;
+}
+
+/* the fields, printed on lines like the ones of a passport */
+.fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.fields > div {
+  padding: 12px 14px 12px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.fields dt {
+  margin-bottom: 3px;
+  color: var(--text-faint);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.fields dd {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.98rem;
+  font-weight: 700;
+}
+
+.stars {
+  color: var(--gold);
+  font-size: 1.05rem;
+  letter-spacing: 0.08em;
+}
+
+.starsEmpty {
+  color: var(--rule);
+}
+
+/* visited: the entry stamp, in the ink of the kind of place */
+.stamp {
+  position: absolute;
+  top: 34px;
+  right: 46px;
+  padding: 18px 16px;
+  border: 3px solid currentColor;
+  border-radius: 50%;
+  outline: 1px solid currentColor;
+  outline-offset: 4px;
+  color: var(--record-ink);
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  line-height: 1;
+  text-transform: uppercase;
+  transform: rotate(-11deg);
+  -webkit-mask-image: var(--ink-texture);
+  mask-image: var(--ink-texture);
+  -webkit-mask-size: 110px 110px;
+  mask-size: 110px 110px;
+  mix-blend-mode: var(--stamp-blend);
+  pointer-events: none;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+/* the two code lines at the bottom of the data page */
+.mrz {
+  position: absolute;
+  right: 36px;
+  bottom: 24px;
+  left: 36px;
+  padding-top: 12px;
+  overflow: hidden;
+  border-top: 1px solid var(--rule);
+  color: var(--text-faint);
+  font-family: var(--font-mrz);
+  font-size: 0.8rem;
+  letter-spacing: 0.16em;
+  line-height: 1.7;
+  white-space: pre;
+}
+
+/* an id that is not on the server */
+.missing .missingHint {
+  margin: 10px 0 20px;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 760px) {
+  .record {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .photo {
+    max-width: 220px;
+  }
+
+  .fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stamp {
+    top: 18px;
+    right: 18px;
+    font-size: 0.95rem;
+  }
+
+  .mrz {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+  }
+}

@@ -1,45 +1,47 @@
+import { Link } from "react-router-dom";
 import StarRating from "./StarRating.jsx";
 import DeleteButton from "./DeleteButton.jsx";
-
-const TYPE_LABELS = {
-  "city-break": "City Break",
-  beach: "Beach",
-  mountain: "Mountain"
-};
+import { TYPE_LABELS } from "../constants.js";
+import styles from "./DestinationCard.module.css";
 
 export default function DestinationCard({ destination, onToggle, onDelete, onRate }) {
   const { id, title, category, type, visited, rating = 0 } = destination;
 
   return (
-    <li className={visited ? "destination-card done" : "destination-card"}>
-      <div className="card-row">
-        {/* the label wraps checkbox + text, so clicking the title ticks the box too */}
-        <label className="card-main">
+    <li className={visited ? `${styles.destinationCard} ${styles.done}` : styles.destinationCard}>
+      <div className={styles.cardRow}>
+        {/* Stage 8: a div instead of a label, because the title is now a link;
+            the checkbox gets an aria-label, so a screen reader knows what it ticks */}
+        <div className={styles.cardMain}>
           <input
             type="checkbox"
             className="card-check"
             checked={visited}
             onChange={() => onToggle(id)}
+            aria-label={`Mark ${title} as visited`}
           />
 
-          <div className="destination-details">
-            <h3>{title}</h3>
-            <p className="destination-category">{category}</p>
+          <div className={styles.destinationDetails}>
+            <h3>
+              <Link to={`/destinations/${id}`} className={styles.titleLink}>
+                {title}
+              </Link>
+            </h3>
+            <p className={styles.destinationCategory}>{category}</p>
 
-            <div className="card-meta">
-              <span className={`badge badge-${type}`}>
-                {TYPE_LABELS[type] || type}
-              </span>
+            <div className={styles.cardMeta}>
+              <span className={`badge badge-${type}`}>{TYPE_LABELS[type] || type}</span>
             </div>
           </div>
-        </label>
+        </div>
 
         {onDelete && <DeleteButton label={title} onDelete={() => onDelete(id)} />}
       </div>
 
-      {/* outside the label: inside it, clicking a star would also toggle the checkbox */}
       {visited && onRate && (
-        <StarRating value={rating} onChange={(value) => onRate(id, value)} />
+        <div className={styles.rating}>
+          <StarRating value={rating} onChange={(value) => onRate(id, value)} />
+        </div>
       )}
     </li>
   );

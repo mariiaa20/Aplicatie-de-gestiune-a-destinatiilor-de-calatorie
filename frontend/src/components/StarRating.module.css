@@ -1,0 +1,38 @@
+/* Star rating, under a visited place */
+.starRating {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.starRatingLabel {
+  margin-right: 8px;
+  color: var(--ink-soft);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.starBtn {
+  padding: 0 1px;
+  border: none;
+  background: none;
+  color: var(--star-empty);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.15s ease, color 0.2s ease;
+}
+
+.starBtn:hover {
+  transform: scale(1.2);
+}
+
+.starBtn:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.starBtn.filled {
+  color: var(--gold);
+}

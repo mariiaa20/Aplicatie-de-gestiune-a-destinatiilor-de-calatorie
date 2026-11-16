@@ -19,6 +19,12 @@ export function fetchDestinations() {
   return request("/destinations");
 }
 
+// Stage 8: one destination, for its detail page. A missing id answers 404,
+// and request() turns that into an error the page can show.
+export function fetchDestination(id) {
+  return request(`/destinations/${id}`);
+}
+
 // The new destination goes without an id: the server gives it one
 export function createDestination(destination) {
   return request("/destinations", {

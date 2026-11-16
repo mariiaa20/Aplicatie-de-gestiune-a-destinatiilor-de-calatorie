@@ -1,0 +1,67 @@
+/* round icon button; the bin lid tilts open on hover */
+.btnDelete {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  background: var(--danger-soft);
+  color: var(--danger);
+  cursor: pointer;
+  opacity: 0.75;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.25, 1), background 0.25s ease,
+    color 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+}
+
+.btnDelete svg {
+  width: 18px;
+  height: 18px;
+  overflow: visible;
+}
+
+.btnDelete .binLid {
+  transform-box: fill-box;
+  transform-origin: 85% 50%;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.25, 1);
+}
+
+/* the button steps forward once the card or the row is under the pointer */
+:where(li, tr):hover .btnDelete,
+:where(li, tr):hover .btnDelete {
+  opacity: 1;
+}
+
+.btnDelete:hover {
+  opacity: 1;
+  background: var(--danger);
+  color: #ffffff;
+  transform: translateY(-2px) scale(1.06);
+  box-shadow: 0 8px 18px var(--danger-glow);
+}
+
+.btnDelete:hover .binLid {
+  transform: rotate(-22deg) translate(-1px, -1px);
+}
+
+.btnDelete:active {
+  transform: scale(0.9);
+}
+
+.btnDelete:focus-visible {
+  outline: 3px solid var(--danger-glow);
+  outline-offset: 2px;
+}
+
+/* smaller version, used inside the table rows */
+.btnDeleteSmall {
+  width: 28px;
+  height: 28px;
+}
+
+.btnDeleteSmall svg {
+  width: 15px;
+  height: 15px;
+}

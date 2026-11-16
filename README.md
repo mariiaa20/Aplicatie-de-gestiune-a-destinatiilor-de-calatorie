@@ -30,7 +30,7 @@ npm run dev   # terminal 2, http://localhost:5173
 | Tool | Used for |
 |---|---|
 | ChatGPT / Gemini | README structure, data model, stages 1-4 |
-| Claude | Stage 5: state, delete, light and dark theme. Stage 6: loading data from json-server. Stage 7: form, validation, saving to the API, plus the pages, the travel globe and the passport look |
+| Claude | Stage 5: state, delete, light and dark theme. Stage 6: loading data from json-server. Stage 7: form, validation, saving to the API, plus the pages, the travel globe and the passport look. Stage 8: layout and routes, detail page, CSS Modules |
 
 Details per stage: see the `ai-log/` folder.
 
@@ -42,7 +42,8 @@ Details per stage: see the `ai-log/` folder.
 - [x] Stage 5: local state and events
 - [x] Stage 6: data from a mock API
 - [x] Stage 7: form and validation
-- [ ] Stage 8: routing and detail page
+- [x] Stage 8: routing and detail page
+- [ ] Stage 9: own backend with Express
 
 ## Stage 2: data logic
 Plain JavaScript, no DOM. `destinations.js` holds the array and the functions that read and change it. Results are printed in the browser console (F12).
@@ -87,7 +88,7 @@ The raw JSON view was replaced with reusable React components rendering data:
 | S4-R4 | message for empty list | frontend/src/components/DestinationList.jsx | pass `[]` as prop |
 | S4-R5 | state changes the card look | frontend/src/components/DestinationCard.jsx | toggle `visited` boolean |
 | S4-R6 | README Stage 4 section + AI log | README.md, ai-log/etapa-04.md | read |
-| S4-R7 | commit "Stage 4" pushed | [commit link] | commit history |
+| S4-R7 | commit "Stage 4" pushed | https://github.com/mariiaa20/Aplicatie-de-gestiune-a-destinatiilor-de-calatorie/commit/8de328b | commit history |
 
 ## Stage 5: local state and events
 The destination list lives in React state, inside `App`. Ticking and deleting now work straight from the page, and the counters in the header follow on their own, because they are recalculated from the list on every render instead of being stored. A button in the top right corner of the page switches between light and dark mode.
@@ -110,7 +111,7 @@ What the stage added:
 | S5-R5 | immutable updates (no push, splice, assignment) | frontend/src/App.jsx#L..-L.. | read |
 | S5-R6 | light / dark toggle: state + data-theme on html | frontend/src/App.jsx#L..-L.., frontend/src/App.css#L..-L.. | click the button, both system themes |
 | S5-R7 | no console warnings; README + AI log | README.md, ai-log/etapa-05.md | F12, Console |
-| S5-R8 | commit "Stage 5" pushed | [commit link] | commit history |
+| S5-R8 | commit "Stage 5" pushed | https://github.com/mariiaa20/Aplicatie-de-gestiune-a-destinatiilor-de-calatorie/commit/2961b6c | commit history |
 
 ## Stage 6: data from a mock API
 The destinations no longer live in the React code. They are served by json-server from `frontend/db.json`, and the app asks for them when the page opens. Every load now has three possible outcomes, and each one shows something on screen: a "Loading destinations…" message while waiting, the list when the answer arrives, and an error message that says what to do when the server does not answer.
@@ -133,7 +134,7 @@ Ticking and deleting still change only the state, so they are lost on refresh. T
 | S6-R4 | error message when API is down | frontend/src/App.jsx#L..-L.. | stop npm run api, refresh |
 | S6-R5 | fetch only in api.js, URL from env | frontend/src/api.js#L..-L.., frontend/.env.example | search for fetch |
 | S6-R6 | README Stage 6 section + AI log | README.md, ai-log/etapa-06.md | read |
-| S6-R7 | commit "Stage 6" pushed | [commit link] | commit history |
+| S6-R7 | commit "Stage 6" pushed | https://github.com/mariiaa20/Aplicatie-de-gestiune-a-destinatiilor-de-calatorie/commit/e4d2949 | commit history |
 
 ## Stage 7: form and validation
 Destinations can be added from the page. The form is controlled and validated, and every change (add, tick, rate, delete) goes to the API before it shows up in the list, so nothing is lost on refresh.
@@ -161,4 +162,28 @@ Extra work in the same stage:
 | S7-R5 | button disabled while sending, form cleared only on success | frontend/src/components/DestinationForm.jsx#L105-L123, #L338-L345 | `--delay 3000`; stop API and submit |
 | S7-R6 | tw.json and the data-testid attributes | tw.json, frontend/src/components/DestinationsTable.jsx#L139-L185 | querySelectorAll in the console |
 | S7-R7 | README Stage 7 section + AI log | README.md, ai-log/etapa-07.md | read |
-| S7-R8 | commit "Stage 7" pushed | [commit link] | commit history |
+| S7-R8 | commit "Stage 7" pushed | https://github.com/mariiaa20/Aplicatie-de-gestiune-a-destinatiilor-de-calatorie/commit/5d817a2 | commit history |
+
+## Stage 8: routing and detail page
+The app is split into pages with React Router, all drawn inside one shared layout, and every destination has its own detail page at `/destinations/:id`. The styles moved from one big `App.css` into a `.module.css` file next to each component.
+
+Pages:
+| Address | Page | What it shows |
+|---|---|---|
+| `/` | `DestinationsPage` | the add form and My Travel List (pages 2–3 of the passport) |
+| `/destinations/:id` | `DestinationDetailPage` | the data page of one destination |
+| `/globe` | `GlobePage` | the travel globe, then the visited places (pages 4–7) |
+| `/inspiration` | `InspirationPage` | Get inspired, the visa pages (from page 8 on) |
+| `/about` | `AboutPage` | what the app is and how it is made |
+| anything else | `NotFoundPage` | "Page not found", with a link back to the list |
+
+What the stage added:
+- `App.jsx` holds only the map of the routes. The route without a path renders `Layout`, so every page is drawn inside it, where `<Outlet />` is.
+- `Layout.jsx` has the cover with the title, the navigation and the theme button, written once for all pages. The links are `NavLink`s, which add `aria-current="page"` to the open page by themselves, and `end` on the first one stops `/` from matching every address.
+- The list and the functions that change it moved from `App` into a custom hook, `hooks/useDestinations.js`. `Layout` calls it once and passes it to the pages through `<Outlet context>`, so the list, the globe and Get inspired always show the same data and the list is loaded only once. The counter moved from the header into the My Travel List sheet.
+- In My Travel List, the name of each destination is a `Link` to `/destinations/<id>`. `stopPropagation` keeps that click from also ticking the row.
+- `DestinationDetailPage` reads the id with `useParams()` and asks the server for that destination only (`fetchDestination(id)` in `api.js`), so a refresh or a typed address works too. The effect depends on `[id]`, so it runs again when the id in the address changes. It shows the fields that do not fit in the list: the description, the period, the budget, the rating and the number. An id that is not on the server (for example `/destinations/999`) shows an error message and a way back, not an empty screen.
+- `constants.js` holds the fixed values and their labels (location types, trip categories), used by the form, the list, the cards, the detail page and Get inspired.
+- CSS Modules: `index.css` keeps only what every page uses (the colour variables for both themes, the page, the passport sheet `.card-box`, titles, buttons, badges, loading and error messages). Every component and every page has its own `.module.css`, imported as `styles` and used as `className={styles.name}`, so class names never clash between components.
+- New `data-testid` attributes: `nav`, `item-link` (instead of `item-title`), `detail`, `detail-title`, and `loading` / `error` on the detail page, `not-found` on the 404 page. The ones from stage 7 stay where they were.
+

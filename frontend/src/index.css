@@ -1,0 +1,508 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+/* =========================================================
+   Travel Destinations Manager: the shared styles
+   Stage 8: only what every page uses stays here. The colour
+   variables, the page itself, the passport sheet (.card-box),
+   titles, buttons, badges and the loading / error messages.
+   Everything else lives next to its component, in a .module.css.
+   ========================================================= */
+
+/* ---------- Colours: the passport theme ----------
+   The page is the leather cover, the content is the open passport.
+   Every colour is a variable, so dark mode only changes the variables. */
+:root {
+  --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-body: 'Manrope', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  /* the same in both themes */
+  --cover: #4a1c26;
+  --cover-deep: #2e0f16;
+  --foil: linear-gradient(180deg, #f0dbab 0%, #c9a66b 52%, #8f6d3b 100%);
+  --foil-text: #e6cf9f;
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  --ink-texture: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Cfilter id='i'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='2' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -3.4 2.55'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23i)'/%3E%3C/svg%3E");
+  --font-mrz: "OCR B", "OCR-B", "Consolas", "Courier New", monospace;
+  /* the sheets */
+  --paper: #f4f0e7;
+  --paper-shade: #e9e2d3;
+  --paper-edge: #d8cfbc;
+  --rosette: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-130 -130 260 260' fill='none' stroke='rgba(140,52,74,0.11)' stroke-width='0.5'%3E%3Cellipse rx='118' ry='38' transform='rotate(0)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(6)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(12)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(18)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(24)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(30)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(36)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(42)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(48)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(54)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(60)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(66)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(72)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(78)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(84)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(90)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(96)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(102)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(108)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(114)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(120)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(126)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(132)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(138)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(144)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(150)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(156)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(162)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(168)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(174)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(3)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(11)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(19)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(27)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(35)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(43)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(51)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(59)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(67)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(75)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(83)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(91)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(99)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(107)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(115)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(123)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(131)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(139)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(147)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(155)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(163)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(171)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(179)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(0)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(12)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(24)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(36)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(48)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(60)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(72)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(84)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(96)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(108)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(120)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(132)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(144)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(156)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(168)'/%3E%3Ccircle r='122'/%3E%3Ccircle r='126'/%3E%3C/svg%3E");
+  --waves: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='24' fill='none' stroke='rgba(46,110,98,0.085)' stroke-width='0.6'%3E%3Cpath d='M0 6C20 0 40 0 60 6S100 12 120 6M0 6C20 12 40 12 60 6S100 0 120 6M0 18C20 12 40 12 60 18S100 24 120 18M0 18C20 24 40 24 60 18S100 12 120 18'/%3E%3C/svg%3E");
+  --spine-shadow: rgba(60, 30, 20, 0.16);
+  --thread: rgba(74, 28, 38, 0.45);
+  --rule: #cbbfa8;
+  --sheet-inset: rgba(255, 255, 255, 0.35);
+  /* stamp inks */
+  --stamp-city: #4b3a86;
+  --stamp-beach: #186a72;
+  --stamp-mountain: #2f5d50;
+  --stamp-blend: multiply;
+  /* the names from the first themes, kept because the components use them */
+  --sky-400: #8a3a4a;
+  --sky-500: #6e2a37;
+  --sky-600: #5a2230;
+  --sky-700: #4a1c26;
+  --ink: #2b2420;
+  --ink-soft: #6f6359;
+  --heading: #5a1f2b;
+  --accent-text: #6e2a37;
+  --text-faint: #a3978a;
+  --title-ink: #5a1f2b;
+  --surface: #f4f0e7;
+  --surface-soft: #ece6d9;
+  --surface-glass: #f4f0e7;
+  --input-bg: rgba(255, 255, 255, 0.55);
+  --border-soft: #d8cfbc;
+  --border-strong: #b9ad97;
+  --row-hover: rgba(90, 31, 43, 0.045);
+  --chip-bg: #e7dfcf;
+  --chip-fg: #5a4630;
+  --badge-city-bg: rgba(75, 58, 134, 0.1);
+  --badge-city-fg: #4b3a86;
+  --badge-beach-bg: rgba(24, 106, 114, 0.1);
+  --badge-beach-fg: #186a72;
+  --badge-mountain-bg: rgba(47, 93, 80, 0.12);
+  --badge-mountain-fg: #2f5d50;
+  --visited-accent-top: #2f5d50;
+  --visited-accent-bottom: #2f5d50;
+  --visited-fg: #2f5d50;
+  --visited-pill-bg: transparent;
+  --danger: #a3333d;
+  --danger-soft: rgba(163, 51, 61, 0.08);
+  --danger-glow: rgba(163, 51, 61, 0.3);
+  --star-empty: #d3c8b4;
+  --gold: #a8844c;
+  --gold-ring: rgba(168, 132, 76, 0.28);
+  --btn-bg: #4a1c26;
+  --btn-bg-hover: #5e2633;
+  --btn-ink: #f0dbab;
+  --shadow-card: 0 30px 60px -30px rgba(10, 2, 4, 0.75);
+  --shadow-item: 0 8px 18px -12px rgba(43, 36, 32, 0.4);
+  --shadow-btn: 0 0 #0000;
+  --globe-ocean: #e5e3d8;
+  --globe-land: #f7f4ed;
+  --globe-border: #c3b7a0;
+  --globe-grid: rgba(90, 31, 43, 0.07);
+  --globe-planned: #e8d6ae;
+  --globe-hatch-bg: #dbe6df;
+  --globe-hatch-line: #2f5d50;
+  --globe-pin-planned: #6e2a37;
+  --globe-pin-visited: #2f5d50;
+}
+
+/* Dark: the passport read by lamplight. The system setting is used
+   until the button chooses a theme; then the button wins. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #2a2420;
+    --paper-shade: #231e1a;
+    --paper-edge: #3a322b;
+    --rosette: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-130 -130 260 260' fill='none' stroke='rgba(214,180,120,0.09)' stroke-width='0.5'%3E%3Cellipse rx='118' ry='38' transform='rotate(0)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(6)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(12)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(18)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(24)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(30)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(36)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(42)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(48)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(54)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(60)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(66)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(72)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(78)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(84)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(90)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(96)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(102)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(108)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(114)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(120)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(126)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(132)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(138)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(144)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(150)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(156)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(162)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(168)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(174)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(3)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(11)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(19)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(27)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(35)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(43)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(51)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(59)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(67)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(75)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(83)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(91)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(99)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(107)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(115)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(123)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(131)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(139)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(147)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(155)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(163)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(171)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(179)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(0)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(12)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(24)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(36)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(48)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(60)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(72)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(84)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(96)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(108)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(120)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(132)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(144)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(156)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(168)'/%3E%3Ccircle r='122'/%3E%3Ccircle r='126'/%3E%3C/svg%3E");
+    --waves: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='24' fill='none' stroke='rgba(214,180,120,0.06)' stroke-width='0.6'%3E%3Cpath d='M0 6C20 0 40 0 60 6S100 12 120 6M0 6C20 12 40 12 60 6S100 0 120 6M0 18C20 12 40 12 60 18S100 24 120 18M0 18C20 24 40 24 60 18S100 12 120 18'/%3E%3C/svg%3E");
+    --spine-shadow: rgba(0, 0, 0, 0.35);
+    --thread: rgba(201, 166, 107, 0.4);
+    --rule: #4a3f35;
+    --sheet-inset: rgba(0, 0, 0, 0.14);
+    --stamp-city: #a99be0;
+    --stamp-beach: #6cc3c9;
+    --stamp-mountain: #8fc7b2;
+    --stamp-blend: normal;
+    --sky-400: #c9a66b;
+    --sky-500: #c9a66b;
+    --sky-600: #b08d57;
+    --sky-700: #9c7a45;
+    --ink: #eee5d7;
+    --ink-soft: #b8aa98;
+    --heading: #e6cf9f;
+    --accent-text: #e6cf9f;
+    --text-faint: #85786a;
+    --title-ink: #e6cf9f;
+    --surface: #2a2420;
+    --surface-soft: #231e1a;
+    --surface-glass: #2a2420;
+    --input-bg: rgba(0, 0, 0, 0.15);
+    --border-soft: #4a3f35;
+    --border-strong: #6a5c4d;
+    --row-hover: rgba(201, 166, 107, 0.06);
+    --chip-bg: #3a322b;
+    --chip-fg: #e6cf9f;
+    --badge-city-bg: rgba(169, 155, 224, 0.14);
+    --badge-city-fg: #c4b9f0;
+    --badge-beach-bg: rgba(108, 195, 201, 0.14);
+    --badge-beach-fg: #9ed7db;
+    --badge-mountain-bg: rgba(143, 199, 178, 0.14);
+    --badge-mountain-fg: #a9d6c4;
+    --visited-accent-top: #8fc7b2;
+    --visited-accent-bottom: #8fc7b2;
+    --visited-fg: #8fc7b2;
+    --visited-pill-bg: transparent;
+    --danger: #e07a7f;
+    --danger-soft: rgba(224, 122, 127, 0.12);
+    --danger-glow: rgba(224, 122, 127, 0.35);
+    --star-empty: #4a3f35;
+    --gold: #c9a66b;
+    --gold-ring: rgba(201, 166, 107, 0.3);
+    --btn-bg: #c9a66b;
+    --btn-bg-hover: #d8b97f;
+    --btn-ink: #2e0f16;
+    --shadow-card: 0 30px 60px -30px rgba(0, 0, 0, 0.9);
+    --shadow-item: 0 8px 18px -12px rgba(0, 0, 0, 0.7);
+    --shadow-btn: 0 0 #0000;
+    --globe-ocean: #1d1916;
+    --globe-land: #3a322b;
+    --globe-border: #5f5246;
+    --globe-grid: rgba(201, 166, 107, 0.08);
+    --globe-planned: #6b5636;
+    --globe-hatch-bg: #1c3530;
+    --globe-hatch-line: #8fc7b2;
+    --globe-pin-planned: #e6cf9f;
+    --globe-pin-visited: #8fc7b2;
+  }
+
+}
+
+:root[data-theme="dark"] {
+  --paper: #2a2420;
+  --paper-shade: #231e1a;
+  --paper-edge: #3a322b;
+  --rosette: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-130 -130 260 260' fill='none' stroke='rgba(214,180,120,0.09)' stroke-width='0.5'%3E%3Cellipse rx='118' ry='38' transform='rotate(0)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(6)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(12)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(18)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(24)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(30)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(36)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(42)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(48)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(54)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(60)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(66)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(72)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(78)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(84)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(90)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(96)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(102)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(108)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(114)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(120)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(126)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(132)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(138)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(144)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(150)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(156)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(162)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(168)'/%3E%3Cellipse rx='118' ry='38' transform='rotate(174)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(3)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(11)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(19)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(27)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(35)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(43)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(51)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(59)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(67)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(75)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(83)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(91)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(99)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(107)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(115)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(123)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(131)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(139)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(147)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(155)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(163)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(171)'/%3E%3Cellipse rx='80' ry='20' transform='rotate(179)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(0)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(12)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(24)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(36)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(48)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(60)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(72)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(84)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(96)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(108)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(120)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(132)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(144)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(156)'/%3E%3Cellipse rx='42' ry='9' transform='rotate(168)'/%3E%3Ccircle r='122'/%3E%3Ccircle r='126'/%3E%3C/svg%3E");
+  --waves: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='24' fill='none' stroke='rgba(214,180,120,0.06)' stroke-width='0.6'%3E%3Cpath d='M0 6C20 0 40 0 60 6S100 12 120 6M0 6C20 12 40 12 60 6S100 0 120 6M0 18C20 12 40 12 60 18S100 24 120 18M0 18C20 24 40 24 60 18S100 12 120 18'/%3E%3C/svg%3E");
+  --spine-shadow: rgba(0, 0, 0, 0.35);
+  --thread: rgba(201, 166, 107, 0.4);
+  --rule: #4a3f35;
+  --sheet-inset: rgba(0, 0, 0, 0.14);
+  --stamp-city: #a99be0;
+  --stamp-beach: #6cc3c9;
+  --stamp-mountain: #8fc7b2;
+  --stamp-blend: normal;
+  --sky-400: #c9a66b;
+  --sky-500: #c9a66b;
+  --sky-600: #b08d57;
+  --sky-700: #9c7a45;
+  --ink: #eee5d7;
+  --ink-soft: #b8aa98;
+  --heading: #e6cf9f;
+  --accent-text: #e6cf9f;
+  --text-faint: #85786a;
+  --title-ink: #e6cf9f;
+  --surface: #2a2420;
+  --surface-soft: #231e1a;
+  --surface-glass: #2a2420;
+  --input-bg: rgba(0, 0, 0, 0.15);
+  --border-soft: #4a3f35;
+  --border-strong: #6a5c4d;
+  --row-hover: rgba(201, 166, 107, 0.06);
+  --chip-bg: #3a322b;
+  --chip-fg: #e6cf9f;
+  --badge-city-bg: rgba(169, 155, 224, 0.14);
+  --badge-city-fg: #c4b9f0;
+  --badge-beach-bg: rgba(108, 195, 201, 0.14);
+  --badge-beach-fg: #9ed7db;
+  --badge-mountain-bg: rgba(143, 199, 178, 0.14);
+  --badge-mountain-fg: #a9d6c4;
+  --visited-accent-top: #8fc7b2;
+  --visited-accent-bottom: #8fc7b2;
+  --visited-fg: #8fc7b2;
+  --visited-pill-bg: transparent;
+  --danger: #e07a7f;
+  --danger-soft: rgba(224, 122, 127, 0.12);
+  --danger-glow: rgba(224, 122, 127, 0.35);
+  --star-empty: #4a3f35;
+  --gold: #c9a66b;
+  --gold-ring: rgba(201, 166, 107, 0.3);
+  --btn-bg: #c9a66b;
+  --btn-bg-hover: #d8b97f;
+  --btn-ink: #2e0f16;
+  --shadow-card: 0 30px 60px -30px rgba(0, 0, 0, 0.9);
+  --shadow-item: 0 8px 18px -12px rgba(0, 0, 0, 0.7);
+  --shadow-btn: 0 0 #0000;
+  --globe-ocean: #1d1916;
+  --globe-land: #3a322b;
+  --globe-border: #5f5246;
+  --globe-grid: rgba(201, 166, 107, 0.08);
+  --globe-planned: #6b5636;
+  --globe-hatch-bg: #1c3530;
+  --globe-hatch-line: #8fc7b2;
+  --globe-pin-planned: #e6cf9f;
+  --globe-pin-visited: #8fc7b2;
+}
+
+/* ---------- The page ---------- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  min-height: 100%;
+  background: var(--cover-deep);
+}
+
+/* the leather cover around everything */
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 24px 60px;
+  overflow-x: hidden;
+  background: var(--grain),
+    radial-gradient(ellipse at 50% 0%, rgba(255, 210, 160, 0.1), transparent 60%),
+    linear-gradient(170deg, #5a2230 0%, var(--cover) 45%, var(--cover-deep) 100%);
+  background-attachment: fixed;
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+::selection {
+  background: var(--cover);
+  color: var(--foil-text);
+}
+
+/* ---------- A sheet of the passport (the panel of every page) ---------- */
+.card-box {
+  position: relative;
+  width: 100%;
+  padding: 28px 28px 30px;
+  border: none;
+  border-radius: 6px;
+  background: var(--rosette) center 46% / min(440px, 80%) no-repeat,
+    var(--waves) 0 0 / 120px 24px repeat,
+    var(--paper);
+  /* the edges of the sheets below, then the shadow on the leather */
+  box-shadow: 0 1px 0 var(--paper-shade),
+    0 2px 0 var(--paper-edge),
+    0 3px 0 var(--paper-shade),
+    0 4px 0 var(--paper-edge),
+    0 5px 0 var(--paper-shade),
+    var(--shadow-card);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.card-title {
+  position: relative;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  color: var(--title-ink);
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+/* the printed line under every title */
+.card-title::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  border-radius: 3px;
+  background: var(--rule);
+}
+
+.empty-message {
+  padding: 26px 0;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  font-style: italic;
+  text-align: center;
+}
+
+/* ---------- Checkboxes ---------- */
+.card-check {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--sky-500);
+  cursor: pointer;
+}
+
+/* ---------- Badges for the kind of place ---------- */
+.badge {
+  display: inline-block;
+  padding: 3px 11px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.badge-city-break {
+  background-color: var(--badge-city-bg);
+  color: var(--badge-city-fg);
+}
+
+.badge-beach {
+  background-color: var(--badge-beach-bg);
+  color: var(--badge-beach-fg);
+}
+
+.badge-mountain {
+  background-color: var(--badge-mountain-bg);
+  color: var(--badge-mountain-fg);
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+/* a Link that looks like a button */
+a.btn {
+  display: inline-block;
+  text-decoration: none;
+}
+
+.btn-primary {
+  border: none;
+  background: var(--btn-bg);
+  color: var(--btn-ink);
+  letter-spacing: 0.02em;
+}
+
+.btn-primary:hover {
+  background: var(--btn-bg-hover);
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
+}
+
+.btn-ghost {
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--accent-text);
+}
+
+.btn-ghost:hover {
+  background: var(--chip-bg);
+}
+
+.btn-small {
+  padding: 7px 14px;
+  font-size: 0.78rem;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+  box-shadow: none;
+}
+
+.btn-primary:disabled:hover {
+  background: var(--btn-bg);
+  transform: none;
+}
+
+.btn:focus-visible,
+.card-check:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* two selects side by side (the period: from, to) */
+.detail-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.detail-pair select {
+  width: 100%;
+}
+
+/* ---------- Stage 6: loading and error messages ---------- */
+.info {
+  color: var(--ink-soft);
+  font-style: italic;
+  animation: riseIn 0.6s cubic-bezier(0.2, 0.8, 0.25, 1) backwards,
+    pulseSoft 1.6s ease-in-out infinite;
+}
+
+.error {
+  border: 1px solid var(--danger-glow);
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-weight: 600;
+  animation: riseIn 0.6s cubic-bezier(0.2, 0.8, 0.25, 1) backwards;
+}
+
+.error code {
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: var(--surface);
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-size: 0.88em;
+  font-weight: 700;
+}
+
+/* above the page that is open */
+.page-status {
+  align-self: stretch;
+  margin-bottom: 24px;
+}
+
+/* ---------- Page widths ---------- */
+/* one sheet, not too wide: About, Page not found */
+.page-single {
+  width: 100%;
+  max-width: 820px;
+}
+
+/* the whole width: the globe, Get inspired */
+.page-wide {
+  width: 100%;
+}
+
+/* ---------- Small screens ---------- */
+@media (max-width: 560px) {
+  body {
+    padding: 24px 12px 48px;
+  }
+
+  .card-box {
+    padding: 22px 18px;
+  }
+}
+
+/* ---------- Respect reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+}
+
+@keyframes pulseSoft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}

@@ -1,0 +1,411 @@
+.chip {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: var(--chip-bg);
+  color: var(--chip-fg);
+  white-space: nowrap;
+}
+
+/* the globe card takes the whole width, above the form and the list */
+.globeStage {
+  display: flex;
+  justify-content: center;
+}
+
+.globeSvg {
+  width: 100%;
+  aspect-ratio: 1;
+  cursor: grab;
+  /* a vertical swipe on a phone still scrolls the page */
+  user-select: none;
+}
+
+.globeSvg:active {
+  cursor: grabbing;
+}
+
+.globeOcean {
+  fill: var(--globe-ocean);
+}
+
+.globeGraticule {
+  fill: none;
+  stroke: var(--globe-grid);
+  stroke-width: 0.6;
+}
+
+.globeLand {
+  fill: var(--globe-land);
+  stroke: var(--globe-border);
+  stroke-width: 0.5;
+}
+
+.globePlanned {
+  fill: var(--globe-planned);
+  stroke: var(--globe-border);
+  stroke-width: 0.6;
+}
+
+.globeVisited {
+  stroke: var(--globe-hatch-line);
+  stroke-width: 1;
+  animation: hatchIn 1.1s ease both;
+}
+
+/* the country that was just ticked glows for a few seconds */
+.globeVisited.isNew {
+  stroke-width: 2;
+  animation: hatchIn 1.1s ease both,
+    countryGlow 1.4s ease-in-out 0.4s 2;
+}
+
+.globeHatchBg {
+  fill: var(--globe-hatch-bg);
+}
+
+.globeHatchLine {
+  fill: var(--globe-hatch-line);
+}
+
+.globeShine {
+  pointer-events: none;
+}
+
+.globeOutline {
+  fill: none;
+  stroke: var(--globe-border);
+  stroke-width: 1.2;
+  pointer-events: none;
+}
+
+/* pins for the destinations */
+.globePinDot {
+  fill: var(--globe-pin-planned);
+  stroke: #ffffff;
+  stroke-width: 1.6;
+}
+
+.globePin.isVisited .globePinDot {
+  fill: var(--globe-pin-visited);
+}
+
+.globePinHalo {
+  fill: var(--globe-pin-visited);
+  opacity: 0.35;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pinPulse 2.4s ease-out infinite;
+}
+
+/* the text next to the globe */
+.globeLead {
+  margin-bottom: 20px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+.globeStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.globeStat {
+  display: flex;
+  flex-direction: column;
+  min-width: 140px;
+  padding: 14px 18px;
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+}
+
+.globeStatValue {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--heading);
+}
+
+.globeStatLabel {
+  margin-top: 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+
+.globeChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 18px;
+  list-style: none;
+}
+
+.globeChip {
+  background: var(--visited-pill-bg);
+  color: var(--visited-fg);
+}
+
+.globeChip.isNew {
+  animation: chipPop 0.6s cubic-bezier(0.2, 0.8, 0.25, 1.4);
+}
+
+.globeLegend {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, max-content));
+  gap: 8px 22px;
+  list-style: none;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.globeLegend li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legendSwatch {
+  width: 18px;
+  height: 12px;
+  border: 1px solid var(--globe-border);
+  border-radius: 3px;
+}
+
+.swatchVisited {
+  border-color: var(--globe-hatch-line);
+  background: repeating-linear-gradient(
+    45deg,
+    var(--globe-hatch-line) 0 2px,
+    var(--globe-hatch-bg) 2px 5px
+  );
+}
+
+.swatchPlanned {
+  background: var(--globe-planned);
+}
+
+.legendDot {
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--globe-border);
+}
+
+.dotVisited {
+  background: var(--globe-pin-visited);
+}
+
+.dotPlanned {
+  background: var(--globe-pin-planned);
+}
+
+.globeNote {
+  margin-top: 16px;
+  font-size: 0.76rem;
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+/* =========================================================
+Travel globe page: zoom buttons and the list of places
+========================================================= */
+/* on its own page the globe takes every gesture, pinch included */
+.globeSvg {
+  touch-action: none;
+}
+
+.globeStage {
+  position: relative;
+}
+
+/* + / − / back, in the bottom right corner of the globe */
+.globeControls {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.globeControl {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  background: var(--surface-glass);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-item);
+  color: var(--accent-text);
+  font-family: var(--font-body);
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.globeControl:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: var(--surface);
+}
+
+.globeControl:active:not(:disabled) {
+  transform: scale(0.92);
+}
+
+.globeControl:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.globeControl:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* the destinations next to the globe: tick one, or click it to fly there */
+.globePlaces {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 260px;
+  margin-bottom: 18px;
+  padding: 6px;
+  overflow-y: auto;
+  list-style: none;
+  border: 1px solid var(--border-soft);
+  border-radius: 14px;
+}
+
+.globePlace {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  transition: background 0.2s ease;
+}
+
+.globePlace:hover {
+  background: var(--row-hover);
+}
+
+.globePlaceButton {
+  display: flex;
+  flex: 1;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+  padding: 7px 4px;
+  border: none;
+  background: none;
+  font-family: inherit;
+  text-align: left;
+}
+
+.globePlaceButton:disabled {
+  cursor: default;
+}
+
+.globePlaceButton:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.globePlaceName {
+  overflow: hidden;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.globePlace.isVisited .globePlaceName {
+  color: var(--visited-fg);
+}
+
+.globePlaceCountry {
+  flex-shrink: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+/* ---------- Other pages: a single sheet ---------- */
+.globeStat,
+.globePlaces {
+  background: var(--sheet-inset);
+}
+
+.globeSvg {
+  filter: drop-shadow(0 14px 24px rgba(43, 36, 32, 0.25));
+}
+
+.globeControl:focus-visible,
+.globePlaceButton:focus-visible {
+  outline-color: var(--gold);
+}
+
+/* ---------- Travel Globe: page 4 the globe, page 5 its notes,
+pages 6 and 7 the stamps of the visited places ---------- */
+.globePageStage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.globePageStage .globeStage {
+  width: 100%;
+}
+
+.globePageStage .globeSvg {
+  max-width: 480px;
+}
+
+/* animations used in this file */
+@keyframes hatchIn {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes countryGlow {
+  50% {
+    stroke-width: 4;
+    filter: drop-shadow(0 0 6px var(--globe-hatch-line));
+  }
+}
+
+@keyframes pinPulse {
+  from {
+    transform: scale(0.6);
+    opacity: 0.5;
+  }
+  to {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+@keyframes chipPop {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+}

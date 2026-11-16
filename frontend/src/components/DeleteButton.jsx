@@ -1,3 +1,5 @@
+import styles from "./DeleteButton.module.css";
+
 // Round icon button. The lid tilts open on hover (see .bin-lid in App.css).
 // The name goes in aria-label, because the icon alone says nothing to a screen reader.
 // testId is set only where the automated check should find the button.
@@ -5,7 +7,7 @@ export default function DeleteButton({ label, onDelete, small = false, testId })
   return (
     <button
       type="button"
-      className={small ? "btn-delete btn-delete-small" : "btn-delete"}
+      className={small ? `${styles.btnDelete} ${styles.btnDeleteSmall}` : styles.btnDelete}
       aria-label={`Delete ${label}`}
       title={`Delete ${label}`}
       data-testid={testId}
@@ -23,7 +25,7 @@ export default function DeleteButton({ label, onDelete, small = false, testId })
         strokeLinejoin="round"
         aria-hidden="true"
       >
-        <g className="bin-lid">
+        <g className={styles.binLid}>
           <path d="M4 7h16" />
           <path d="M10 4.5h4" />
         </g>

@@ -1,0 +1,353 @@
+.inspireSubtitle {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+
+/* the filters, pressed into the leather in gold */
+.inspireDesk {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 30px;
+  color: var(--foil-text);
+}
+
+.deskTabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.deskTab {
+  padding: 7px 16px;
+  border: 1px solid rgba(201, 166, 107, 0.4);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--foil-text);
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.deskTab:hover {
+  background: rgba(201, 166, 107, 0.1);
+}
+
+.deskTab[aria-pressed="true"] {
+  border-color: transparent;
+  background: var(--foil);
+  color: var(--cover-deep);
+}
+
+.deskFields {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 14px 26px;
+}
+
+.deskField {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 150px;
+}
+
+.deskField span {
+  color: rgba(230, 207, 159, 0.65);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.deskField select,
+.deskField input {
+  padding: 6px 2px 5px;
+  border: none;
+  border-bottom: 1px solid rgba(201, 166, 107, 0.5);
+  border-radius: 0;
+  background: transparent;
+  color: var(--foil-text);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.deskField select:focus,
+.deskField input:focus {
+  outline: none;
+  border-bottom-color: #f0dbab;
+  box-shadow: 0 1px 0 0 #f0dbab;
+}
+
+.deskField option {
+  background: var(--cover-deep);
+  color: #f0dbab;
+}
+
+.deskField input::placeholder {
+  color: rgba(230, 207, 159, 0.4);
+}
+
+.deskSearch {
+  min-width: 220px;
+}
+
+.deskSurprise {
+  padding: 9px 20px;
+  border: none;
+  border-radius: 999px;
+  background: var(--foil);
+  color: var(--cover-deep);
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.deskSurprise:hover {
+  filter: brightness(1.08);
+}
+
+.deskSurprise:disabled {
+  opacity: 0.5;
+  cursor: default;
+  filter: none;
+}
+
+.deskSummary {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  color: rgba(230, 207, 159, 0.75);
+  font-size: 0.85rem;
+}
+
+.deskClear {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--foil-text);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.deskTab:focus-visible,
+.deskSurprise:focus-visible,
+.deskClear:focus-visible {
+  outline: 2px solid #f0dbab;
+  outline-offset: 3px;
+}
+
+/* one visa: a printed sticker with a photo, a few fields and a machine line */
+.visa {
+  --visa-ink: var(--stamp-mountain);
+  position: relative;
+  display: grid;
+  grid-template-columns: 128px minmax(0, 1fr);
+  gap: 18px;
+  padding: 16px 18px 34px;
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--visa-ink);
+  border-radius: 6px;
+  background: repeating-linear-gradient(135deg, transparent 0 7px, color-mix(in srgb, var(--visa-ink) 5%, transparent) 7px 8px),
+    var(--sheet-inset);
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.3s ease;
+}
+
+.visaCityBreak {
+  --visa-ink: var(--stamp-city);
+}
+
+.visaBeach {
+  --visa-ink: var(--stamp-beach);
+}
+
+.visaPhoto > * {
+  aspect-ratio: 4 / 5;
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px var(--rule);
+}
+
+.visaPhoto img {
+  filter: sepia(0.15) saturate(0.9);
+}
+
+.visaBody {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.visaHead {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--visa-ink);
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-variant: small-caps;
+  letter-spacing: 0.06em;
+}
+
+.visaRegion {
+  color: var(--text-faint);
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-variant: normal;
+  letter-spacing: 0;
+}
+
+.visaTitle {
+  color: var(--title-ink);
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.visaText {
+  color: var(--ink-soft);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.visaFields {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  justify-content: start;
+  gap: 4px 22px;
+  margin: 4px 0 6px;
+}
+
+.visaFields dt {
+  color: var(--text-faint);
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+
+.visaFields dd {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.visaAdd {
+  align-self: flex-start;
+  margin-top: auto;
+  padding: 7px 16px;
+  font-size: 0.78rem;
+}
+
+.visa.isAdded .visaAdd {
+  border: 1px dashed var(--border-strong);
+  background: transparent;
+  color: var(--text-faint);
+  opacity: 1;
+}
+
+.visaMrz {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 9px;
+  overflow: hidden;
+  color: var(--text-faint);
+  font-family: var(--font-mrz);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+  opacity: 0.8;
+}
+
+/* already in My Travel List: an entry stamp across the visa */
+.visa.isAdded::after {
+  content: "Added";
+  position: absolute;
+  right: 22px;
+  bottom: 40px;
+  padding: 13px 10px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  outline: 1px solid currentColor;
+  outline-offset: 3px;
+  color: var(--visa-ink);
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  text-transform: uppercase;
+  transform: rotate(-12deg);
+  -webkit-mask-image: var(--ink-texture);
+  mask-image: var(--ink-texture);
+  -webkit-mask-size: 90px 90px;
+  mask-size: 90px 90px;
+  mix-blend-mode: var(--stamp-blend);
+  pointer-events: none;
+}
+
+/* chosen by "Surprise me" */
+.visa.isPicked {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px var(--gold), 0 10px 28px rgba(168, 132, 76, 0.28);
+}
+
+/* ---------- Get inspired: the visa pages ---------- */
+.visaPage {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.visaPage .inspireSubtitle {
+  max-width: 46ch;
+  margin: -6px 0 4px;
+  line-height: 1.5;
+}
+
+.visaEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 520px) {
+  .visa {
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: 14px;
+    padding: 14px 14px 32px;
+  }
+
+  .visaFields {
+    grid-template-columns: repeat(2, auto);
+  }
+
+  .deskField,
+  .deskSearch {
+    min-width: 0;
+    flex: 1 1 140px;
+  }
+
+}
+
+/* no photo found on Wikipedia: an empty frame, like a photo still to be glued in */
+.visaPhoto:empty {
+  aspect-ratio: 4 / 5;
+  border: 1px dashed var(--border-strong);
+  border-radius: 3px;
+}

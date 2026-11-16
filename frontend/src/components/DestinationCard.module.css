@@ -1,0 +1,126 @@
+/* One visited place on the Travel Globe pages: a box on the sheet with an ink stamp */
+.destinationCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 15px 16px 15px 22px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--sheet-inset);
+  transition: background 0.3s ease;
+}
+
+.destinationCard.done {
+  min-height: 150px;
+}
+
+/* Stage 5: checkbox + text on the left, delete button on the right */
+.cardRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.cardMain {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.destinationDetails {
+  flex: 1;
+  min-width: 0;
+}
+
+.destinationDetails h3 {
+  margin-bottom: 2px;
+  color: var(--ink);
+  font-size: 1.02rem;
+  font-weight: 700;
+}
+
+.destinationCategory {
+  margin-bottom: 8px;
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* badge row */
+.cardMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+/* the stars sit under the title, lined up with it */
+.rating > * {
+  margin-top: 0;
+  margin-left: 30px;
+}
+
+/* visited: an entry stamp in ink */
+.destinationCard.done::after {
+  content: "Visited";
+  position: absolute;
+  right: 20px;
+  bottom: 18px;
+  padding: 14px 10px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  outline: 1px solid currentColor;
+  outline-offset: 3px;
+  color: var(--stamp-mountain);
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  text-transform: uppercase;
+  transform: rotate(-14deg);
+  -webkit-mask-image: var(--ink-texture);
+  mask-image: var(--ink-texture);
+  -webkit-mask-size: 90px 90px;
+  mask-size: 90px 90px;
+  mix-blend-mode: var(--stamp-blend);
+  pointer-events: none;
+}
+
+/* the ink follows the kind of place, the angle changes from card to card */
+.destinationCard.done:has(:global(.badge-city-break))::after {
+  color: var(--stamp-city);
+}
+
+.destinationCard.done:has(:global(.badge-beach))::after {
+  color: var(--stamp-beach);
+}
+
+.destinationCard.done:nth-child(3n + 2)::after {
+  transform: rotate(9deg);
+}
+
+.destinationCard.done:nth-child(3n + 3)::after {
+  transform: rotate(-5deg);
+}
+
+/* Stage 8: the title opens the detail page */
+.titleLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+.titleLink:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-underline-offset: 3px;
+}
+
+.titleLink:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}

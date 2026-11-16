@@ -1,0 +1,8 @@
+/* the section is only a frame: the filters sit on the leather,
+   the passport below them is the real sheet */
+:global(.card-box).cardBoxWide {
+  grid-column: 1 / -1;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+}

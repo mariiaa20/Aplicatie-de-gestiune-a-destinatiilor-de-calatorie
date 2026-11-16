@@ -1,14 +1,11 @@
 import { useRef, useState } from "react";
 import { useWikiPhoto } from "../hooks/useWikiPhoto.js";
 import { BUDGET_OPTIONS, MONTH_NAMES } from "../utils/travelOptions.js";
+import { LOCATION_TYPES, TRIP_CATEGORIES } from "../constants.js";
+import styles from "./DestinationForm.module.css";
+// the preview uses the same frame as the photos in the rest of the app
+import photoStyles from "./DestinationPhoto.module.css";
 
-// ADAPT: the fields and the fixed values of the travel theme
-const TYPES = [
-  { value: "city-break", label: "City Break" },
-  { value: "beach", label: "Beach" },
-  { value: "mountain", label: "Mountain" }
-];
-const CATEGORIES = ["Vacation", "Business"];
 const TITLE_MAX = 100;
 const HIGHLIGHT_MAX = 140;
 const MAX_FILE_BYTES = 10 * 1024 * 1024;
@@ -45,8 +42,8 @@ function resizeImage(file, maxSide = 800) {
 // Controlled form: React state is the source of truth for every field
 export default function DestinationForm({ onAdd, existingTitles = [] }) {
   const [title, setTitle] = useState("");
-  const [type, setType] = useState(TYPES[0].value);
-  const [category, setCategory] = useState(CATEGORIES[0]);
+  const [type, setType] = useState(LOCATION_TYPES[0].value);
+  const [category, setCategory] = useState(TRIP_CATEGORIES[0]);
   const [periodFrom, setPeriodFrom] = useState("");
   const [periodTo, setPeriodTo] = useState("");
   const [budget, setBudget] = useState("");
@@ -81,8 +78,8 @@ export default function DestinationForm({ onAdd, existingTitles = [] }) {
 
   function resetForm() {
     setTitle("");
-    setType(TYPES[0].value);
-    setCategory(CATEGORIES[0]);
+    setType(LOCATION_TYPES[0].value);
+    setCategory(TRIP_CATEGORIES[0]);
     setPeriodFrom("");
     setPeriodTo("");
     setBudget("");
@@ -151,12 +148,12 @@ export default function DestinationForm({ onAdd, existingTitles = [] }) {
 
   return (
     <form
-      className="destination-form"
+      className={styles.destinationForm}
       onSubmit={handleSubmit}
       noValidate
       data-testid="form"
     >
-      <div className="field">
+      <div className={styles.field}>
         <label htmlFor="dest-title">Destination name</label>
         <input
           id="dest-title"
@@ -177,8 +174,8 @@ export default function DestinationForm({ onAdd, existingTitles = [] }) {
         />
       </div>
 
-      <div className="field-row">
-        <div className="field">
+      <div className={styles.fieldRow}>
+        <div className={styles.field}>
           <label htmlFor="dest-type">Location type</label>
           <select
             id="dest-type"
@@ -186,7 +183,7 @@ export default function DestinationForm({ onAdd, existingTitles = [] }) {
             onChange={(e) => setType(e.target.value)}
             data-testid="form-type"
           >
-            {TYPES.map((t) => (
+            {LOCATION_TYPES.map((t) => (
               <option key={t.value} value={t.value}>
                 {t.label}
               </option>
@@ -194,7 +191,7 @@ export default function DestinationForm({ onAdd, existingTitles = [] }) {
           </select>
         </div>
 
-        <div className="field">
+        <div className={styles.field}>
           <label htmlFor="dest-category">Trip category</label>
           <select
             id="dest-category"
@@ -202,7 +199,7 @@ export default function DestinationForm({ onAdd, existingTitles = [] }) {
             onChange={(e) => setCategory(e.target.value)}
             data-testid="form-category"
           >
-            {CATEGORIES.map((c) => (
+            {TRIP_CATEGORIES.map((c) => (
               <option key={c} value={c}>
                 {c}
               </option>
@@ -211,7 +208,7 @@ export default function DestinationForm({ onAdd, existingTitles = [] }) {
         </div>
       </div>
 
-      <div className="field">
+      <div className={styles.field}>
         <label htmlFor="dest-from">Desired period (optional)</label>
         <div className="detail-pair">
           <select
@@ -240,7 +237,7 @@ export default function DestinationForm({ onAdd, existingTitles = [] }) {
         </div>
       </div>
 
-      <div className="field">
+      <div className={styles.field}>
         <label htmlFor="dest-budget">Budget (optional)</label>
         <select
           id="dest-budget"
@@ -257,7 +254,7 @@ export default function DestinationForm({ onAdd, existingTitles = [] }) {
         </select>
       </div>
 
-      <div className="field">
+      <div className={styles.field}>
         <label htmlFor="dest-highlight">Why go there? (optional)</label>
         <input
           id="dest-highlight"
@@ -270,23 +267,26 @@ export default function DestinationForm({ onAdd, existingTitles = [] }) {
         />
       </div>
 
-      <div className="field">
-        <span className="field-label">Photo</span>
-        <div className="photo-picker">
-          <div className="photo-preview">
+      <div className={styles.field}>
+        <span className={styles.fieldLabel}>Photo</span>
+        <div className={styles.photoPicker}>
+          <div className={styles.photoPreview}>
             {uploadedPhoto ? (
-              <figure className="dest-photo">
+              <figure className={photoStyles.destPhoto}>
                 <img src={uploadedPhoto} alt="Your uploaded photo" />
               </figure>
             ) : autoPhoto.status === "found" ? (
-              <figure className="dest-photo">
+              <figure className={photoStyles.destPhoto}>
                 <img src={autoPhoto.photo.url} alt={`${title} preview`} />
                 <figcaption>Photo: Wikipedia</figcaption>
               </figure>
             ) : autoPhoto.status === "loading" ? (
-              <div className="dest-photo dest-photo-loading" aria-hidden="true" />
+              <div
+                className={`${photoStyles.destPhoto} ${photoStyles.destPhotoLoading}`}
+                aria-hidden="true"
+              />
             ) : (
-              <div className="photo-empty">
+              <div className={styles.photoEmpty}>
                 {autoPhoto.status === "missing"
                   ? "No photo found for this name."
                   : "Type a name to see a photo."}
@@ -294,7 +294,7 @@ export default function DestinationForm({ onAdd, existingTitles = [] }) {
             )}
           </div>
 
-          <div className="photo-actions">
+          <div className={styles.photoActions}>
             {/* a file input cannot be controlled: the browser keeps the file, not React */}
             <input
               ref={fileInputRef}
@@ -319,7 +319,7 @@ export default function DestinationForm({ onAdd, existingTitles = [] }) {
                 Remove
               </button>
             )}
-            {photoError && <p className="photo-error" role="alert">{photoError}</p>}
+            {photoError && <p className={styles.photoError} role="alert">{photoError}</p>}
           </div>
         </div>
       </div>
@@ -327,7 +327,7 @@ export default function DestinationForm({ onAdd, existingTitles = [] }) {
       {error && (
         <p
           id="dest-form-error"
-          className="form-error"
+          className={styles.formError}
           role="alert"
           data-testid="form-error"
         >
@@ -337,7 +337,7 @@ export default function DestinationForm({ onAdd, existingTitles = [] }) {
 
       <button
         type="submit"
-        className="btn btn-primary form-submit"
+        className={`btn btn-primary ${styles.formSubmit}`}
         disabled={saving}
         data-testid="form-submit"
       >

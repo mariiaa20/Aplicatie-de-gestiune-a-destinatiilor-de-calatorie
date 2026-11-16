@@ -1,4 +1,5 @@
 import DestinationCard from "./DestinationCard.jsx";
+import styles from "./DestinationList.module.css";
 
 // Receives the list and the functions and passes them to each card, without changing anything.
 export default function DestinationList({
@@ -13,7 +14,7 @@ export default function DestinationList({
   }
 
   return (
-    <ul className="destinations-list">
+    <ul className={styles.destinationsList}>
       {destinations.map((destination) => (
         <DestinationCard
           key={destination.id}

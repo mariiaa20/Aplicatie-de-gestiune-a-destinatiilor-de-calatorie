@@ -9,11 +9,13 @@ import {
   periodIncludesMonth
 } from "../utils/travelOptions.js";
 import { REGIONS, SUGGESTIONS } from "../data/suggestions.js";
+import { TYPE_LABELS } from "../constants.js";
+import styles from "./InspirationSection.module.css";
 
-const TYPE_LABELS = {
-  "city-break": "City Break",
-  beach: "Beach",
-  mountain: "Mountain"
+// the coloured line of each visa: one ink per kind of place (mountain is the default)
+const VISA_INK = {
+  "city-break": styles.visaCityBreak,
+  beach: styles.visaBeach
 };
 
 const TYPE_TABS = [
@@ -150,28 +152,30 @@ export default function InspirationSection({ destinations = [], onAdd }) {
     const budget = getBudget(suggestion.budget);
 
     const classes = [
-      "visa",
-      `visa-${suggestion.type}`,
-      added ? "is-added" : "",
-      picked === suggestion.title ? "is-picked" : ""
-    ].join(" ");
+      styles.visa,
+      VISA_INK[suggestion.type],
+      added ? styles.isAdded : "",
+      picked === suggestion.title ? styles.isPicked : ""
+    ]
+      .filter(Boolean)
+      .join(" ");
 
     return (
       <article key={suggestion.title} className={classes} data-visa={suggestion.title}>
-        <div className="visa-photo">
+        <div className={styles.visaPhoto}>
           <DestinationPhoto title={suggestion.title} />
         </div>
 
-        <div className="visa-body">
-          <p className="visa-head">
-            <span className="visa-kind">Visa</span>
-            <span className="visa-region">{suggestion.region}</span>
+        <div className={styles.visaBody}>
+          <p className={styles.visaHead}>
+            <span>Visa</span>
+            <span className={styles.visaRegion}>{suggestion.region}</span>
           </p>
 
-          <h3 className="visa-title">{suggestion.title}</h3>
-          <p className="visa-text">{suggestion.highlight}</p>
+          <h3 className={styles.visaTitle}>{suggestion.title}</h3>
+          <p className={styles.visaText}>{suggestion.highlight}</p>
 
-          <dl className="visa-fields">
+          <dl className={styles.visaFields}>
             <div>
               <dt>Type</dt>
               <dd>{TYPE_LABELS[suggestion.type]}</dd>
@@ -188,7 +192,7 @@ export default function InspirationSection({ destinations = [], onAdd }) {
 
           <button
             type="button"
-            className="btn btn-primary visa-add"
+            className={`btn btn-primary ${styles.visaAdd}`}
             disabled={added || savingTitle !== ""}
             onClick={() => handleAdd(suggestion)}
           >
@@ -196,7 +200,7 @@ export default function InspirationSection({ destinations = [], onAdd }) {
           </button>
         </div>
 
-        <p className="visa-mrz" aria-hidden="true">
+        <p className={styles.visaMrz} aria-hidden="true">
           {machineLine(suggestion.title)}
         </p>
       </article>
@@ -206,13 +210,13 @@ export default function InspirationSection({ destinations = [], onAdd }) {
   return (
     <>
       {/* the filters, pressed into the leather above the passport */}
-      <div className="inspire-desk">
-        <div className="desk-tabs" role="group" aria-label="Kind of trip">
+      <div className={styles.inspireDesk}>
+        <div className={styles.deskTabs} role="group" aria-label="Kind of trip">
           {TYPE_TABS.map((tab) => (
             <button
               key={tab.key}
               type="button"
-              className="desk-tab"
+              className={styles.deskTab}
               aria-pressed={filters.type === tab.key}
               onClick={() => changeFilter("type", tab.key)}
             >
@@ -221,8 +225,8 @@ export default function InspirationSection({ destinations = [], onAdd }) {
           ))}
         </div>
 
-        <div className="desk-fields">
-          <label className="desk-field">
+        <div className={styles.deskFields}>
+          <label className={styles.deskField}>
             <span>Region</span>
             <select
               value={filters.region}
@@ -237,7 +241,7 @@ export default function InspirationSection({ destinations = [], onAdd }) {
             </select>
           </label>
 
-          <label className="desk-field">
+          <label className={styles.deskField}>
             <span>Budget</span>
             <select
               value={filters.budget}
@@ -252,7 +256,7 @@ export default function InspirationSection({ destinations = [], onAdd }) {
             </select>
           </label>
 
-          <label className="desk-field">
+          <label className={styles.deskField}>
             <span>When</span>
             <select
               value={filters.month}
@@ -267,7 +271,7 @@ export default function InspirationSection({ destinations = [], onAdd }) {
             </select>
           </label>
 
-          <label className="desk-field desk-search">
+          <label className={`${styles.deskField} ${styles.deskSearch}`}>
             <span>Search</span>
             <input
               type="search"
@@ -279,7 +283,7 @@ export default function InspirationSection({ destinations = [], onAdd }) {
 
           <button
             type="button"
-            className="desk-surprise"
+            className={styles.deskSurprise}
             disabled={notAddedYet.length === 0}
             onClick={surpriseMe}
           >
@@ -287,12 +291,12 @@ export default function InspirationSection({ destinations = [], onAdd }) {
           </button>
         </div>
 
-        <p className="desk-summary" aria-live="polite">
+        <p className={styles.deskSummary} aria-live="polite">
           {visible.length === SUGGESTIONS.length
             ? `${SUGGESTIONS.length} ideas in the passport.`
             : `${visible.length} of ${SUGGESTIONS.length} ideas match.`}
           {hasFilters && (
-            <button type="button" className="desk-clear" onClick={clearFilters}>
+            <button type="button" className={styles.deskClear} onClick={clearFilters}>
               Clear filters
             </button>
           )}
@@ -302,7 +306,6 @@ export default function InspirationSection({ destinations = [], onAdd }) {
       {/* the passport, open on the visa pages */}
       <PassportBook
         ref={bookRef}
-        className="visa-book"
         spread={current}
         spreadCount={spreadCount}
         onSpreadChange={showSpread}
@@ -311,16 +314,16 @@ export default function InspirationSection({ destinations = [], onAdd }) {
           // a new key on every spread, so the pages fade in on a phone
           key={`left-${current}`}
           number={leftNumber}
-          className="visa-page"
+          className={styles.visaPage}
         >
           <h2 className="card-title">Get inspired</h2>
-          <p className="inspire-subtitle">
+          <p className={styles.inspireSubtitle}>
             Each visa is an idea for a trip. Add one and it goes to My Travel List with its best
             season as the period.
           </p>
 
           {visible.length === 0 ? (
-            <div className="visa-empty">
+            <div className={styles.visaEmpty}>
               <p>No ideas match these filters.</p>
               <button type="button" className="btn btn-primary" onClick={clearFilters}>
                 Clear filters
@@ -331,7 +334,7 @@ export default function InspirationSection({ destinations = [], onAdd }) {
           )}
         </BookPage>
 
-        <BookPage key={`right-${current}`} number={leftNumber + 1} className="visa-page">
+        <BookPage key={`right-${current}`} number={leftNumber + 1} className={styles.visaPage}>
           {pages[1].map(renderVisa)}
         </BookPage>
       </PassportBook>

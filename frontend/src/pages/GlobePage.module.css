@@ -1,0 +1,5 @@
+/* the globe page takes the whole width; the spreads are drawn by GlobePassport */
+.globePage {
+  display: flex;
+  flex-direction: column;
+}
