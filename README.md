@@ -174,7 +174,8 @@ Pages:
 | `/destinations/:id` | `DestinationDetailPage` | the data page of one destination |
 | `/globe` | `GlobePage` | the travel globe, then the visited places (pages 4–7) |
 | `/inspiration` | `InspirationPage` | Get inspired, the visa pages (from page 8 on) |
-| `/about` | `AboutPage` | what the app is and how it is made |
+| `/where-next` | `WhereNextPage` | a departure board that picks the next trip |
+| `/about` | `AboutPage` | pages i–ii: contents, the journey so far, a stamp for every stage |
 | anything else | `NotFoundPage` | "Page not found", with a link back to the list |
 
 What the stage added:
@@ -187,3 +188,19 @@ What the stage added:
 - CSS Modules: `index.css` keeps only what every page uses (the colour variables for both themes, the page, the passport sheet `.card-box`, titles, buttons, badges, loading and error messages). Every component and every page has its own `.module.css`, imported as `styles` and used as `className={styles.name}`, so class names never clash between components.
 - New `data-testid` attributes: `nav`, `item-link` (instead of `item-title`), `detail`, `detail-title`, and `loading` / `error` on the detail page, `not-found` on the 404 page. The ones from stage 7 stay where they were.
 
+Extra work in the same stage:
+- About is now pages i and ii of the passport: the table of contents with links, live numbers from the list, and every stage of the project as an entry stamp.
+- Where next? (`/where-next`): a split-flap departure board, like the old ones in airports, picks the next trip at random from My Travel List or from the 40 ideas, with a month filter. The letters turn one by one with a clack made with the Web Audio API (it can be turned off). When the board stops, a boarding pass is printed for that place, with gate, seat, a date in the best season and the class from the budget, and a button to add the place or open its page.
+
+### Checklist
+
+| ID | Requirement | Where (permalink) | How to check |
+| :--- | :--- | :--- | :--- |
+| S8-R1 | header navigation changes page without reload | frontend/src/App.jsx#L15-L27, frontend/src/components/Layout.jsx#L49-L67 | click links, watch Network |
+| S8-R2 | click on an item opens its detail page | frontend/src/components/DestinationsTable.jsx#L157-L164, frontend/src/pages/DestinationDetailPage.jsx | click a title |
+| S8-R3 | refresh on the detail URL works; missing id shows an error | frontend/src/pages/DestinationDetailPage.jsx#L36-L87 | refresh /destinations/1, open /destinations/999 |
+| S8-R4 | unknown URL shows the app 404 page | frontend/src/App.jsx#L25 (path="*"), frontend/src/pages/NotFoundPage.jsx | open /ceva |
+| S8-R5 | each component has its .module.css; index.css only shared styles | frontend/src/components, frontend/src/pages, frontend/src/index.css | read |
+| S8-R6 | data-testid attributes from tables 7.3 and 8.2; detail route /destinations/:id | Layout.jsx, DestinationsTable.jsx, DestinationDetailPage.jsx, NotFoundPage.jsx | querySelector in the console |
+| S8-R7 | README Stage 8 section + AI log | README.md, ai-log/etapa-08.md | read |
+| S8-R8 | commit "Stage 8" pushed | [commit link] | commit history |

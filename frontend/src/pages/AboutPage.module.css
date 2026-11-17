@@ -1,33 +1,248 @@
-/* About: one sheet of the passport, like a page of notes */
-.about p {
-  max-width: 62ch;
-  margin-bottom: 14px;
+/* About: pages i and ii of the passport, before the travel pages */
+.page {
+  display: flex;
+  flex-direction: column;
+}
+
+.intro {
+  max-width: 54ch;
+  margin: -6px 0 18px;
   color: var(--ink-soft);
-  line-height: 1.65;
+  line-height: 1.6;
 }
 
 .heading {
-  margin: 26px 0 10px;
+  margin: 22px 0 10px;
   color: var(--title-ink);
   font-family: var(--font-display);
   font-size: 1.3rem;
   font-weight: 700;
 }
 
-.pages {
+/* the holder's fields, printed on lines like on a data page */
+.holder {
+  margin: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.holder > div {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.holder dt {
+  color: var(--text-faint);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.holder dd {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+/* three numbers from the list, read live */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.stats p {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  max-width: 62ch;
-  margin: 0 0 6px;
-  padding-left: 20px;
+  padding: 10px 14px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--sheet-inset);
   color: var(--ink-soft);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.number {
+  color: var(--title-ink);
+  font-family: var(--font-display);
+  font-size: 2.1rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+/* the table of contents: name . . . . . pages */
+.contents {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.entry {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.entryName {
+  color: var(--title-ink);
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+}
+
+.leader {
+  flex: 1;
+  border-bottom: 2px dotted var(--border-strong);
+  transform: translateY(-4px);
+}
+
+.entryPages {
+  color: var(--ink-soft);
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+}
+
+.entry:hover .entryName {
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-underline-offset: 3px;
+}
+
+.entry:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.entryNote {
+  display: block;
+  color: var(--text-faint);
+  font-size: 0.8rem;
+}
+
+/* ---------- The entry stamps, one for every stage ---------- */
+.stamps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px 14px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stamp {
+  --stamp-ink: var(--stamp-mountain);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 112px;
+  padding: 12px 10px;
+  border: 2px solid currentColor;
+  outline: 1px solid currentColor;
+  outline-offset: 3px;
+  color: var(--stamp-ink);
+  text-align: center;
+  transform: rotate(var(--tilt, 0deg));
+  -webkit-mask-image: var(--ink-texture);
+  mask-image: var(--ink-texture);
+  -webkit-mask-size: 100px 100px;
+  mask-size: 100px 100px;
+  mix-blend-mode: var(--stamp-blend);
+}
+
+.oval {
+  border-radius: 50%;
+}
+
+.box {
+  border-radius: 6px;
+}
+
+.round {
+  justify-self: center;
+  width: 112px;
+  border-radius: 50%;
+}
+
+.inkCity {
+  --stamp-ink: var(--stamp-city);
+}
+
+.inkBeach {
+  --stamp-ink: var(--stamp-beach);
+}
+
+.inkMountain {
+  --stamp-ink: var(--stamp-mountain);
+}
+
+.inkWine {
+  --stamp-ink: var(--title-ink);
+}
+
+.stampStage {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.stampTitle {
+  margin: 2px 0;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.stampNote {
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+
+.stampDate {
+  margin-top: 4px;
+  padding-top: 3px;
+  border-top: 1px solid currentColor;
+  font-family: var(--font-mrz);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+}
+
+/* the next stage: an empty frame, waiting for its stamp */
+.next {
+  border: 2px dashed var(--border-strong);
+  border-radius: 6px;
+  outline: none;
+  color: var(--text-faint);
+  -webkit-mask-image: none;
+  mask-image: none;
+  mix-blend-mode: normal;
+}
+
+.madeWith {
+  max-width: 58ch;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
   line-height: 1.6;
 }
 
-.about a {
-  color: var(--title-ink);
-  font-weight: 700;
-  text-decoration-color: var(--gold);
-  text-underline-offset: 3px;
+@media (max-width: 520px) {
+  .stamps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stats .number {
+    font-size: 1.6rem;
+  }
 }

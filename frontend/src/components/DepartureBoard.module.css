@@ -1,0 +1,181 @@
+/* A split-flap departure board, the kind that clatters in old airports and stations */
+.board {
+  --cell-w: clamp(12px, 1.9vw, 24px);
+  --cell-h: calc(var(--cell-w) * 1.45);
+  --gap: 2px;
+  --flap-top: #2e2c2f;
+  --flap-bottom: #252326;
+  --letter: #f1e6c8;
+  --amber: #ffbf47;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 18px 22px 22px;
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 30%),
+    #141214;
+  /* the metal frame around it */
+  box-shadow:
+    0 0 0 6px #2b2427,
+    0 0 0 7px rgba(201, 166, 107, 0.35),
+    inset 0 2px 12px rgba(0, 0, 0, 0.8),
+    0 30px 60px -20px rgba(0, 0, 0, 0.8);
+  overflow-x: auto;
+}
+
+.boardHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.boardTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--amber);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+}
+
+.boardTitle svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+  transform: rotate(45deg);
+}
+
+.clock {
+  color: var(--letter);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+}
+
+.colon {
+  animation: blink 2s steps(1) infinite;
+}
+
+/* the column names, printed on the frame above the flaps */
+.labels,
+.line {
+  display: flex;
+  gap: calc(var(--cell-w) * 0.7);
+}
+
+.labels {
+  margin-bottom: 6px;
+  color: rgba(241, 230, 200, 0.45);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.labels > span {
+  width: calc(var(--chars) * (var(--cell-w) + var(--gap)));
+}
+
+.line {
+  margin-top: 6px;
+}
+
+.line > span {
+  display: flex;
+  gap: var(--gap);
+}
+
+/* the four columns: they only set the width, the flaps do the rest */
+.colTime,
+.colDestination,
+.colGate,
+.colRemark {
+  flex-shrink: 0;
+}
+
+/* one flap: a dark tile split in the middle, with one letter */
+.cell {
+  position: relative;
+  width: var(--cell-w);
+  height: var(--cell-h);
+  overflow: hidden;
+  border-radius: 3px;
+  background: linear-gradient(var(--flap-top) 0 50%, var(--flap-bottom) 50% 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 1px 1px rgba(0, 0, 0, 0.6);
+  perspective: 120px;
+}
+
+/* the line where the two halves of the flap meet */
+.cell::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.flap {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  color: var(--letter);
+  font-family: var(--font-body);
+  font-size: calc(var(--cell-w) * 0.9);
+  font-weight: 800;
+  line-height: 1;
+  padding-top: 0.08em;
+}
+
+/* every new letter falls from the top half */
+.falling {
+  transform-origin: 50% 0;
+  animation: flapFall 0.09s ease-in;
+}
+
+/* the next departure, once the board has stopped on it */
+.picked .flap {
+  color: var(--amber);
+  text-shadow: 0 0 10px rgba(255, 191, 71, 0.45);
+}
+
+.picked .colRemark .flap {
+  animation: blink 1.1s steps(1) infinite;
+}
+
+@media (max-width: 700px) {
+  .board {
+    --cell-w: clamp(11px, 3.6vw, 18px);
+    padding: 14px 14px 18px;
+  }
+
+  /* on a phone the board keeps only the time and the destination */
+  .colGate,
+  .colRemark {
+    display: none !important;
+  }
+}
+
+@keyframes flapFall {
+  from {
+    transform: rotateX(-75deg);
+    filter: brightness(1.7);
+  }
+  to {
+    transform: rotateX(0);
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.25;
+  }
+}

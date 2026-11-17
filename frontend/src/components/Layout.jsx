@@ -57,6 +57,9 @@ export default function Layout() {
           <NavLink to="/inspiration" className={styles.navLink}>
             Get inspired
           </NavLink>
+          <NavLink to="/where-next" className={styles.navLink}>
+            Where next?
+          </NavLink>
           <NavLink to="/about" className={styles.navLink}>
             About
           </NavLink>
