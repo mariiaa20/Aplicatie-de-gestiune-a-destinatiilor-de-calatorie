@@ -26,7 +26,7 @@ function rowFor(trip, line, remark) {
 export default function WhereNextPage() {
   const { destinations, loading, error, addSuggestion } = useOutletContext();
 
-  const [source, setSource] = useState("list"); // "list" or "ideas"
+  const [source, setSource] = useState("list"); // "list" or "anywhere"
   const [month, setMonth] = useState("");
   const [passenger, setPassenger] = useState("");
   const [sound, setSound] = useState(true);
@@ -39,12 +39,12 @@ export default function WhereNextPage() {
   // the places the board can choose from, with the same fields for both sources
   const pool = useMemo(() => {
     const inList = (title) => destinations.find((d) => d.title.toLowerCase() === title.toLowerCase());
+    const planned = destinations
+      .filter((d) => !d.visited)
+      .map((d) => ({ ...d, from: d.periodFrom, to: d.periodTo }));
+    // "Anywhere": the places still to visit from the list, plus every idea not in it yet
     const trips =
-      source === "list"
-        ? destinations
-            .filter((d) => !d.visited)
-            .map((d) => ({ ...d, from: d.periodFrom, to: d.periodTo }))
-        : SUGGESTIONS.filter((s) => !inList(s.title));
+      source === "list" ? planned : [...planned, ...SUGGESTIONS.filter((s) => !inList(s.title))];
     // places without a period can go any month
     return month ? trips.filter((t) => !t.from || periodIncludesMonth(t.from, t.to, month)) : trips;
   }, [destinations, source, month]);
@@ -123,6 +123,7 @@ export default function WhereNextPage() {
 
       <div className={styles.controls}>
         <div className={styles.tabs} role="group" aria-label="Pick from">
+          <span className={styles.tabsLabel}>Pick from</span>
           <button
             type="button"
             className={styles.tab}
@@ -134,10 +135,10 @@ export default function WhereNextPage() {
           <button
             type="button"
             className={styles.tab}
-            aria-pressed={source === "ideas"}
-            onClick={() => changeSource("ideas")}
+            aria-pressed={source === "anywhere"}
+            onClick={() => changeSource("anywhere")}
           >
-            Get inspired ideas <span className={styles.count}>{ideasLeft}</span>
+            🌍 Anywhere in the world <span className={styles.count}>{planned + ideasLeft}</span>
           </button>
         </div>
 
@@ -190,10 +191,10 @@ export default function WhereNextPage() {
               <p className={styles.empty}>
                 {source === "list"
                   ? "Nothing to pick: every place in My Travel List is visited, or none fits that month."
-                  : "No idea left for that month. Try another month."}
+                  : "No place fits that month. Try another month."}
                 {source === "list" && (
-                  <button type="button" className={styles.switch} onClick={() => changeSource("ideas")}>
-                    Pick from the ideas instead
+                  <button type="button" className={styles.switch} onClick={() => changeSource("anywhere")}>
+                    Pick from anywhere in the world
                   </button>
                 )}
               </p>

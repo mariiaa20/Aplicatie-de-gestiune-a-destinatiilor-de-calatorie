@@ -3,7 +3,7 @@
     {
       "id": 1,
       "title": "Tokyo, Japan",
-      "visited": false,
+      "visited": true,
       "type": "city-break",
       "category": "Vacation",
       "rating": 0,
@@ -29,7 +29,7 @@
     {
       "id": 3,
       "title": "Banff National Park",
-      "visited": false,
+      "visited": true,
       "type": "mountain",
       "category": "Vacation",
       "rating": 0,
