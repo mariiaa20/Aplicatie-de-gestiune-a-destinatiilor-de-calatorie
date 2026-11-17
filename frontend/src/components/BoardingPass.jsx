@@ -1,25 +1,28 @@
 import { Link } from "react-router-dom";
 import { TYPE_LABELS } from "../constants.js";
+import { HOME_AIRPORT } from "../data/airports.js";
 import {
-  airportCode,
   barcodeBars,
-  flightDate,
+  flightDay,
   flightOf,
   gateOf,
+  printedDate,
   seatOf,
+  ticketsUrl,
   travelClass
 } from "../utils/departures.js";
 import styles from "./BoardingPass.module.css";
 
 // the trip always starts at home
-const HOME = { code: "OTP", city: "Bucharest" };
+const HOME = HOME_AIRPORT;
 
 // The ticket printed under the board for the place it stopped on.
-// trip: { title, type, budget, from, to, highlight, id? }  (id only if it is in My Travel List)
+// trip: { title, type, budget, from, to, highlight, airport, id? }  (id only if it is in My Travel List)
 export default function BoardingPass({ trip, passenger, boardingTime, onAdd, saving }) {
   const name = (passenger.trim() || "Traveller").toUpperCase();
-  const code = airportCode(trip.title);
-  const date = flightDate(trip.from, trip.to, trip.title);
+  const code = trip.airport.code;
+  const day = flightDay(trip.from, trip.to, trip.title);
+  const date = printedDate(day);
   const seat = seatOf(trip.title, name);
   const gate = gateOf(trip.title);
   const bars = barcodeBars(trip.title + name);
@@ -45,9 +48,14 @@ export default function BoardingPass({ trip, passenger, boardingTime, onAdd, sav
           </div>
           <div className={styles.to}>
             <p className={styles.code}>{code}</p>
-            <p className={styles.city}>{trip.title}</p>
+            <p className={styles.city}>{trip.airport.city}</p>
           </div>
         </div>
+
+        {/* places without an airport of their own: how to get there from the one you land at */}
+        <p className={styles.then}>
+          {trip.airport.then ? `Then ${trip.airport.then}.` : `You land right in ${trip.title.split(",")[0]}.`}
+        </p>
 
         <dl className={styles.fields}>
           <div>
@@ -60,7 +68,7 @@ export default function BoardingPass({ trip, passenger, boardingTime, onAdd, sav
           </div>
           <div>
             <dt>Date</dt>
-            <dd>{date || "Open date"}</dd>
+            <dd>{date}</dd>
           </div>
           <div>
             <dt>Boarding</dt>
@@ -96,6 +104,15 @@ export default function BoardingPass({ trip, passenger, boardingTime, onAdd, sav
               {saving ? "Saving…" : "Add to my list"}
             </button>
           )}
+          {/* a real search for this flight, on that day; opens in a new tab */}
+          <a
+            href={ticketsUrl(HOME.code, code, day)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-ghost"
+          >
+            Find tickets on Skyscanner ↗
+          </a>
         </div>
       </div>
 

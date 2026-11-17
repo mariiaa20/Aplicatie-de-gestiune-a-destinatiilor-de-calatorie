@@ -92,6 +92,14 @@
   text-align: right;
 }
 
+.then {
+  margin-top: 10px;
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+  font-style: italic;
+  text-align: right;
+}
+
 .path {
   position: relative;
   display: grid;
@@ -159,6 +167,7 @@
 
 .actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
   margin-top: 20px;
 }

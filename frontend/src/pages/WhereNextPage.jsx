@@ -3,7 +3,8 @@ import { useOutletContext } from "react-router-dom";
 import DepartureBoard from "../components/DepartureBoard.jsx";
 import BoardingPass from "../components/BoardingPass.jsx";
 import { SUGGESTIONS } from "../data/suggestions.js";
-import { MONTH_NAMES, periodIncludesMonth } from "../utils/travelOptions.js";
+import { airportFor } from "../data/airports.js";
+import { BUDGET_OPTIONS, MONTH_NAMES, periodIncludesMonth } from "../utils/travelOptions.js";
 import { boardText, gateOf, pickOne, someOthers, timeFromNow } from "../utils/departures.js";
 import { unlockFlapSound } from "../utils/flapSound.js";
 import styles from "./WhereNextPage.module.css";
@@ -11,7 +12,8 @@ import styles from "./WhereNextPage.module.css";
 const LINES = 6;
 const OTHER_REMARKS = ["ON TIME", "ON TIME", "DELAYED", "GATE OPEN", "SCHEDULED", "ON TIME"];
 
-// one line of the board for a trip
+// one line of the board for a trip: the board shows the place itself,
+// the boarding pass says which airport you fly to and how you get there
 function rowFor(trip, line, remark) {
   return {
     time: timeFromNow(20 + line * 15),
@@ -28,6 +30,7 @@ export default function WhereNextPage() {
 
   const [source, setSource] = useState("list"); // "list" or "anywhere"
   const [month, setMonth] = useState("");
+  const [budget, setBudget] = useState("");
   const [passenger, setPassenger] = useState("");
   const [sound, setSound] = useState(true);
   const [pick, setPick] = useState(null); // the trip the board stops on
@@ -45,9 +48,19 @@ export default function WhereNextPage() {
     // "Anywhere": the places still to visit from the list, plus every idea not in it yet
     const trips =
       source === "list" ? planned : [...planned, ...SUGGESTIONS.filter((s) => !inList(s.title))];
-    // places without a period can go any month
-    return month ? trips.filter((t) => !t.from || periodIncludesMonth(t.from, t.to, month)) : trips;
-  }, [destinations, source, month]);
+    return (
+      trips
+        // only places we can fly to: each one gets its airport
+        .map((t) => ({ ...t, airport: airportFor(t.title) }))
+        .filter((t) => t.airport)
+        // places without a period can go any month
+        .filter((t) => !month || !t.from || periodIncludesMonth(t.from, t.to, month))
+        .filter((t) => !budget || t.budget === budget)
+    );
+  }, [destinations, source, month, budget]);
+
+  // places from the list that the board leaves out, because we do not know their airport
+  const noAirport = destinations.filter((d) => !d.visited && !airportFor(d.title));
 
   // before the first pick, the board shows a few scheduled departures
   const idleRows = useMemo(
@@ -98,9 +111,10 @@ export default function WhereNextPage() {
     }
   }
 
-  const planned = destinations.filter((d) => !d.visited).length;
+  // how many places each button can pick from (only places with an airport)
+  const planned = destinations.filter((d) => !d.visited && airportFor(d.title)).length;
   const ideasLeft = SUGGESTIONS.filter(
-    (s) => !destinations.some((d) => d.title.toLowerCase() === s.title.toLowerCase())
+    (s) => airportFor(s.title) && !destinations.some((d) => d.title.toLowerCase() === s.title.toLowerCase())
   ).length;
 
   return (
@@ -155,6 +169,18 @@ export default function WhereNextPage() {
         </label>
 
         <label className={styles.field}>
+          <span>Budget</span>
+          <select value={budget} onChange={(e) => setBudget(e.target.value)}>
+            <option value="">Any budget</option>
+            {BUDGET_OPTIONS.map((option) => (
+              <option key={option.key} value={option.key}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className={styles.field}>
           <span>Passenger</span>
           <input
             type="text"
@@ -190,8 +216,8 @@ export default function WhereNextPage() {
             {pool.length === 0 ? (
               <p className={styles.empty}>
                 {source === "list"
-                  ? "Nothing to pick: every place in My Travel List is visited, or none fits that month."
-                  : "No place fits that month. Try another month."}
+                  ? "Nothing to pick: no place in My Travel List fits these choices."
+                  : "No place fits that month and budget. Try other choices."}
                 {source === "list" && (
                   <button type="button" className={styles.switch} onClick={() => changeSource("anywhere")}>
                     Pick from anywhere in the world
@@ -209,6 +235,13 @@ export default function WhereNextPage() {
               </button>
             )}
           </div>
+
+          {noAirport.length > 0 && (
+            <p className={styles.note}>
+              Not on the board, because they have no airport we know of:{" "}
+              {noAirport.map((d) => d.title).join(", ")}.
+            </p>
+          )}
 
           {/* the pass comes out of the slot under the board once it has stopped */}
           {phase === "landed" && trip && (

@@ -25,14 +25,6 @@ export function boardText(text) {
     .trim();
 }
 
-// a three letter code, like the ones on luggage tags: LIS, NYC, TDP
-export function airportCode(title) {
-  const words = boardText(title).split(" ").filter(Boolean);
-  if (words.length === 1) return words[0].slice(0, 3).padEnd(3, "X");
-  if (words.length === 2) return (words[0][0] + words[1].slice(0, 2)).padEnd(3, "X");
-  return words.slice(0, 3).map((word) => word[0]).join("");
-}
-
 export function gateOf(title) {
   const hash = hashOf(title);
   return "ABCDEF"[hash % 6] + String(((hash >>> 3) % 24) + 1);
@@ -63,17 +55,30 @@ export function timeFromNow(minutes, now = new Date()) {
 
 const MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
-// The day of the flight: the first month of the best season, starting next month.
-// "4" -> "6" in November gives a day in April next year.
-export function flightDate(from, to, title, today = new Date()) {
+// The day of the flight: in the first month of the best season, starting next month.
+// "4" -> "6" in November gives a day in April next year. Returns a Date.
+export function flightDay(from, to, title, today = new Date()) {
   const day = (hashOf(title) % 27) + 1;
   for (let step = 1; step <= 12; step++) {
     const date = new Date(today.getFullYear(), today.getMonth() + step, day);
-    if (!from || periodIncludesMonth(from, to, String(date.getMonth() + 1))) {
-      return `${String(day).padStart(2, "0")} ${MONTHS[date.getMonth()]} ${date.getFullYear()}`;
-    }
+    if (!from || periodIncludesMonth(from, to, String(date.getMonth() + 1))) return date;
   }
-  return "";
+  return new Date(today.getFullYear(), today.getMonth() + 1, day);
+}
+
+// "15 APR 2027", as printed on the pass
+export function printedDate(date) {
+  return `${String(date.getDate()).padStart(2, "0")} ${MONTHS[date.getMonth()]} ${date.getFullYear()}`;
+}
+
+// A search for one-way flights on Skyscanner, already filled in:
+// skyscanner.ro/transport/flights/otp/lis/270415/  (the date is written YYMMDD)
+export function ticketsUrl(fromCode, toCode, date) {
+  const yymmdd =
+    String(date.getFullYear()).slice(2) +
+    String(date.getMonth() + 1).padStart(2, "0") +
+    String(date.getDate()).padStart(2, "0");
+  return `https://www.skyscanner.ro/transport/flights/${fromCode.toLowerCase()}/${toCode.toLowerCase()}/${yymmdd}/`;
 }
 
 // the bars of the barcode: thin and thick, from the text

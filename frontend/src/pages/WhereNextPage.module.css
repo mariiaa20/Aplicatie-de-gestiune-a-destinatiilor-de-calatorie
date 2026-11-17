@@ -208,6 +208,13 @@
   cursor: pointer;
 }
 
+.note {
+  margin-top: -12px;
+  color: rgba(230, 207, 159, 0.6);
+  font-size: 0.8rem;
+  text-align: center;
+}
+
 /* ---------- The pass slides out of the slot under the board ---------- */
 .slot {
   overflow: hidden;
