@@ -190,7 +190,7 @@ What the stage added:
 
 Extra work in the same stage:
 - About is now pages i and ii of the passport: the table of contents with links, live numbers from the list, and every stage of the project as an entry stamp.
-- Where next? (`/where-next`): a split-flap departure board, like the old ones in airports, picks the next trip at random from My Travel List or from the 40 ideas, with a month filter. The letters turn one by one with a clack made with the Web Audio API (it can be turned off). When the board stops, a boarding pass is printed for that place, with gate, seat, a date in the best season and the class from the budget, and a button to add the place or open its page.
+- Where next? (`/where-next`): a split-flap departure board, like the old ones in airports, picks the next trip at random, either from My Travel List or from anywhere in the world (the list plus the 40 ideas), filtered by month and budget. Only places with a real airport can be picked: `data/airports.js` gives each one its airport code, and how to get there when the place has no airport of its own (Vama Veche: fly to Constanța, then 1 h by road). The letters turn one by one with a clack made with the Web Audio API (it can be turned off). When the board stops, a boarding pass is printed with the airport, gate, seat, a date in the best season and the class from the budget, a link that opens the flight search on Skyscanner for that day, and a button to add the place or open its page.
 
 ### Checklist
 
@@ -203,4 +203,4 @@ Extra work in the same stage:
 | S8-R5 | each component has its .module.css; index.css only shared styles | frontend/src/components, frontend/src/pages, frontend/src/index.css | read |
 | S8-R6 | data-testid attributes from tables 7.3 and 8.2; detail route /destinations/:id | Layout.jsx, DestinationsTable.jsx, DestinationDetailPage.jsx, NotFoundPage.jsx | querySelector in the console |
 | S8-R7 | README Stage 8 section + AI log | README.md, ai-log/etapa-08.md | read |
-| S8-R8 | commit "Stage 8" pushed | [commit link] | commit history |
+| S8-R8 | commit "Stage 8" pushed | https://github.com/mariiaa20/Aplicatie-de-gestiune-a-destinatiilor-de-calatorie/commit/b6d70e5 | commit history |
