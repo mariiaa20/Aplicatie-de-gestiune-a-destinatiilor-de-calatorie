@@ -14,6 +14,8 @@ export default function useDestinations() {
   const [destinations, setDestinations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  // the last destination deleted, kept for a few seconds so it can be brought back
+  const [lastDeleted, setLastDeleted] = useState(null); // { item, index }
 
   // Runs once, after the first render
   useEffect(() => {
@@ -61,6 +63,7 @@ export default function useDestinations() {
       const updated = await updateDestination(id, changes);
       setDestinations((prev) => prev.map((dest) => (dest.id === id ? updated : dest)));
       setError(null);
+      return updated; // the detail page shows the saved version
     } catch (err) {
       setError(err.message);
     }
@@ -74,15 +77,37 @@ export default function useDestinations() {
 
   const rateDestination = (id, rating) => changeDestination(id, { rating });
 
+  // Deleting really deletes on the server, at once. The copy kept in lastDeleted
+  // lets "Undo" send it back with the same id, so its links still work.
   async function removeDestination(id) {
+    const index = destinations.findIndex((d) => d.id === id);
     try {
       await deleteDestination(id);
       setDestinations((prev) => prev.filter((dest) => dest.id !== id));
+      setLastDeleted(index === -1 ? null : { item: destinations[index], index });
+      setError(null);
+      return true;
+    } catch (err) {
+      setError(err.message);
+      return false;
+    }
+  }
+
+  async function undoDelete() {
+    if (!lastDeleted) return;
+    const { item, index } = lastDeleted;
+    setLastDeleted(null);
+    try {
+      const restored = await createDestination(item);
+      // back in the same place in the list
+      setDestinations((prev) => [...prev.slice(0, index), restored, ...prev.slice(index)]);
       setError(null);
     } catch (err) {
       setError(err.message);
     }
   }
+
+  const forgetDeleted = () => setLastDeleted(null);
 
   return {
     destinations,
@@ -93,6 +118,9 @@ export default function useDestinations() {
     changeDestination,
     toggleVisited,
     rateDestination,
-    removeDestination
+    removeDestination,
+    lastDeleted,
+    undoDelete,
+    forgetDeleted
   };
 }

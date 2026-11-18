@@ -417,3 +417,41 @@ a.destText:focus-visible {
   outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
+
+/* ---------- Search and sort ---------- */
+.searchField {
+  flex: 1 1 140px;
+}
+
+.searchField input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+}
+
+.searchField input:focus {
+  outline: none;
+  border-color: var(--accent-text);
+  box-shadow: 0 0 0 3px var(--gold-ring);
+}
+
+/* ---------- Ticked as visited: the stamp falls on the page ---------- */
+.stampIn {
+  animation: stampIn 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.25);
+}
+
+@keyframes stampIn {
+  0% {
+    opacity: 0;
+    transform: scale(2.6) rotate(-24deg);
+  }
+  55% {
+    opacity: 1;
+    transform: scale(0.9) rotate(-4deg);
+  }
+}

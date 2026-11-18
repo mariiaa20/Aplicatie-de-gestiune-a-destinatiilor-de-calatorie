@@ -1,4 +1,6 @@
 import { useOutletContext } from "react-router-dom";
+import ServerError from "../components/ServerError.jsx";
+import { useLanguage } from "../i18n/LanguageContext.js";
 import GlobePassport from "../components/GlobePassport.jsx";
 import styles from "./GlobePage.module.css";
 
@@ -7,19 +9,16 @@ import styles from "./GlobePage.module.css";
 export default function GlobePage() {
   const { destinations, loading, error, toggleVisited, removeDestination, rateDestination } =
     useOutletContext();
+  const { t } = useLanguage();
 
   return (
     <div className={`page-wide ${styles.globePage}`}>
       {loading && (
         <p className="info page-status" data-testid="loading">
-          Loading destinations…
+          {t.common.loadingList}
         </p>
       )}
-      {error && (
-        <p className="error page-status" data-testid="error">
-          Something went wrong with the server: {error}. Is <code>npm run api</code> running?
-        </p>
-      )}
+      {error && <ServerError error={error} />}
 
       {/* drawn only once the data is here, so the globe does not fly
           to a country just because the list arrived */}

@@ -1,15 +1,17 @@
+import { useLanguage } from "../i18n/LanguageContext.js";
 import styles from "./DeleteButton.module.css";
 
 // Round icon button. The lid tilts open on hover (see .bin-lid in App.css).
 // The name goes in aria-label, because the icon alone says nothing to a screen reader.
 // testId is set only where the automated check should find the button.
 export default function DeleteButton({ label, onDelete, small = false, testId }) {
+  const { t } = useLanguage();
   return (
     <button
       type="button"
       className={small ? `${styles.btnDelete} ${styles.btnDeleteSmall}` : styles.btnDelete}
-      aria-label={`Delete ${label}`}
-      title={`Delete ${label}`}
+      aria-label={t.common.deleteItem(label)}
+      title={t.common.deleteItem(label)}
       data-testid={testId}
       onClick={(event) => {
         event.stopPropagation(); // the table row toggles on click

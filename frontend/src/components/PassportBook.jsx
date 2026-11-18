@@ -1,4 +1,5 @@
 import { useEffect, useImperativeHandle, useLayoutEffect, useRef } from "react";
+import { useLanguage } from "../i18n/LanguageContext.js";
 import styles from "./PassportBook.module.css";
 
 // How long one page takes to turn, in milliseconds
@@ -79,6 +80,7 @@ export default function PassportBook({
   const layerRef = useRef(null);
   const pendingRef = useRef(null); // the old pages, copied just before the spread changes
   const turningRef = useRef(null); // the running animations
+  const { t } = useLanguage();
 
   function turnTo(index) {
     const target = Math.min(Math.max(index, 0), spreadCount - 1);
@@ -193,7 +195,7 @@ export default function PassportBook({
             disabled={!hasPrevious}
             onClick={() => turnTo(spread - 1)}
           >
-            ‹ {labels?.[spread - 1] ?? "Previous pages"}
+            ‹ {labels?.[spread - 1] ?? t.common.previousPages}
           </button>
           <span className={styles.bookPagerCount}>
             {spread + 1} / {spreadCount}
@@ -204,7 +206,7 @@ export default function PassportBook({
             disabled={!hasNext}
             onClick={() => turnTo(spread + 1)}
           >
-            {labels?.[spread + 1] ?? "Next pages"} ›
+            {labels?.[spread + 1] ?? t.common.nextPages} ›
           </button>
         </div>
       )}

@@ -68,3 +68,37 @@ const WIKI_PLACES_URL =
 export function searchWikiPlaces(name) {
   return fetch(WIKI_PLACES_URL + encodeURIComponent(name));
 }
+
+// ---------- Weather (Open-Meteo, free, no key needed) ----------
+// The real weather of one whole month, the last time that month happened:
+// daily highs, lows and rain, turned into averages for the detail page.
+export async function fetchMonthWeather(lat, lon, month, today = new Date()) {
+  const m = Number(month); // 1-12
+  // a month that is already over: this year if it is behind us, otherwise last year
+  const year = m < today.getMonth() + 1 ? today.getFullYear() : today.getFullYear() - 1;
+  const last = new Date(year, m, 0).getDate(); // day 0 of the next month = last day of this one
+  const pad = (n) => String(n).padStart(2, "0");
+  const params = new URLSearchParams({
+    latitude: lat.toFixed(3),
+    longitude: lon.toFixed(3),
+    start_date: `${year}-${pad(m)}-01`,
+    end_date: `${year}-${pad(m)}-${pad(last)}`,
+    daily: "temperature_2m_max,temperature_2m_min,precipitation_sum",
+    timezone: "auto"
+  });
+  const res = await fetch(`https://archive-api.open-meteo.com/v1/archive?${params}`);
+  if (!res.ok) throw new Error(`Weather error: ${res.status}`);
+  const { daily } = await res.json();
+  const average = (values) => {
+    const known = values.filter((v) => typeof v === "number");
+    return known.length ? Math.round(known.reduce((sum, v) => sum + v, 0) / known.length) : null;
+  };
+  return {
+    month: m,
+    year,
+    high: average(daily.temperature_2m_max),
+    low: average(daily.temperature_2m_min),
+    rainyDays: daily.precipitation_sum.filter((mm) => mm >= 1).length
+  };
+}
+

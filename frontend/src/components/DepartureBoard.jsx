@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { BOARD_CHARS } from "../utils/departures.js";
 import { playFlap } from "../utils/flapSound.js";
+import { useLanguage } from "../i18n/LanguageContext.js";
 import styles from "./DepartureBoard.module.css";
 
-// how many letters each column has on the board
+// how many letters each column has on the board; the column names are in t.board.columns
 const COLUMNS = [
-  { key: "time", label: "Time", width: 5, className: styles.colTime },
-  { key: "destination", label: "Destination", width: 20, className: styles.colDestination },
-  { key: "gate", label: "Gate", width: 3, className: styles.colGate },
-  { key: "remark", label: "Remarks", width: 9, className: styles.colRemark }
+  { key: "time", width: 5, className: styles.colTime },
+  { key: "destination", width: 20, className: styles.colDestination },
+  { key: "gate", width: 3, className: styles.colGate },
+  { key: "remark", width: 9, className: styles.colRemark }
 ];
 const ROW_LENGTH = COLUMNS.reduce((sum, column) => sum + column.width, 0);
 const TICK_MS = 45; // one flap every 45 ms, like a real board
@@ -30,11 +31,13 @@ function charIndex(char) {
 // called when the whole board has stopped.
 // rows: [{ time, destination, gate, remark }], the first one is the next departure
 // rollKey: change it to make the board turn again, even towards the same letters
-export default function DepartureBoard({ rows, lines = 6, highlight = false, sound = false, rollKey = 0, onSettled }) {
+// airport: the name shown next to "Departures"
+export default function DepartureBoard({ rows, lines = 6, highlight = false, sound = false, rollKey = 0, airport, onSettled }) {
   // the letters on screen live in a ref and change on every tick;
   // the state is only a counter that tells React to draw them again
   const cellsRef = useRef(null);
   const [, setTick] = useState(0);
+  const { t } = useLanguage();
   const settledRef = useRef(onSettled);
   const soundRef = useRef(sound);
   settledRef.current = onSettled;
@@ -101,7 +104,8 @@ export default function DepartureBoard({ rows, lines = 6, highlight = false, sou
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
           </svg>
-          Departures
+          {t.board.departures}
+          {airport && <span className={styles.airport}>{airport}</span>}
         </span>
         <span className={styles.clock}>
           {String(clock.getHours()).padStart(2, "0")}
@@ -113,7 +117,7 @@ export default function DepartureBoard({ rows, lines = 6, highlight = false, sou
       <div className={styles.labels} aria-hidden="true">
         {COLUMNS.map((column) => (
           <span key={column.key} className={column.className} style={{ "--chars": column.width }}>
-            {column.label}
+            {t.board.columns[column.key]}
           </span>
         ))}
       </div>

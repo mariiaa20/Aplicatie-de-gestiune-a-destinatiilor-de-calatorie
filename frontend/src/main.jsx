@@ -5,12 +5,16 @@ import { BrowserRouter } from "react-router-dom";
 // loaded after them, win when two rules are equally specific
 import "./index.css";
 import App from "./App.jsx";
+import LanguageProvider from "./i18n/LanguageProvider.jsx";
 
-// BrowserRouter lets the app read the address bar and show the matching page
+// BrowserRouter lets the app read the address bar and show the matching page.
+// LanguageProvider ține limba aleasă (engleză sau română) pentru toate paginile.
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <LanguageProvider>
+        <App />
+      </LanguageProvider>
     </BrowserRouter>
   </StrictMode>
 );

@@ -274,7 +274,7 @@
 
 /* already in My Travel List: an entry stamp across the visa */
 .visa.isAdded::after {
-  content: "Added";
+  content: attr(data-stamp); /* the word comes from the page, in the chosen language */
   position: absolute;
   right: 22px;
   bottom: 40px;

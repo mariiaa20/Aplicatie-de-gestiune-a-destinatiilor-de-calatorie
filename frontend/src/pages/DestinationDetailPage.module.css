@@ -121,15 +121,6 @@
   font-weight: 700;
 }
 
-.stars {
-  color: var(--gold);
-  font-size: 1.05rem;
-  letter-spacing: 0.08em;
-}
-
-.starsEmpty {
-  color: var(--rule);
-}
 
 /* visited: the entry stamp, in the ink of the kind of place */
 .stamp {
@@ -159,6 +150,7 @@
 
 .actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
   margin-top: 26px;
 }
@@ -209,5 +201,93 @@
   .mrz {
     font-size: 0.62rem;
     letter-spacing: 0.08em;
+  }
+}
+
+/* ---------- Changing the fields right on the page ---------- */
+.fields select {
+  max-width: 100%;
+  padding: 3px 2px;
+  border: none;
+  border-bottom: 1px dashed var(--border-strong);
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.fields select:focus {
+  outline: none;
+  border-bottom: 1px solid var(--gold);
+  box-shadow: 0 1px 0 0 var(--gold);
+}
+
+.fields select:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.fields .pair {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fields .pair select {
+  min-width: 0;
+  flex: 1;
+}
+
+/* "The best season starts in 134 days" */
+.countdown {
+  display: inline-block;
+  margin: -6px 0 20px;
+  padding: 6px 14px;
+  border: 1px dashed var(--record-ink);
+  border-radius: 999px;
+  color: var(--record-ink);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.periodNote {
+  margin-top: 10px;
+  color: var(--text-faint);
+  font-size: 0.78rem;
+}
+
+.actions .delete {
+  margin-left: auto;
+  border-color: var(--danger-glow);
+  color: var(--danger);
+}
+
+.actions .delete:hover {
+  background: var(--danger-soft);
+}
+
+/* the stamp falls when the place is marked as visited */
+.stampIn {
+  animation: stampFall 0.55s cubic-bezier(0.2, 0.9, 0.3, 1.25);
+}
+
+@keyframes stampFall {
+  0% {
+    opacity: 0;
+    transform: scale(2.8) rotate(-30deg);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(0.92) rotate(-9deg);
+  }
+}
+
+/* on a phone the fields go one under the other, so the month names fit */
+@media (max-width: 520px) {
+  .fields {
+    grid-template-columns: 1fr;
   }
 }

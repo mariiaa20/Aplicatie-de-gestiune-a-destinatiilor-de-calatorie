@@ -1,0 +1,293 @@
+/* Passport stats: pages 22 and 23. One ink for every bar: the rows are named,
+   so colour never has to tell the kinds apart. */
+.page {
+  --bar: var(--title-ink);
+  display: flex;
+  flex-direction: column;
+}
+
+.lead,
+.note {
+  margin: -6px 0 16px;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.note {
+  margin: 0 0 12px;
+}
+
+.heading {
+  margin: 20px 0 10px;
+  color: var(--title-ink);
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.page > .heading:first-child {
+  margin-top: 0;
+}
+
+/* four numbers at the top */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.tiles p {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 12px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--sheet-inset);
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.big {
+  color: var(--title-ink);
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.big small {
+  color: var(--text-faint);
+  font-size: 1.1rem;
+}
+
+/* continents: a full stamp where you have been, a dashed one where not yet */
+.continents {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.continents li {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.continents li span {
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.seen {
+  border: 2px solid var(--title-ink);
+  color: var(--title-ink);
+}
+
+.notYet {
+  border: 2px dashed var(--border-strong);
+  color: var(--text-faint);
+}
+
+.countries {
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.empty {
+  color: var(--ink-soft);
+  font-size: 0.88rem;
+  font-style: italic;
+}
+
+.empty a {
+  color: var(--title-ink);
+  font-weight: 700;
+}
+
+/* ---------- Horizontal bars: kinds of trip and budgets ---------- */
+.legend {
+  display: flex;
+  gap: 16px;
+  margin: -4px 0 8px;
+  padding: 0;
+  color: var(--ink-soft);
+  font-size: 0.76rem;
+  font-weight: 600;
+  list-style: none;
+}
+
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.keyVisited,
+.keyPlanned {
+  width: 14px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.keyVisited {
+  background: var(--bar);
+}
+
+/* planned is the same ink, hatched, so the two never depend on colour alone */
+.keyPlanned,
+.barPlanned {
+  background: repeating-linear-gradient(45deg, var(--bar) 0 2px, transparent 2px 5px);
+  box-shadow: inset 0 0 0 1px var(--bar);
+}
+
+.kinds,
+.budgets {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.kinds li,
+.budgets li {
+  display: grid;
+  /* wide enough for the longest name ("1.000 – 2.000 €") on one line, the same on every row */
+  grid-template-columns: 7.8rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.kindName {
+  white-space: nowrap;
+  color: var(--ink);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.kindValue {
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.track {
+  display: flex;
+  gap: 2px;
+  height: 14px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.barVisited,
+.barPlanned {
+  position: relative;
+  height: 100%;
+  border-radius: 0 4px 4px 0;
+}
+
+.barVisited {
+  background: var(--bar);
+}
+
+/* ---------- Vertical bars: the months ---------- */
+.months {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 6px;
+  height: 130px;
+  padding-top: 18px;
+}
+
+.monthColumn {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 4px;
+  height: 100%;
+}
+
+.monthBar {
+  position: relative;
+  width: 100%;
+  min-height: 2px;
+  border-radius: 4px 4px 0 0;
+  background: var(--bar);
+  opacity: 0.55;
+}
+
+.monthBar.busiest {
+  opacity: 1;
+}
+
+.monthValue {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-bottom: 2px;
+  color: var(--ink);
+  font-size: 0.75rem;
+  font-weight: 800;
+  transform: translateX(-50%);
+}
+
+.monthName {
+  color: var(--text-faint);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+/* the small label that appears over a bar under the mouse */
+.page [data-tip]:hover::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  z-index: 3;
+  padding: 5px 9px;
+  border-radius: 6px;
+  background: var(--cover-deep);
+  color: var(--foil-text);
+  font-size: 0.74rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.page [data-tip]:hover {
+  opacity: 1;
+  filter: brightness(1.15);
+}
+
+@media (max-width: 520px) {
+  .tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .continents {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .kinds li,
+  .budgets li {
+    grid-template-columns: 7.4rem minmax(0, 1fr);
+  }
+
+  .kindValue {
+    grid-column: 2;
+  }
+}

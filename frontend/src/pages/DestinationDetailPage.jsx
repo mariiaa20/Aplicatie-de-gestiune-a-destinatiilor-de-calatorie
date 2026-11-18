@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { fetchDestination } from "../api.js";
-import { TYPE_LABELS } from "../constants.js";
-import { formatPeriod, getBudget } from "../utils/travelOptions.js";
+import { BUDGET_OPTIONS, formatPeriod } from "../utils/travelOptions.js";
+import { seasonCountdown } from "../utils/season.js";
+import { playStamp } from "../utils/flapSound.js";
 import DestinationPhoto from "../components/DestinationPhoto.jsx";
+import StarRating from "../components/StarRating.jsx";
+import MonthWeather from "../components/MonthWeather.jsx";
+import { useLanguage } from "../i18n/LanguageContext.js";
 import styles from "./DestinationDetailPage.module.css";
 
 // "Lisbon, Portugal" -> "LISBON<PORTUGAL", the way names are printed in a machine line
@@ -29,14 +33,29 @@ const INK = {
   mountain: styles.inkMountain
 };
 
+// "The season starts in 134 days (April)." or "It is the season right now.", in the language of t
+function countdownText(destination, t) {
+  if (destination.visited) return null;
+  const countdown = seasonCountdown(destination.periodFrom, destination.periodTo);
+  if (!countdown) return null;
+  if (countdown.inSeason) return t.detail.inSeason;
+  const month = t.monthInText(countdown.monthIndex);
+  if (countdown.days === 1) return t.detail.seasonTomorrow(month);
+  return t.detail.seasonIn(countdown.days, month);
+}
+
 // The data page of one destination, at /destinations/:id.
 // It asks the server for this destination only, so it also works after a refresh
-// or when the address is typed by hand.
+// or when the address is typed by hand. Its fields can be changed here too.
 export default function DestinationDetailPage() {
   const { id } = useParams(); // always text, for example "3"
+  const { changeDestination, removeDestination } = useOutletContext();
+  const navigate = useNavigate();
+  const { t } = useLanguage();
   const [destination, setDestination] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [stamped, setStamped] = useState(false); // the stamp was just put on, so it falls
 
   // runs again when the id in the address changes, for example with the browser's Back button
   useEffect(() => {
@@ -64,7 +83,7 @@ export default function DestinationDetailPage() {
   if (loading) {
     return (
       <p className="info page-status" data-testid="loading">
-        Loading the destination…
+        {t.detail.loading}
       </p>
     );
   }
@@ -73,22 +92,47 @@ export default function DestinationDetailPage() {
     return (
       <div className="page-single">
         <section className={`card-box ${styles.missing}`}>
-          <h2 className="card-title">No such destination</h2>
+          <h2 className="card-title">{t.detail.missingTitle}</h2>
           <p className="error" data-testid="error">
-            The destination could not be loaded: {error}.
+            {t.detail.missingError(error)}
           </p>
-          <p className={styles.missingHint}>Maybe it was deleted, or the link is old.</p>
+          <p className={styles.missingHint}>{t.detail.missingHint}</p>
           <Link to="/" className="btn btn-primary">
-            Back to My Travel List
+            {t.common.backToList}
           </Link>
         </section>
       </div>
     );
   }
 
-  const budget = getBudget(destination.budget);
-  const period = formatPeriod(destination.periodFrom, destination.periodTo);
-  const rating = destination.rating || 0;
+  // the same server-first rule as the list: the page shows what the server saved
+  async function save(changes) {
+    const updated = await changeDestination(destination.id, changes);
+    if (updated) setDestination(updated);
+  }
+
+  function toggleVisited() {
+    if (!destination.visited) {
+      setStamped(true);
+      playStamp();
+    }
+    save({ visited: !destination.visited });
+  }
+
+  // deleted on the server, then back to the list, where "Undo" waits for a few seconds
+  async function handleDelete() {
+    if (await removeDestination(destination.id)) navigate("/");
+  }
+
+  const period = formatPeriod(destination.periodFrom, destination.periodTo, t.months);
+  const countdown = countdownText(destination, t);
+  const monthOptions = t.months.map((name, index) => (
+    <option key={index} value={String(index + 1)}>
+      {name}
+    </option>
+  ));
+  // the weather of the month you want to go, or of next month if no period is set
+  const weatherMonth = destination.periodFrom || String(((new Date().getMonth() + 1) % 12) + 1);
 
   return (
     <div className={styles.page}>
@@ -97,7 +141,7 @@ export default function DestinationDetailPage() {
         data-testid="detail"
       >
         <Link to="/" className={styles.back}>
-          ‹ Back to My Travel List
+          ‹ {t.common.backToList}
         </Link>
 
         <div className={styles.record}>
@@ -106,72 +150,109 @@ export default function DestinationDetailPage() {
           </div>
 
           <div className={styles.info}>
-            <p className={styles.kind}>Destination record no. {destination.id}</p>
-            <h2
-              className={styles.title}
-              data-testid="detail-title"
-            >
+            <p className={styles.kind}>{t.detail.record(destination.id)}</p>
+            <h2 className={styles.title} data-testid="detail-title">
               {destination.title}
             </h2>
             {destination.highlight && (
               <p className={styles.highlight}>{destination.highlight}</p>
             )}
+            {countdown && <p className={styles.countdown}>{countdown}</p>}
 
-            {/* the fields that do not fit on the line in My Travel List */}
+            {/* the fields that do not fit on the line in My Travel List; most can be changed here */}
             <dl className={styles.fields}>
               <div>
-                <dt>Location type</dt>
+                <dt>{t.detail.type}</dt>
                 <dd>
                   <span className={`badge badge-${destination.type}`}>
-                    {TYPE_LABELS[destination.type] || destination.type}
+                    {t.types[destination.type] || destination.type}
                   </span>
                 </dd>
               </div>
               <div>
-                <dt>Trip category</dt>
-                <dd>{destination.category}</dd>
+                <dt>{t.detail.category}</dt>
+                <dd>{t.categories[destination.category] || destination.category}</dd>
               </div>
               <div>
-                <dt>Status</dt>
-                <dd>{destination.visited ? "Visited" : "Planned"}</dd>
+                <dt>{t.detail.status}</dt>
+                <dd>{destination.visited ? t.common.visited : t.common.planned}</dd>
               </div>
               <div>
-                <dt>Desired period</dt>
-                <dd>{period || "Not set"}</dd>
+                <dt>{t.detail.period}</dt>
+                <dd className={styles.pair}>
+                  <select
+                    aria-label={t.common.fromMonth}
+                    value={destination.periodFrom || ""}
+                    onChange={(e) => save({ periodFrom: e.target.value })}
+                  >
+                    <option value="">{t.common.notSet}</option>
+                    {monthOptions}
+                  </select>
+                  <span aria-hidden="true">–</span>
+                  <select
+                    aria-label={t.common.toMonth}
+                    value={destination.periodTo || ""}
+                    disabled={!destination.periodFrom}
+                    onChange={(e) => save({ periodTo: e.target.value })}
+                  >
+                    <option value="">{t.common.notSet}</option>
+                    {monthOptions}
+                  </select>
+                </dd>
               </div>
               <div>
-                <dt>Budget</dt>
-                <dd>{budget ? budget.label : "Not set"}</dd>
-              </div>
-              <div>
-                <dt>Rating</dt>
+                <dt>{t.common.budget}</dt>
                 <dd>
-                  {destination.visited && rating > 0 ? (
-                    <span className={styles.stars} aria-label={`${rating} out of 5 stars`}>
-                      {"★".repeat(rating)}
-                      <span className={styles.starsEmpty}>{"★".repeat(5 - rating)}</span>
-                    </span>
-                  ) : destination.visited ? (
-                    "Not rated yet"
+                  <select
+                    aria-label={t.common.budget}
+                    value={destination.budget || ""}
+                    onChange={(e) => save({ budget: e.target.value })}
+                  >
+                    <option value="">{t.common.notSet}</option>
+                    {BUDGET_OPTIONS.map((option) => (
+                      <option key={option.key} value={option.key}>
+                        {t.budgets[option.key].label}
+                      </option>
+                    ))}
+                  </select>
+                </dd>
+              </div>
+              <div>
+                <dt>{t.detail.rating}</dt>
+                <dd>
+                  {destination.visited ? (
+                    <StarRating
+                      value={destination.rating || 0}
+                      onChange={(value) => save({ rating: value })}
+                    />
                   ) : (
-                    "After the trip"
+                    t.detail.afterTrip
                   )}
                 </dd>
               </div>
             </dl>
+
+            <MonthWeather title={destination.title} month={weatherMonth} />
+            {period && <p className={styles.periodNote}>{t.detail.bestTime(period)}</p>}
           </div>
         </div>
 
         {destination.visited && (
-          <span className={styles.stamp} aria-hidden="true">
-            Visited
+          <span className={stamped ? `${styles.stamp} ${styles.stampIn}` : styles.stamp} aria-hidden="true">
+            {t.detail.stamp}
           </span>
         )}
 
         <div className={styles.actions}>
+          <button type="button" className="btn btn-primary" onClick={toggleVisited}>
+            {destination.visited ? t.detail.markPlanned : t.detail.markVisited}
+          </button>
           <Link to="/globe" className="btn btn-ghost">
-            See it on the globe
+            {t.detail.onGlobe}
           </Link>
+          <button type="button" className={`btn btn-ghost ${styles.delete}`} onClick={handleDelete}>
+            {t.common.delete}
+          </button>
         </div>
 
         <p className={styles.mrz} aria-hidden="true">

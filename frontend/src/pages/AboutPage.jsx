@@ -1,27 +1,31 @@
 import { Link, useOutletContext } from "react-router-dom";
 import PassportBook, { BookPage } from "../components/PassportBook.jsx";
+import { useLanguage } from "../i18n/LanguageContext.js";
+import { printedDate } from "../utils/departures.js";
 import styles from "./AboutPage.module.css";
 
-// the table of contents of the passport
+// the table of contents of the passport; the names and notes are in t.layout.nav and t.about.contents
 const CONTENTS = [
-  { to: "/", name: "My Travel List", pages: "2–3", note: "add a place, tick it when you have been there" },
-  { to: "/globe", name: "Travel Globe", pages: "4–7", note: "visited countries hatched, a stamp for every trip" },
-  { to: "/inspiration", name: "Get inspired", pages: "8–21", note: "40 ideas as visas, with filters" },
-  { to: "/where-next", name: "Where next?", pages: "Gate", note: "a departure board picks your next trip" }
+  { key: "list", to: "/", pages: "2–3" },
+  { key: "globe", to: "/globe", pages: "4–7" },
+  { key: "inspire", to: "/inspiration", pages: "8–21" },
+  { key: "stats", to: "/stats", pages: "22–23" },
+  { key: "next", to: "/where-next", pages: null } // null: the Gate, not a page number
 ];
 
 // every stage of the project, as an entry stamp; the dates are the days of the commits
+// (luna de la 0: 8 = septembrie). Titlurile sunt în t.about.stages.
 const ENTRIES = [
-  { stage: 1, title: "Static mockup", note: "HTML and CSS", date: "29 SEP 2026", shape: "oval" },
-  { stage: 2, title: "Data logic", note: "plain JavaScript", date: "11 OCT 2026", shape: "box" },
-  { stage: 3, title: "Vite + React", note: "the first app", date: "19 OCT 2026", shape: "round" },
-  { stage: 4, title: "Components", note: "cards from data", date: "20 OCT 2026", shape: "box" },
-  { stage: 5, title: "State", note: "tick, delete, dark mode", date: "27 OCT 2026", shape: "oval" },
-  { stage: 6, title: "Mock API", note: "json-server", date: "02 NOV 2026", shape: "round" },
-  { stage: 7, title: "Forms", note: "validation, saving", date: "15 NOV 2026", shape: "oval" },
-  { stage: 8, title: "Routing", note: "pages, CSS Modules", date: "16 NOV 2026", shape: "box" }
+  { stage: 1, date: new Date(2026, 8, 29), shape: "oval" },
+  { stage: 2, date: new Date(2026, 9, 11), shape: "box" },
+  { stage: 3, date: new Date(2026, 9, 19), shape: "round" },
+  { stage: 4, date: new Date(2026, 9, 20), shape: "box" },
+  { stage: 5, date: new Date(2026, 9, 27), shape: "oval" },
+  { stage: 6, date: new Date(2026, 10, 2), shape: "round" },
+  { stage: 7, date: new Date(2026, 10, 15), shape: "oval" },
+  { stage: 8, date: new Date(2026, 10, 16), shape: "box" }
 ];
-const NEXT = { stage: 9, title: "Own backend", note: "Express" };
+const NEXT_STAGE = 9;
 
 const SHAPES = { oval: styles.oval, box: styles.box, round: styles.round };
 const INKS = [styles.inkCity, styles.inkBeach, styles.inkMountain, styles.inkWine];
@@ -30,67 +34,65 @@ const INKS = [styles.inkCity, styles.inkBeach, styles.inkMountain, styles.inkWin
 export default function AboutPage() {
   const { destinations, loading } = useOutletContext();
   const visited = destinations.filter((d) => d.visited).length;
+  const { t } = useLanguage();
+  const about = t.about;
 
   return (
     <div className="page-wide">
       <PassportBook spread={0} spreadCount={1} onSpreadChange={() => {}}>
         <BookPage number="i" className={styles.page}>
-          <h2 className="card-title">About this passport</h2>
-          <p className={styles.intro}>
-            Travel Destinations Manager keeps the places I want to see and the places I have
-            already been, like the pages of a passport: a list to plan, a globe that fills up
-            with every trip, and a few pages of ideas for the next one.
-          </p>
+          <h2 className="card-title">{about.title}</h2>
+          <p className={styles.intro}>{about.intro}</p>
 
           <dl className={styles.holder}>
             <div>
-              <dt>Issued for</dt>
-              <dd>Tehnologii Web, semester project</dd>
+              <dt>{about.issuedFor}</dt>
+              <dd>{about.issuedForValue}</dd>
             </div>
             <div>
-              <dt>Issued by</dt>
-              <dd>UPB, Faculty of Industrial Engineering and Robotics</dd>
+              <dt>{about.issuedBy}</dt>
+              <dd>{about.issuedByValue}</dd>
             </div>
             <div>
-              <dt>Valid</dt>
+              <dt>{about.valid}</dt>
               <dd>2026–2027</dd>
             </div>
           </dl>
 
-          <h3 className={styles.heading}>Your journey so far</h3>
+          <h3 className={styles.heading}>{about.journey}</h3>
           <div className={styles.stats}>
             <p>
               <span className={styles.number}>{loading ? "…" : destinations.length}</span>
-              destinations
+              {about.destinations}
             </p>
             <p>
               <span className={styles.number}>{loading ? "…" : visited}</span>
-              visited
+              {about.visited}
             </p>
             <p>
               <span className={styles.number}>{loading ? "…" : destinations.length - visited}</span>
-              still to go
+              {about.stillToGo}
             </p>
           </div>
 
-          <h3 className={styles.heading}>Contents</h3>
+          <h3 className={styles.heading}>{about.contentsTitle}</h3>
           <ol className={styles.contents}>
             {CONTENTS.map((item) => (
               <li key={item.to}>
                 <Link to={item.to} className={styles.entry}>
-                  <span className={styles.entryName}>{item.name}</span>
+                  <span className={styles.entryName}>{t.layout.nav[item.key]}</span>
                   <span className={styles.leader} aria-hidden="true" />
-                  <span className={styles.entryPages}>{item.pages}</span>
+                  <span className={styles.entryPages}>{item.pages ?? about.gate}</span>
                 </Link>
-                <span className={styles.entryNote}>{item.note}</span>
+                <span className={styles.entryNote}>{about.contents[item.key]}</span>
               </li>
             ))}
           </ol>
         </BookPage>
 
         <BookPage number="ii" className={styles.page}>
-          <h2 className="card-title">Entries</h2>
-          <p className={styles.intro}>Every stage of the project left a stamp on this page.</p>
+          <h2 className="card-title">{about.entriesTitle}</h2>
+          <p className={styles.intro}>{about.entriesIntro}</p>
 
           <ul className={styles.stamps}>
             {ENTRIES.map((entry, i) => (
@@ -99,27 +101,23 @@ export default function AboutPage() {
                 className={`${styles.stamp} ${SHAPES[entry.shape]} ${INKS[i % INKS.length]}`}
                 style={{ "--tilt": `${[-8, 5, -3, 9, -11, 4, -6, 7][i]}deg` }}
               >
-                <span className={styles.stampStage}>Stage {entry.stage}</span>
-                <span className={styles.stampTitle}>{entry.title}</span>
-                <span className={styles.stampNote}>{entry.note}</span>
-                <span className={styles.stampDate}>{entry.date}</span>
+                <span className={styles.stampStage}>{about.stage(entry.stage)}</span>
+                <span className={styles.stampTitle}>{about.stages[entry.stage][0]}</span>
+                <span className={styles.stampNote}>{about.stages[entry.stage][1]}</span>
+                <span className={styles.stampDate}>{printedDate(entry.date, t.monthsPrinted)}</span>
               </li>
             ))}
             {/* the next stage has no stamp yet */}
             <li className={`${styles.stamp} ${styles.next}`}>
-              <span className={styles.stampStage}>Stage {NEXT.stage}</span>
-              <span className={styles.stampTitle}>{NEXT.title}</span>
-              <span className={styles.stampNote}>{NEXT.note}</span>
-              <span className={styles.stampDate}>coming soon</span>
+              <span className={styles.stampStage}>{about.stage(NEXT_STAGE)}</span>
+              <span className={styles.stampTitle}>{about.stages[NEXT_STAGE][0]}</span>
+              <span className={styles.stampNote}>{about.stages[NEXT_STAGE][1]}</span>
+              <span className={styles.stampDate}>{about.comingSoon}</span>
             </li>
           </ul>
 
-          <h3 className={styles.heading}>Made with</h3>
-          <p className={styles.madeWith}>
-            React and Vite, React Router for the pages, CSS Modules for the styles, d3-geo and the
-            world-atlas map for the globe, json-server for the data, the Wikipedia API for the
-            photos and the Web Audio API for the clack of the departure board.
-          </p>
+          <h3 className={styles.heading}>{about.madeWithTitle}</h3>
+          <p className={styles.madeWith}>{about.madeWith}</p>
         </BookPage>
       </PassportBook>
     </div>

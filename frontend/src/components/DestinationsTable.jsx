@@ -3,60 +3,92 @@ import { Link } from "react-router-dom";
 import DestinationAvatar from "./DestinationAvatar.jsx";
 import DestinationPhoto from "./DestinationPhoto.jsx";
 import DeleteButton from "./DeleteButton.jsx";
-import {
-  BUDGET_OPTIONS,
-  MONTH_NAMES,
-  formatPeriod,
-  getBudget,
-  periodIncludesMonth
-} from "../utils/travelOptions.js";
+import { BUDGET_OPTIONS, formatPeriod, periodIncludesMonth } from "../utils/travelOptions.js";
 import { LOCATION_TYPES } from "../constants.js";
+import { daysToSeason } from "../utils/season.js";
+import { playStamp } from "../utils/flapSound.js";
+import { useLanguage } from "../i18n/LanguageContext.js";
 import styles from "./DestinationsTable.module.css";
 
-const MONTH_OPTIONS = MONTH_NAMES.map((name, index) => (
-  <option key={name} value={String(index + 1)}>
-    {name}
-  </option>
-));
-
-const BUDGET_CHOICES = BUDGET_OPTIONS.map((budget) => (
-  <option key={budget.key} value={budget.key}>
-    {budget.label}
-  </option>
-));
-
-// "Jun – Aug · €1–2k" shown under the destination name
-const getMeta = (item) =>
-  [formatPeriod(item.periodFrom, item.periodTo), getBudget(item.budget)?.short]
+// "Jun – Aug · €1–2k" shown under the destination name, in the chosen language (t)
+const getMeta = (item, t) =>
+  [formatPeriod(item.periodFrom, item.periodTo, t.months), t.budgets[item.budget]?.short]
     .filter(Boolean)
     .join(" · ");
+
+// the orders the list can be sorted in; numele lor sunt în t.table.sorts
+const SORTS = {
+  added: () => 0,
+  name: (a, b) => a.title.localeCompare(b.title),
+  budget: (a, b) => budgetRank(a) - budgetRank(b),
+  season: (a, b) => daysToSeason(a) - daysToSeason(b)
+};
+
+// position of a budget in BUDGET_OPTIONS; no budget goes last
+function budgetRank(item) {
+  const index = BUDGET_OPTIONS.findIndex((b) => b.key === item.budget);
+  return index === -1 ? BUDGET_OPTIONS.length : index;
+}
 
 // Stage 7: the add form moved to DestinationForm. This table only shows,
 // filters and edits the destinations; every change goes up to App.
 export default function DestinationsTable({ destinations, onToggle, onDelete, onUpdate }) {
+  const { t } = useLanguage();
   const [expandedId, setExpandedId] = useState(null);
   const [budgetFilter, setBudgetFilter] = useState("");
   const [monthFilter, setMonthFilter] = useState("");
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState("added");
+  // the row that was just ticked: its stamp falls on the page
+  const [stampedId, setStampedId] = useState(null);
 
   if (destinations.length === 0) {
     return (
       <p className="empty-message" data-testid="empty">
-        No destinations yet. Add your first one with the form on the left.
+        {t.table.empty}
       </p>
     );
   }
 
-  const filtersActive = Boolean(budgetFilter || monthFilter);
-  const visibleDestinations = destinations.filter(
-    (d) =>
-      (!budgetFilter || d.budget === budgetFilter) &&
-      (!monthFilter || periodIncludesMonth(d.periodFrom, d.periodTo, monthFilter))
-  );
+  // the options of the selects, in the chosen language; value stays the same in both
+  const monthOptions = t.months.map((name, index) => (
+    <option key={index} value={String(index + 1)}>
+      {name}
+    </option>
+  ));
+  const budgetChoices = BUDGET_OPTIONS.map((budget) => (
+    <option key={budget.key} value={budget.key}>
+      {t.budgets[budget.key].label}
+    </option>
+  ));
+
+  const query = search.trim().toLowerCase();
+  const filtersActive = Boolean(budgetFilter || monthFilter || query);
+  // filter, then sort a copy (sort would change the array in place)
+  const visibleDestinations = destinations
+    .filter(
+      (d) =>
+        (!query || d.title.toLowerCase().includes(query)) &&
+        (!budgetFilter || d.budget === budgetFilter) &&
+        (!monthFilter || periodIncludesMonth(d.periodFrom, d.periodTo, monthFilter))
+    )
+    .slice()
+    .sort(SORTS[sortBy]);
 
   const clearFilters = () => {
     setBudgetFilter("");
     setMonthFilter("");
+    setSearch("");
   };
+
+  // ticking a place as visited also stamps it, with a thud
+  function handleToggle(item) {
+    if (!item.visited) {
+      setStampedId(item.id);
+      playStamp();
+    }
+    onToggle(item.id);
+  }
 
   const toggleDetails = (event, id) => {
     event.stopPropagation(); // do not toggle visited when opening details
@@ -66,37 +98,59 @@ export default function DestinationsTable({ destinations, onToggle, onDelete, on
   return (
     <div className={styles.myTravelListContainer}>
       <div className={styles.filterBar}>
+        <div className={`${styles.filterField} ${styles.searchField}`}>
+          <label htmlFor="filter-search">{t.common.search}</label>
+          <input
+            id="filter-search"
+            type="search"
+            value={search}
+            placeholder={t.table.searchPlaceholder}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+
         <div className={styles.filterField}>
-          <label htmlFor="filter-budget">Budget</label>
+          <label htmlFor="filter-budget">{t.common.budget}</label>
           <select
             id="filter-budget"
             value={budgetFilter}
             onChange={(e) => setBudgetFilter(e.target.value)}
           >
-            <option value="">Any budget</option>
-            {BUDGET_CHOICES}
+            <option value="">{t.common.anyBudget}</option>
+            {budgetChoices}
           </select>
         </div>
 
         <div className={styles.filterField}>
-          <label htmlFor="filter-month">Travel month</label>
+          <label htmlFor="filter-month">{t.table.month}</label>
           <select
             id="filter-month"
             value={monthFilter}
             onChange={(e) => setMonthFilter(e.target.value)}
           >
-            <option value="">Any month</option>
-            {MONTH_OPTIONS}
+            <option value="">{t.common.anyMonth}</option>
+            {monthOptions}
+          </select>
+        </div>
+
+        <div className={styles.filterField}>
+          <label htmlFor="filter-sort">{t.table.sortBy}</label>
+          <select id="filter-sort" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+            {Object.keys(SORTS).map((key) => (
+              <option key={key} value={key}>
+                {t.table.sorts[key]}
+              </option>
+            ))}
           </select>
         </div>
 
         {filtersActive && (
           <>
             <span className={styles.filterCount}>
-              {visibleDestinations.length} of {destinations.length} shown
+              {t.table.shown(visibleDestinations.length, destinations.length)}
             </span>
             <button type="button" className="btn btn-ghost btn-small" onClick={clearFilters}>
-              Clear
+              {t.table.clear}
             </button>
           </>
         )}
@@ -110,22 +164,22 @@ export default function DestinationsTable({ destinations, onToggle, onDelete, on
           return (
             <div key={cat.value} className={styles.categoryColumn}>
               <div className={styles.columnHeader}>
-                <span className={`badge badge-${cat.value}`}>{cat.label}</span>
-                <span className={styles.columnCount}>{planned} planned</span>
+                <span className={`badge badge-${cat.value}`}>{t.types[cat.value]}</span>
+                <span className={styles.columnCount}>{t.table.plannedCount(planned)}</span>
               </div>
 
               <table className={styles.singleCategoryTable}>
                 <thead>
                   <tr>
-                    <th>Destination</th>
-                    <th className={styles.thRight}>Status</th>
+                    <th>{t.table.destination}</th>
+                    <th className={styles.thRight}>{t.table.status}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {items.length > 0 ? (
                     items.map((item) => {
                       const isExpanded = expandedId === item.id;
-                      const meta = getMeta(item);
+                      const meta = getMeta(item, t);
 
                       return (
                         <Fragment key={item.id}>
@@ -133,8 +187,8 @@ export default function DestinationsTable({ destinations, onToggle, onDelete, on
                               which holds every destination, so each one is counted once */}
                           <tr
                             className={item.visited ? styles.rowIsVisited : undefined}
-                            onClick={() => onToggle(item.id)}
-                            title="Click to toggle status"
+                            onClick={() => handleToggle(item)}
+                            title={t.table.rowTitle}
                             data-testid="item"
                             data-id={item.id}
                           >
@@ -145,9 +199,9 @@ export default function DestinationsTable({ destinations, onToggle, onDelete, on
                                   type="checkbox"
                                   className={styles.rowCheck}
                                   checked={item.visited}
-                                  onChange={() => onToggle(item.id)}
+                                  onChange={() => handleToggle(item)}
                                   onClick={(e) => e.stopPropagation()}
-                                  aria-label={`Mark ${item.title} as visited`}
+                                  aria-label={t.common.markVisited(item.title)}
                                   data-testid="item-toggle"
                                 />
                                 <DestinationAvatar title={item.title} photo={item.photo} />
@@ -170,7 +224,7 @@ export default function DestinationsTable({ destinations, onToggle, onDelete, on
                                       aria-expanded={isExpanded}
                                       onClick={(e) => toggleDetails(e, item.id)}
                                     >
-                                      Details <span className={styles.chev} aria-hidden="true">▾</span>
+                                      {t.table.details} <span className={styles.chev} aria-hidden="true">▾</span>
                                     </button>
                                   </span>
                                 </div>
@@ -181,9 +235,9 @@ export default function DestinationsTable({ destinations, onToggle, onDelete, on
                                 <span
                                   className={`${styles.statusPill} ${
                                     item.visited ? styles.pillVisited : styles.pillPlanned
-                                  }`}
+                                  } ${item.visited && item.id === stampedId ? styles.stampIn : ""}`}
                                 >
-                                  {item.visited ? "✓ Visited" : "○ Planned"}
+                                  {item.visited ? `✓ ${t.common.visited}` : `○ ${t.common.planned}`}
                                 </span>
                                 <DeleteButton
                                   label={item.title}
@@ -205,10 +259,10 @@ export default function DestinationsTable({ destinations, onToggle, onDelete, on
                                   )}
 
                                   <div className={styles.detailField}>
-                                    <span className={styles.detailLabel}>Desired period</span>
+                                    <span className={styles.detailLabel}>{t.table.period}</span>
                                     <div className="detail-pair">
                                       <select
-                                        aria-label={`From month for ${item.title}`}
+                                        aria-label={t.table.fromFor(item.title)}
                                         value={item.periodFrom || ""}
                                         onChange={(e) =>
                                           onUpdate(
@@ -219,26 +273,26 @@ export default function DestinationsTable({ destinations, onToggle, onDelete, on
                                           )
                                         }
                                       >
-                                        <option value="">From</option>
-                                        {MONTH_OPTIONS}
+                                        <option value="">{t.common.from}</option>
+                                        {monthOptions}
                                       </select>
                                       <select
-                                        aria-label={`To month for ${item.title}`}
+                                        aria-label={t.table.toFor(item.title)}
                                         value={item.periodTo || ""}
                                         disabled={!item.periodFrom}
                                         onChange={(e) =>
                                           onUpdate(item.id, { periodTo: e.target.value })
                                         }
                                       >
-                                        <option value="">To</option>
-                                        {MONTH_OPTIONS}
+                                        <option value="">{t.common.to}</option>
+                                        {monthOptions}
                                       </select>
                                     </div>
                                   </div>
 
                                   <div className={styles.detailField}>
                                     <label className={styles.detailLabel} htmlFor={`budget-${item.id}`}>
-                                      Budget
+                                      {t.common.budget}
                                     </label>
                                     <select
                                       id={`budget-${item.id}`}
@@ -247,8 +301,8 @@ export default function DestinationsTable({ destinations, onToggle, onDelete, on
                                         onUpdate(item.id, { budget: e.target.value })
                                       }
                                     >
-                                      <option value="">Not set</option>
-                                      {BUDGET_CHOICES}
+                                      <option value="">{t.common.notSet}</option>
+                                      {budgetChoices}
                                     </select>
                                   </div>
                                 </div>
@@ -261,7 +315,7 @@ export default function DestinationsTable({ destinations, onToggle, onDelete, on
                   ) : (
                     <tr>
                       <td colSpan="2" className={styles.emptyCategoryCell}>
-                        No items
+                        {t.table.noItems}
                       </td>
                     </tr>
                   )}

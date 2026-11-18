@@ -1,7 +1,8 @@
 import { useRef, useState } from "react";
 import { useWikiPhoto } from "../hooks/useWikiPhoto.js";
-import { BUDGET_OPTIONS, MONTH_NAMES } from "../utils/travelOptions.js";
+import { BUDGET_OPTIONS } from "../utils/travelOptions.js";
 import { LOCATION_TYPES, TRIP_CATEGORIES } from "../constants.js";
+import { useLanguage } from "../i18n/LanguageContext.js";
 import styles from "./DestinationForm.module.css";
 // the preview uses the same frame as the photos in the rest of the app
 import photoStyles from "./DestinationPhoto.module.css";
@@ -9,12 +10,6 @@ import photoStyles from "./DestinationPhoto.module.css";
 const TITLE_MAX = 100;
 const HIGHLIGHT_MAX = 140;
 const MAX_FILE_BYTES = 10 * 1024 * 1024;
-
-const MONTH_OPTIONS = MONTH_NAMES.map((name, index) => (
-  <option key={name} value={String(index + 1)}>
-    {name}
-  </option>
-));
 
 // The photo is saved in db.json as text, so it is shrunk first:
 // a phone photo of 4 MB becomes about 100 KB.
@@ -33,7 +28,7 @@ function resizeImage(file, maxSide = 800) {
     };
     img.onerror = () => {
       URL.revokeObjectURL(url);
-      reject(new Error("This image could not be read."));
+      reject(new Error("unreadable")); // mesajul pentru utilizator e ales în handleFile
     };
     img.src = url;
   });
@@ -41,6 +36,8 @@ function resizeImage(file, maxSide = 800) {
 
 // Controlled form: React state is the source of truth for every field
 export default function DestinationForm({ onAdd, existingTitles = [] }) {
+  const { t } = useLanguage();
+  const errors = t.form.errors;
   const [title, setTitle] = useState("");
   const [type, setType] = useState(LOCATION_TYPES[0].value);
   const [category, setCategory] = useState(TRIP_CATEGORIES[0]);
@@ -58,20 +55,27 @@ export default function DestinationForm({ onAdd, existingTitles = [] }) {
   // live photo preview while typing the name (waits 600 ms after the last key)
   const autoPhoto = useWikiPhoto(title, !uploadedPhoto, 600);
 
+  // lunile, în limba aleasă; value rămâne numărul lunii, la fel în ambele limbi
+  const monthOptions = t.months.map((name, index) => (
+    <option key={index} value={String(index + 1)}>
+      {name}
+    </option>
+  ));
+
   // Returns the error message, or "" when the data is fine
   function validate() {
-    const t = title.trim();
-    if (t === "") return "The destination name is required.";
-    if (t.length > TITLE_MAX) return `The name can have at most ${TITLE_MAX} characters.`;
+    const name = title.trim();
+    if (name === "") return errors.required;
+    if (name.length > TITLE_MAX) return errors.tooLong(TITLE_MAX);
     // Extra rule of the theme: a place has a name made of letters, not only digits or symbols
-    if (!/\p{L}/u.test(t)) return "The name must contain at least one letter.";
+    if (!/\p{L}/u.test(name)) return errors.noLetter;
     // Extra rule of the theme: the same place cannot be planned twice
     const taken = existingTitles.some(
-      (existing) => existing.trim().toLowerCase() === t.toLowerCase()
+      (existing) => existing.trim().toLowerCase() === name.toLowerCase()
     );
-    if (taken) return `"${t}" is already in your travel list.`;
+    if (taken) return errors.taken(name);
     if (highlight.trim().length > HIGHLIGHT_MAX) {
-      return `The description can have at most ${HIGHLIGHT_MAX} characters.`;
+      return errors.whyTooLong(HIGHLIGHT_MAX);
     }
     return "";
   }
@@ -114,7 +118,7 @@ export default function DestinationForm({ onAdd, existingTitles = [] }) {
       resetForm(); // only after the server confirmed the save
     } catch (err) {
       // the text stays in the fields, so the user can try again
-      setError(`Could not save the destination: ${err.message}`);
+      setError(errors.saveFailed(err.message));
     } finally {
       setSaving(false);
     }
@@ -125,19 +129,19 @@ export default function DestinationForm({ onAdd, existingTitles = [] }) {
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      setPhotoError("Please choose an image file.");
+      setPhotoError(errors.notImage);
       return;
     }
     if (file.size > MAX_FILE_BYTES) {
-      setPhotoError("The image is too large (max 10 MB).");
+      setPhotoError(errors.tooLarge);
       return;
     }
 
     try {
       setUploadedPhoto(await resizeImage(file));
       setPhotoError("");
-    } catch (err) {
-      setPhotoError(err.message);
+    } catch {
+      setPhotoError(errors.unreadable);
     }
   }
 
@@ -154,7 +158,7 @@ export default function DestinationForm({ onAdd, existingTitles = [] }) {
       data-testid="form"
     >
       <div className={styles.field}>
-        <label htmlFor="dest-title">Destination name</label>
+        <label htmlFor="dest-title">{t.form.name}</label>
         <input
           id="dest-title"
           type="text"
@@ -166,7 +170,7 @@ export default function DestinationForm({ onAdd, existingTitles = [] }) {
               setError("");
             }
           }}
-          placeholder="e.g. Lisbon, Portugal"
+          placeholder={t.form.namePlaceholder}
           maxLength={TITLE_MAX}
           aria-invalid={invalid}
           aria-describedby={error ? "dest-form-error" : undefined}
@@ -176,32 +180,33 @@ export default function DestinationForm({ onAdd, existingTitles = [] }) {
 
       <div className={styles.fieldRow}>
         <div className={styles.field}>
-          <label htmlFor="dest-type">Location type</label>
+          <label htmlFor="dest-type">{t.form.type}</label>
           <select
             id="dest-type"
             value={type}
             onChange={(e) => setType(e.target.value)}
             data-testid="form-type"
           >
-            {LOCATION_TYPES.map((t) => (
-              <option key={t.value} value={t.value}>
-                {t.label}
+            {LOCATION_TYPES.map((option) => (
+              <option key={option.value} value={option.value}>
+                {t.types[option.value]}
               </option>
             ))}
           </select>
         </div>
 
         <div className={styles.field}>
-          <label htmlFor="dest-category">Trip category</label>
+          <label htmlFor="dest-category">{t.form.category}</label>
           <select
             id="dest-category"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             data-testid="form-category"
           >
+            {/* value rămâne "Vacation" / "Business", ca în db.json; doar textul se traduce */}
             {TRIP_CATEGORIES.map((c) => (
               <option key={c} value={c}>
-                {c}
+                {t.categories[c]}
               </option>
             ))}
           </select>
@@ -209,11 +214,11 @@ export default function DestinationForm({ onAdd, existingTitles = [] }) {
       </div>
 
       <div className={styles.field}>
-        <label htmlFor="dest-from">Desired period (optional)</label>
+        <label htmlFor="dest-from">{t.form.period}</label>
         <div className="detail-pair">
           <select
             id="dest-from"
-            aria-label="From month"
+            aria-label={t.common.fromMonth}
             value={periodFrom}
             onChange={(e) => {
               setPeriodFrom(e.target.value);
@@ -221,64 +226,64 @@ export default function DestinationForm({ onAdd, existingTitles = [] }) {
             }}
             data-testid="form-periodFrom"
           >
-            <option value="">From</option>
-            {MONTH_OPTIONS}
+            <option value="">{t.common.from}</option>
+            {monthOptions}
           </select>
           <select
-            aria-label="To month"
+            aria-label={t.common.toMonth}
             value={periodTo}
             disabled={!periodFrom}
             onChange={(e) => setPeriodTo(e.target.value)}
             data-testid="form-periodTo"
           >
-            <option value="">To</option>
-            {MONTH_OPTIONS}
+            <option value="">{t.common.to}</option>
+            {monthOptions}
           </select>
         </div>
       </div>
 
       <div className={styles.field}>
-        <label htmlFor="dest-budget">Budget (optional)</label>
+        <label htmlFor="dest-budget">{t.form.budget}</label>
         <select
           id="dest-budget"
           value={budget}
           onChange={(e) => setBudget(e.target.value)}
           data-testid="form-budget"
         >
-          <option value="">Not set</option>
+          <option value="">{t.common.notSet}</option>
           {BUDGET_OPTIONS.map((b) => (
             <option key={b.key} value={b.key}>
-              {b.label}
+              {t.budgets[b.key].label}
             </option>
           ))}
         </select>
       </div>
 
       <div className={styles.field}>
-        <label htmlFor="dest-highlight">Why go there? (optional)</label>
+        <label htmlFor="dest-highlight">{t.form.why}</label>
         <input
           id="dest-highlight"
           type="text"
           value={highlight}
           onChange={(e) => setHighlight(e.target.value)}
-          placeholder="e.g. Tram rides and sunset viewpoints"
+          placeholder={t.form.whyPlaceholder}
           maxLength={HIGHLIGHT_MAX}
           data-testid="form-highlight"
         />
       </div>
 
       <div className={styles.field}>
-        <span className={styles.fieldLabel}>Photo</span>
+        <span className={styles.fieldLabel}>{t.form.photo}</span>
         <div className={styles.photoPicker}>
           <div className={styles.photoPreview}>
             {uploadedPhoto ? (
               <figure className={photoStyles.destPhoto}>
-                <img src={uploadedPhoto} alt="Your uploaded photo" />
+                <img src={uploadedPhoto} alt={t.form.uploadedAlt} />
               </figure>
             ) : autoPhoto.status === "found" ? (
               <figure className={photoStyles.destPhoto}>
-                <img src={autoPhoto.photo.url} alt={`${title} preview`} />
-                <figcaption>Photo: Wikipedia</figcaption>
+                <img src={autoPhoto.photo.url} alt={t.form.previewAlt(title)} />
+                <figcaption>{t.common.photoCredit}</figcaption>
               </figure>
             ) : autoPhoto.status === "loading" ? (
               <div
@@ -287,9 +292,7 @@ export default function DestinationForm({ onAdd, existingTitles = [] }) {
               />
             ) : (
               <div className={styles.photoEmpty}>
-                {autoPhoto.status === "missing"
-                  ? "No photo found for this name."
-                  : "Type a name to see a photo."}
+                {autoPhoto.status === "missing" ? t.form.noPhoto : t.form.typeForPhoto}
               </div>
             )}
           </div>
@@ -308,7 +311,7 @@ export default function DestinationForm({ onAdd, existingTitles = [] }) {
               className="btn btn-ghost btn-small"
               onClick={() => fileInputRef.current?.click()}
             >
-              Upload your own
+              {t.form.upload}
             </button>
             {uploadedPhoto && (
               <button
@@ -316,7 +319,7 @@ export default function DestinationForm({ onAdd, existingTitles = [] }) {
                 className="btn btn-ghost btn-small"
                 onClick={removeUploadedPhoto}
               >
-                Remove
+                {t.form.remove}
               </button>
             )}
             {photoError && <p className={styles.photoError} role="alert">{photoError}</p>}
@@ -341,7 +344,7 @@ export default function DestinationForm({ onAdd, existingTitles = [] }) {
         disabled={saving}
         data-testid="form-submit"
       >
-        {saving ? "Saving…" : "Add destination"}
+        {saving ? t.common.saving : t.form.submit}
       </button>
     </form>
   );

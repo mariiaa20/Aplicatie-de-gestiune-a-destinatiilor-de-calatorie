@@ -1,14 +1,18 @@
 import { Link } from "react-router-dom";
 import StarRating from "./StarRating.jsx";
 import DeleteButton from "./DeleteButton.jsx";
-import { TYPE_LABELS } from "../constants.js";
+import { useLanguage } from "../i18n/LanguageContext.js";
 import styles from "./DestinationCard.module.css";
 
 export default function DestinationCard({ destination, onToggle, onDelete, onRate }) {
   const { id, title, category, type, visited, rating = 0 } = destination;
+  const { t } = useLanguage();
 
   return (
-    <li className={visited ? `${styles.destinationCard} ${styles.done}` : styles.destinationCard}>
+    <li
+      className={visited ? `${styles.destinationCard} ${styles.done}` : styles.destinationCard}
+      data-stamp={t.detail.stamp}
+    >
       <div className={styles.cardRow}>
         {/* Stage 8: a div instead of a label, because the title is now a link;
             the checkbox gets an aria-label, so a screen reader knows what it ticks */}
@@ -18,7 +22,7 @@ export default function DestinationCard({ destination, onToggle, onDelete, onRat
             className="card-check"
             checked={visited}
             onChange={() => onToggle(id)}
-            aria-label={`Mark ${title} as visited`}
+            aria-label={t.common.markVisited(title)}
           />
 
           <div className={styles.destinationDetails}>
@@ -27,10 +31,10 @@ export default function DestinationCard({ destination, onToggle, onDelete, onRat
                 {title}
               </Link>
             </h3>
-            <p className={styles.destinationCategory}>{category}</p>
+            <p className={styles.destinationCategory}>{t.categories[category] || category}</p>
 
             <div className={styles.cardMeta}>
-              <span className={`badge badge-${type}`}>{TYPE_LABELS[type] || type}</span>
+              <span className={`badge badge-${type}`}>{t.types[type] || type}</span>
             </div>
           </div>
         </div>

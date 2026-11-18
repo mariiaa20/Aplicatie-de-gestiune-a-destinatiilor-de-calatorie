@@ -40,11 +40,9 @@ export function flightOf(title) {
 }
 
 // the budget decides the class: a pass is more fun when it says "First"
-export function travelClass(budget) {
-  return (
-    { "under-500": "Economy", "500-1000": "Economy Plus", "1000-2000": "Business", "over-2000": "First" }[budget] ||
-    "Economy"
-  );
+// classes: numele claselor în limba aleasă (t.pass.classes)
+export function travelClass(budget, classes) {
+  return classes[budget] || classes["under-500"];
 }
 
 // "HH:MM", minutes from now
@@ -67,8 +65,9 @@ export function flightDay(from, to, title, today = new Date()) {
 }
 
 // "15 APR 2027", as printed on the pass
-export function printedDate(date) {
-  return `${String(date.getDate()).padStart(2, "0")} ${MONTHS[date.getMonth()]} ${date.getFullYear()}`;
+// months: prescurtările în limba aleasă (t.monthsPrinted), de exemplu "IAN" în română
+export function printedDate(date, months = MONTHS) {
+  return `${String(date.getDate()).padStart(2, "0")} ${months[date.getMonth()]} ${date.getFullYear()}`;
 }
 
 // A search for one-way flights on Skyscanner, already filled in:

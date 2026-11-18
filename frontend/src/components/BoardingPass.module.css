@@ -100,6 +100,13 @@
   text-align: right;
 }
 
+.fewFlights {
+  margin-top: 4px;
+  color: var(--text-faint);
+  font-size: 0.76rem;
+  text-align: right;
+}
+
 .path {
   position: relative;
   display: grid;

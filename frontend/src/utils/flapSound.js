@@ -1,4 +1,5 @@
-// The clack of a split-flap board, made in the browser with the Web Audio API:
+// Small sounds made in the browser with the Web Audio API, nothing is downloaded.
+// The clack of a split-flap board:
 // a very short burst of noise, filtered so it sounds like plastic, not like hiss.
 // Nothing is downloaded. The AudioContext is created on the first click,
 // because browsers only allow sound after the user has done something.
@@ -43,4 +44,33 @@ export function playFlap(strength = 1) {
 
   source.connect(filter).connect(gain).connect(audio.destination);
   source.start();
+}
+
+// The thud of a rubber stamp on paper: a low knock and a short, dull slap.
+// Call it from a click (it unlocks the sound itself).
+export function playStamp() {
+  unlockFlapSound();
+  if (!audio) return;
+  const now = audio.currentTime;
+
+  const knock = audio.createOscillator();
+  knock.type = "sine";
+  knock.frequency.setValueAtTime(140, now);
+  knock.frequency.exponentialRampToValueAtTime(55, now + 0.12);
+  const knockGain = audio.createGain();
+  knockGain.gain.setValueAtTime(0.35, now);
+  knockGain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+  knock.connect(knockGain).connect(audio.destination);
+  knock.start(now);
+  knock.stop(now + 0.18);
+
+  const slap = audio.createBufferSource();
+  slap.buffer = noise;
+  const filter = audio.createBiquadFilter();
+  filter.type = "lowpass";
+  filter.frequency.value = 900;
+  const slapGain = audio.createGain();
+  slapGain.gain.value = 0.25;
+  slap.connect(filter).connect(slapGain).connect(audio.destination);
+  slap.start(now);
 }

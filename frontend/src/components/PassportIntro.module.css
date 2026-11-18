@@ -1,0 +1,232 @@
+/* The opening: a closed passport on the leather, its cover opens, the app comes in */
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: grid;
+  place-items: center;
+  background: var(--grain),
+    radial-gradient(ellipse at 50% 40%, rgba(255, 210, 160, 0.14), transparent 60%),
+    linear-gradient(170deg, #5a2230 0%, var(--cover) 45%, var(--cover-deep) 100%);
+  cursor: pointer;
+  animation: introOut 0.75s cubic-bezier(0.5, 0, 0.75, 0) 2.9s forwards;
+}
+
+.book {
+  --w: clamp(220px, 26vw, 300px);
+  position: relative;
+  width: var(--w);
+  height: calc(var(--w) * 1.4);
+  perspective: 1600px;
+  animation: bookIn 0.7s cubic-bezier(0.2, 0.8, 0.25, 1) backwards,
+    bookCenter 1.15s cubic-bezier(0.6, 0.05, 0.3, 1) 1.55s forwards;
+}
+
+/* ---------- The first page, under the cover ---------- */
+.page {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 28px 24px;
+  border-radius: 4px 12px 12px 4px;
+  background: var(--rosette) center / 90% no-repeat, var(--waves) 0 0 / 120px 24px repeat, var(--paper);
+  box-shadow: inset 10px 0 18px -10px rgba(40, 12, 18, 0.35), 0 24px 50px -16px rgba(0, 0, 0, 0.7);
+  color: var(--ink);
+  text-align: center;
+}
+
+.welcome {
+  color: var(--stamp-city);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  font-variant: small-caps;
+  letter-spacing: 0.08em;
+}
+
+.pageTitle {
+  margin-top: 8px;
+  color: var(--title-ink);
+  font-family: var(--font-display);
+  font-size: calc(var(--w) * 0.088);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.pageLine {
+  display: block;
+  height: 1px;
+  margin: 18px 10px;
+  background: var(--rule);
+}
+
+.mrz {
+  overflow: hidden;
+  color: var(--text-faint);
+  font-family: var(--font-mrz);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+/* ---------- The cover ---------- */
+.cover {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  animation: coverOpen 1.15s cubic-bezier(0.6, 0.05, 0.3, 1) 1.55s forwards;
+}
+
+/* the leather side */
+.coverFront {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 4px 12px 12px 4px;
+  background: var(--grain),
+    linear-gradient(135deg, #63273a 0%, var(--cover) 50%, var(--cover-deep) 100%);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.4), inset 8px 0 14px -8px rgba(0, 0, 0, 0.6),
+    0 24px 50px -16px rgba(0, 0, 0, 0.8);
+  color: #d8b878;
+  backface-visibility: hidden;
+}
+
+/* the inside of the cover, seen once it has turned past halfway */
+.coverInside {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px 4px 4px 12px;
+  background: repeating-linear-gradient(45deg, rgba(201, 166, 107, 0.08) 0 2px, transparent 2px 9px),
+    linear-gradient(90deg, #2a0e15, #3a1520);
+  box-shadow: inset 10px 0 18px -10px rgba(0, 0, 0, 0.7), 0 20px 40px -16px rgba(0, 0, 0, 0.7);
+  transform: rotateY(180deg);
+  backface-visibility: hidden;
+}
+
+/* the gold line pressed around the edge */
+.frame {
+  position: absolute;
+  inset: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 12px 18px;
+  border: 1px solid rgba(201, 166, 107, 0.45);
+  border-radius: 4px 8px 8px 4px;
+  text-align: center;
+}
+
+.country {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.emblem {
+  width: 42%;
+  filter: drop-shadow(0 -1px 0 rgba(0, 0, 0, 0.5));
+}
+
+.passport,
+.name {
+  background: var(--foil);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 -1px 0 rgba(0, 0, 0, 0.55)) drop-shadow(0 1px 0 rgba(255, 220, 160, 0.15));
+}
+
+.passport {
+  font-family: var(--font-display);
+  font-size: calc(var(--w) * 0.13);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.name {
+  margin-top: -8px;
+  font-family: var(--font-display);
+  font-size: calc(var(--w) * 0.07);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.chip {
+  width: 22%;
+  opacity: 0.85;
+}
+
+/* a band of light that slides once over the gold */
+.shine {
+  position: absolute;
+  inset: -20%;
+  background: linear-gradient(105deg, transparent 40%, rgba(255, 236, 190, 0.28) 50%, transparent 60%);
+  transform: translateX(-80%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  animation: shine 1.1s ease-in-out 0.55s forwards;
+}
+
+.skip {
+  position: fixed;
+  right: 24px;
+  bottom: 22px;
+  padding: 8px 18px;
+  border: 1px solid rgba(201, 166, 107, 0.45);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--foil-text);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.skip:focus-visible {
+  outline: 2px solid #f0dbab;
+  outline-offset: 3px;
+}
+
+@keyframes bookIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.92);
+  }
+}
+
+/* as it opens, the book slides so the open spread sits in the middle */
+@keyframes bookCenter {
+  to {
+    transform: translateX(50%);
+  }
+}
+
+@keyframes shine {
+  to {
+    transform: translateX(80%);
+  }
+}
+
+@keyframes coverOpen {
+  to {
+    transform: rotateY(-165deg);
+  }
+}
+
+/* the page comes towards you and the app is underneath */
+@keyframes introOut {
+  to {
+    opacity: 0;
+    transform: scale(1.35);
+    visibility: hidden;
+  }
+}

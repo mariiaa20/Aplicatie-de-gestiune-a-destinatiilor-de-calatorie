@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { TYPE_LABELS } from "../constants.js";
-import { HOME_AIRPORT } from "../data/airports.js";
+import { HOME_AIRPORT, ROMANIAN_AIRPORTS, airportLabel } from "../data/airports.js";
+import { downloadPassImage } from "../utils/passImage.js";
 import {
   barcodeBars,
   flightDay,
@@ -11,35 +11,69 @@ import {
   ticketsUrl,
   travelClass
 } from "../utils/departures.js";
+import { useLanguage } from "../i18n/LanguageContext.js";
 import styles from "./BoardingPass.module.css";
-
-// the trip always starts at home
-const HOME = HOME_AIRPORT;
 
 // The ticket printed under the board for the place it stopped on.
 // trip: { title, type, budget, from, to, highlight, airport, id? }  (id only if it is in My Travel List)
-export default function BoardingPass({ trip, passenger, boardingTime, onAdd, saving }) {
-  const name = (passenger.trim() || "Traveller").toUpperCase();
+// home: the Romanian airport the trip starts from
+export default function BoardingPass({ trip, passenger, boardingTime, onAdd, saving, home = HOME_AIRPORT }) {
+  const HOME = home;
+  const { t } = useLanguage();
+  const fields = t.pass.fields;
+  const homeLabel = airportLabel(HOME, t.airports);
+  // from a small airport: the nearest big one, for a second search that finds more flights
+  const near = ROMANIAN_AIRPORTS.find((airport) => airport.code === HOME.near);
+  const nearLabel = near && airportLabel(near, t.airports);
+  const name = (passenger.trim() || t.pass.traveller).toUpperCase();
   const code = trip.airport.code;
   const day = flightDay(trip.from, trip.to, trip.title);
-  const date = printedDate(day);
+  const date = printedDate(day, t.monthsPrinted);
+  const seatClass = travelClass(trip.budget, t.pass.classes);
+  const tripKind = t.types[trip.type] || trip.type;
   const seat = seatOf(trip.title, name);
   const gate = gateOf(trip.title);
   const bars = barcodeBars(trip.title + name);
+  // how to get from the airport to the place, translated in ro.js after the English text
+  const then = trip.airport.then
+    ? t.pass.then(t.then[trip.airport.then] ?? trip.airport.then)
+    : t.pass.landIn(trip.title.split(",")[0]);
   let x = 0;
 
+  // the same ticket, drawn as a picture you can keep or send
+  function handleDownload() {
+    downloadPassImage({
+      labels: { heading: t.pass.heading, ...fields },
+      name,
+      fromCode: HOME.code,
+      fromCity: homeLabel,
+      toCode: code,
+      toCity: trip.airport.city,
+      then,
+      date,
+      boarding: boardingTime,
+      flight: flightOf(trip.title),
+      gate,
+      seat,
+      travelClass: seatClass,
+      trip: tripKind,
+      why: trip.highlight,
+      bars
+    });
+  }
+
   return (
-    <article className={styles.pass} aria-label={`Boarding pass to ${trip.title}`}>
+    <article className={styles.pass} aria-label={t.pass.label(trip.title)}>
       <div className={styles.main}>
         <header className={styles.band}>
-          <span>Boarding pass</span>
+          <span>{t.pass.heading}</span>
           <span className={styles.airline}>Passport Air</span>
         </header>
 
         <div className={styles.route}>
           <div>
             <p className={styles.code}>{HOME.code}</p>
-            <p className={styles.city}>{HOME.city}</p>
+            <p className={styles.city}>{homeLabel}</p>
           </div>
           <div className={styles.path} aria-hidden="true">
             <svg viewBox="0 0 24 24">
@@ -53,42 +87,42 @@ export default function BoardingPass({ trip, passenger, boardingTime, onAdd, sav
         </div>
 
         {/* places without an airport of their own: how to get there from the one you land at */}
-        <p className={styles.then}>
-          {trip.airport.then ? `Then ${trip.airport.then}.` : `You land right in ${trip.title.split(",")[0]}.`}
-        </p>
+        <p className={styles.then}>{then}</p>
+        {/* from a small airport many routes do not exist; the nearest big one has more */}
+        {near && <p className={styles.fewFlights}>{t.pass.fewFlights(homeLabel, nearLabel)}</p>}
 
         <dl className={styles.fields}>
           <div>
-            <dt>Passenger</dt>
+            <dt>{fields.passenger}</dt>
             <dd>{name}</dd>
           </div>
           <div>
-            <dt>Flight</dt>
+            <dt>{fields.flight}</dt>
             <dd>{flightOf(trip.title)}</dd>
           </div>
           <div>
-            <dt>Date</dt>
+            <dt>{fields.date}</dt>
             <dd>{date}</dd>
           </div>
           <div>
-            <dt>Boarding</dt>
+            <dt>{fields.boarding}</dt>
             <dd>{boardingTime}</dd>
           </div>
           <div>
-            <dt>Gate</dt>
+            <dt>{fields.gate}</dt>
             <dd>{gate}</dd>
           </div>
           <div>
-            <dt>Seat</dt>
+            <dt>{fields.seat}</dt>
             <dd>{seat}</dd>
           </div>
           <div>
-            <dt>Class</dt>
-            <dd>{travelClass(trip.budget)}</dd>
+            <dt>{fields.class}</dt>
+            <dd>{seatClass}</dd>
           </div>
           <div>
-            <dt>Trip</dt>
-            <dd>{TYPE_LABELS[trip.type] || trip.type}</dd>
+            <dt>{fields.trip}</dt>
+            <dd>{tripKind}</dd>
           </div>
         </dl>
 
@@ -97,11 +131,11 @@ export default function BoardingPass({ trip, passenger, boardingTime, onAdd, sav
         <div className={styles.actions}>
           {trip.id !== undefined ? (
             <Link to={`/destinations/${trip.id}`} className="btn btn-primary">
-              Open its page
+              {t.pass.openPage}
             </Link>
           ) : (
             <button type="button" className="btn btn-primary" onClick={onAdd} disabled={saving}>
-              {saving ? "Saving…" : "Add to my list"}
+              {saving ? t.common.saving : t.common.addToList}
             </button>
           )}
           {/* a real search for this flight, on that day; opens in a new tab */}
@@ -111,8 +145,22 @@ export default function BoardingPass({ trip, passenger, boardingTime, onAdd, sav
             rel="noopener noreferrer"
             className="btn btn-ghost"
           >
-            Find tickets on Skyscanner ↗
+            {/* with two searches, each button says where it searches from */}
+            {near && near.code !== code ? t.pass.ticketsFrom(homeLabel) : t.pass.tickets}
           </a>
+          {near && near.code !== code && (
+            <a
+              href={ticketsUrl(near.code, code, day)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-ghost"
+            >
+              {t.pass.ticketsFrom(nearLabel)}
+            </a>
+          )}
+          <button type="button" className="btn btn-ghost" onClick={handleDownload}>
+            {t.pass.download}
+          </button>
         </div>
       </div>
 
@@ -124,11 +172,11 @@ export default function BoardingPass({ trip, passenger, boardingTime, onAdd, sav
         </p>
         <dl className={styles.stubFields}>
           <div>
-            <dt>Seat</dt>
+            <dt>{fields.seat}</dt>
             <dd>{seat}</dd>
           </div>
           <div>
-            <dt>Gate</dt>
+            <dt>{fields.gate}</dt>
             <dd>{gate}</dd>
           </div>
         </dl>

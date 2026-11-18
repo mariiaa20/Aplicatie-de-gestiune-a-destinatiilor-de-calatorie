@@ -1,6 +1,8 @@
 import { useOutletContext } from "react-router-dom";
 import DestinationForm from "../components/DestinationForm.jsx";
 import DestinationsTable from "../components/DestinationsTable.jsx";
+import ServerError from "../components/ServerError.jsx";
+import { useLanguage } from "../i18n/LanguageContext.js";
 import styles from "./DestinationsPage.module.css";
 
 // Home page, pages 2-3 of the passport: the form on the left, the list on the right.
@@ -16,6 +18,7 @@ export default function DestinationsPage() {
     removeDestination,
     changeDestination
   } = useOutletContext();
+  const { t } = useLanguage();
 
   // Derived values: recalculated on every render, never kept in state
   const plannedCount = destinations.filter((d) => !d.visited).length;
@@ -24,7 +27,7 @@ export default function DestinationsPage() {
     <div className={styles.mainContentLayout}>
       <div className={styles.sideColumn}>
         <section className={`card-box ${styles.cardBoxForm}`}>
-          <h2 className="card-title">Add a destination</h2>
+          <h2 className="card-title">{t.form.title}</h2>
           <DestinationForm
             onAdd={addDestination}
             existingTitles={destinations.map((d) => d.title)}
@@ -33,25 +36,21 @@ export default function DestinationsPage() {
       </div>
 
       <section className={`card-box ${styles.cardBoxSecondary}`}>
-        <h2 className="card-title">My Travel List</h2>
+        <h2 className="card-title">{t.home.title}</h2>
         {/* the counter moved here from the header, which is now the same on every page */}
         {!loading && (
           <p className={styles.summary}>
-            {destinations.length} destinations, {plannedCount} planned
+            {t.home.summary(destinations.length, plannedCount)}
           </p>
         )}
 
         {loading && (
           <p className={`info ${styles.listStatus}`} data-testid="loading">
-            Loading destinations…
+            {t.common.loadingList}
           </p>
         )}
 
-        {error && (
-          <p className={`error ${styles.listStatus}`} data-testid="error">
-            Something went wrong with the server: {error}. Is <code>npm run api</code> running?
-          </p>
-        )}
+        {error && <ServerError error={error} className={`error ${styles.listStatus}`} />}
 
         {/* !loading, without !error: if a toggle fails, the list stays on screen */}
         {!loading && (

@@ -3,14 +3,17 @@ import { useOutletContext } from "react-router-dom";
 import DepartureBoard from "../components/DepartureBoard.jsx";
 import BoardingPass from "../components/BoardingPass.jsx";
 import { SUGGESTIONS } from "../data/suggestions.js";
-import { airportFor } from "../data/airports.js";
-import { BUDGET_OPTIONS, MONTH_NAMES, periodIncludesMonth } from "../utils/travelOptions.js";
+import { ROMANIAN_AIRPORTS, airportFor, airportLabel } from "../data/airports.js";
+import { BUDGET_OPTIONS, periodIncludesMonth } from "../utils/travelOptions.js";
 import { boardText, gateOf, pickOne, someOthers, timeFromNow } from "../utils/departures.js";
 import { unlockFlapSound } from "../utils/flapSound.js";
+import ServerError from "../components/ServerError.jsx";
+import { useLanguage } from "../i18n/LanguageContext.js";
 import styles from "./WhereNextPage.module.css";
 
 const LINES = 6;
-const OTHER_REMARKS = ["ON TIME", "ON TIME", "DELAYED", "GATE OPEN", "SCHEDULED", "ON TIME"];
+// the remarks are kept as keys; the text, in the chosen language, is in t.next.remarks
+const OTHER_REMARKS = ["onTime", "onTime", "delayed", "gateOpen", "scheduled", "onTime"];
 
 // one line of the board for a trip: the board shows the place itself,
 // the boarding pass says which airport you fly to and how you get there
@@ -27,11 +30,21 @@ function rowFor(trip, line, remark) {
 // then prints a boarding pass for it.
 export default function WhereNextPage() {
   const { destinations, loading, error, addSuggestion } = useOutletContext();
+  const { t } = useLanguage();
 
   const [source, setSource] = useState("list"); // "list" or "anywhere"
   const [month, setMonth] = useState("");
   const [budget, setBudget] = useState("");
   const [passenger, setPassenger] = useState("");
+  // the airport the trip starts from, remembered for the next visit
+  const [homeCode, setHomeCode] = useState(() => {
+    try {
+      return localStorage.getItem("tdm-home-airport") || "OTP";
+    } catch {
+      return "OTP";
+    }
+  });
+  const home = ROMANIAN_AIRPORTS.find((a) => a.code === homeCode) || ROMANIAN_AIRPORTS[0];
   const [sound, setSound] = useState(true);
   const [pick, setPick] = useState(null); // the trip the board stops on
   const [rows, setRows] = useState([]); // what the board should show
@@ -45,29 +58,39 @@ export default function WhereNextPage() {
     const planned = destinations
       .filter((d) => !d.visited)
       .map((d) => ({ ...d, from: d.periodFrom, to: d.periodTo }));
-    // "Anywhere": the places still to visit from the list, plus every idea not in it yet
-    const trips =
-      source === "list" ? planned : [...planned, ...SUGGESTIONS.filter((s) => !inList(s.title))];
+    // "Anywhere": the places still to visit from the list, plus every idea not in it yet,
+    // each idea with its description in the chosen language
+    const ideas = SUGGESTIONS.filter((s) => !inList(s.title)).map((s) => ({
+      ...s,
+      highlight: t.highlights[s.title] ?? s.highlight
+    }));
+    const trips = source === "list" ? planned : [...planned, ...ideas];
     return (
       trips
         // only places we can fly to: each one gets its airport
         .map((t) => ({ ...t, airport: airportFor(t.title) }))
         .filter((t) => t.airport)
+        // no flight to the airport you leave from (Sibiu from Sibiu)
+        .filter((t) => t.airport.code !== homeCode)
         // places without a period can go any month
         .filter((t) => !month || !t.from || periodIncludesMonth(t.from, t.to, month))
         .filter((t) => !budget || t.budget === budget)
     );
-  }, [destinations, source, month, budget]);
+  }, [destinations, source, month, budget, homeCode, t]);
 
   // places from the list that the board leaves out, because we do not know their airport
   const noAirport = destinations.filter((d) => !d.visited && !airportFor(d.title));
 
   // before the first pick, the board shows a few scheduled departures
   const idleRows = useMemo(
-    () => someOthers(pool, null, LINES).map((trip, line) => rowFor(trip, line, "SCHEDULED")),
+    () => someOthers(pool, null, LINES).map((trip, line) => rowFor(trip, line, "scheduled")),
     [pool]
   );
-  const boardRows = phase === "idle" ? idleRows : rows;
+  // the remark keys become text in the chosen language
+  const boardRows = (phase === "idle" ? idleRows : rows).map((row) => ({
+    ...row,
+    remark: t.next.remarks[row.remark]
+  }));
 
   // the trip on the boarding pass, with its id if it is (now) in My Travel List
   const listed = pick && destinations.find((d) => d.title.toLowerCase() === pick.title.toLowerCase());
@@ -80,7 +103,7 @@ export default function WhereNextPage() {
     const others = someOthers(pool, chosen, LINES - 1);
     setPick(chosen);
     setRows([
-      rowFor(chosen, 0, "BOARDING"),
+      rowFor(chosen, 0, "boarding"),
       ...others.map((trip, i) => rowFor(trip, i + 1, OTHER_REMARKS[i % OTHER_REMARKS.length]))
     ]);
     setPhase("rolling");
@@ -120,31 +143,27 @@ export default function WhereNextPage() {
   return (
     <div className={`page-wide ${styles.page}`}>
       <div className={styles.intro}>
-        <h2 className={styles.title}>Where next?</h2>
-        <p className={styles.lead}>Can't choose your next trip? Let the departure board pick one for you.</p>
+        <h2 className={styles.title}>{t.next.title}</h2>
+        <p className={styles.lead}>{t.next.lead}</p>
       </div>
 
       {loading && (
         <p className="info page-status" data-testid="loading">
-          Loading destinations…
+          {t.common.loadingList}
         </p>
       )}
-      {error && (
-        <p className="error page-status" data-testid="error">
-          Something went wrong with the server: {error}. Is <code>npm run api</code> running?
-        </p>
-      )}
+      {error && <ServerError error={error} />}
 
       <div className={styles.controls}>
-        <div className={styles.tabs} role="group" aria-label="Pick from">
-          <span className={styles.tabsLabel}>Pick from</span>
+        <div className={styles.tabs} role="group" aria-label={t.next.pickFrom}>
+          <span className={styles.tabsLabel}>{t.next.pickFrom}</span>
           <button
             type="button"
             className={styles.tab}
             aria-pressed={source === "list"}
             onClick={() => changeSource("list")}
           >
-            My Travel List <span className={styles.count}>{planned}</span>
+            {t.next.fromList} <span className={styles.count}>{planned}</span>
           </button>
           <button
             type="button"
@@ -152,16 +171,16 @@ export default function WhereNextPage() {
             aria-pressed={source === "anywhere"}
             onClick={() => changeSource("anywhere")}
           >
-            🌍 Anywhere in the world <span className={styles.count}>{planned + ideasLeft}</span>
+            {t.next.anywhere} <span className={styles.count}>{planned + ideasLeft}</span>
           </button>
         </div>
 
         <label className={styles.field}>
-          <span>When can you go?</span>
+          <span>{t.next.when}</span>
           <select value={month} onChange={(e) => setMonth(e.target.value)}>
-            <option value="">Any month</option>
-            {MONTH_NAMES.map((name, index) => (
-              <option key={name} value={String(index + 1)}>
+            <option value="">{t.common.anyMonth}</option>
+            {t.months.map((name, index) => (
+              <option key={index} value={String(index + 1)}>
                 {name}
               </option>
             ))}
@@ -169,24 +188,45 @@ export default function WhereNextPage() {
         </label>
 
         <label className={styles.field}>
-          <span>Budget</span>
+          <span>{t.common.budget}</span>
           <select value={budget} onChange={(e) => setBudget(e.target.value)}>
-            <option value="">Any budget</option>
+            <option value="">{t.common.anyBudget}</option>
             {BUDGET_OPTIONS.map((option) => (
               <option key={option.key} value={option.key}>
-                {option.label}
+                {t.budgets[option.key].label}
               </option>
             ))}
           </select>
         </label>
 
         <label className={styles.field}>
-          <span>Passenger</span>
+          <span>{t.next.leavingFrom}</span>
+          <select
+            value={homeCode}
+            onChange={(e) => {
+              setHomeCode(e.target.value);
+              try {
+                localStorage.setItem("tdm-home-airport", e.target.value);
+              } catch {
+                // private mode: the choice is just not remembered
+              }
+            }}
+          >
+            {ROMANIAN_AIRPORTS.map((airport) => (
+              <option key={airport.code} value={airport.code}>
+                {airportLabel(airport, t.airports)} ({airport.code})
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className={styles.field}>
+          <span>{t.next.passenger}</span>
           <input
             type="text"
             value={passenger}
             maxLength={24}
-            placeholder="Your name"
+            placeholder={t.next.passengerPlaceholder}
             onChange={(e) => setPassenger(e.target.value)}
           />
         </label>
@@ -197,7 +237,7 @@ export default function WhereNextPage() {
           aria-pressed={sound}
           onClick={() => setSound(!sound)}
         >
-          {sound ? "🔊 Sound on" : "🔈 Sound off"}
+          {sound ? t.next.soundOn : t.next.soundOff}
         </button>
       </div>
 
@@ -206,6 +246,7 @@ export default function WhereNextPage() {
           <DepartureBoard
             rows={boardRows}
             lines={LINES}
+            airport={`${airportLabel(home, t.airports)} ${home.code}`}
             highlight={phase === "landed"}
             rollKey={rolls}
             sound={sound && phase === "rolling"}
@@ -215,12 +256,10 @@ export default function WhereNextPage() {
           <div className={styles.pickBar}>
             {pool.length === 0 ? (
               <p className={styles.empty}>
-                {source === "list"
-                  ? "Nothing to pick: no place in My Travel List fits these choices."
-                  : "No place fits that month and budget. Try other choices."}
+                {source === "list" ? t.next.emptyList : t.next.emptyAnywhere}
                 {source === "list" && (
                   <button type="button" className={styles.switch} onClick={() => changeSource("anywhere")}>
-                    Pick from anywhere in the world
+                    {t.next.switchAnywhere}
                   </button>
                 )}
               </p>
@@ -231,14 +270,14 @@ export default function WhereNextPage() {
                 onClick={handlePick}
                 disabled={phase === "rolling"}
               >
-                {phase === "rolling" ? "Picking…" : phase === "landed" ? "Pick again" : "Pick my next trip"}
+                {phase === "rolling" ? t.next.picking : phase === "landed" ? t.next.again : t.next.pick}
               </button>
             )}
           </div>
 
           {noAirport.length > 0 && (
             <p className={styles.note}>
-              Not on the board, because they have no airport we know of:{" "}
+              {t.next.noAirport}
               {noAirport.map((d) => d.title).join(", ")}.
             </p>
           )}
@@ -252,6 +291,7 @@ export default function WhereNextPage() {
                 boardingTime={rows[0]?.time}
                 onAdd={handleAdd}
                 saving={saving}
+                home={home}
               />
             </div>
           )}

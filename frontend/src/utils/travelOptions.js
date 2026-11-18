@@ -3,6 +3,7 @@ export const MONTH_NAMES = [
   "July", "August", "September", "October", "November", "December"
 ];
 
+// label și short sunt în engleză; pe ecran apar cele din t.budgets (i18n/en.js, i18n/ro.js)
 export const BUDGET_OPTIONS = [
   { key: "under-500", label: "Under €500", short: "<€500" },
   { key: "500-1000", label: "€500 – €1,000", short: "€500–1k" },
@@ -10,16 +11,13 @@ export const BUDGET_OPTIONS = [
   { key: "over-2000", label: "Over €2,000", short: "€2k+" }
 ];
 
-export function getBudget(key) {
-  return BUDGET_OPTIONS.find((budget) => budget.key === key);
-}
-
 // "6" + "8" -> "Jun – Aug", "4" -> "Apr"
-export function formatPeriod(from, to) {
+// months: numele lunilor în limba aleasă (t.months); fără ele, în engleză
+export function formatPeriod(from, to, months = MONTH_NAMES) {
   if (!from) return "";
-  const start = MONTH_NAMES[Number(from) - 1].slice(0, 3);
+  const start = months[Number(from) - 1].slice(0, 3);
   if (!to || to === from) return start;
-  return `${start} – ${MONTH_NAMES[Number(to) - 1].slice(0, 3)}`;
+  return `${start} – ${months[Number(to) - 1].slice(0, 3)}`;
 }
 
 // true if the month (1-12) is inside the period; handles ranges like Nov–Feb

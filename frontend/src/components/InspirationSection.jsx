@@ -1,15 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import DestinationPhoto from "./DestinationPhoto.jsx";
 import PassportBook, { BookPage } from "./PassportBook.jsx";
-import {
-  BUDGET_OPTIONS,
-  MONTH_NAMES,
-  formatPeriod,
-  getBudget,
-  periodIncludesMonth
-} from "../utils/travelOptions.js";
+import { BUDGET_OPTIONS, formatPeriod, periodIncludesMonth } from "../utils/travelOptions.js";
 import { REGIONS, SUGGESTIONS } from "../data/suggestions.js";
-import { TYPE_LABELS } from "../constants.js";
+import { useLanguage } from "../i18n/LanguageContext.js";
 import styles from "./InspirationSection.module.css";
 
 // the coloured line of each visa: one ink per kind of place (mountain is the default)
@@ -18,12 +12,8 @@ const VISA_INK = {
   beach: styles.visaBeach
 };
 
-const TYPE_TABS = [
-  { key: "all", label: "All ideas" },
-  { key: "city-break", label: "City breaks" },
-  { key: "beach", label: "Beach" },
-  { key: "mountain", label: "Mountain" }
-];
+// the tabs above the passport; their names are in t.inspire.tabs
+const TYPE_TABS = ["all", "city-break", "beach", "mountain"];
 
 const EMPTY_FILTERS = {
   type: "all",
@@ -50,7 +40,8 @@ function machineLine(title) {
   return `V<${letters}`.padEnd(44, "<").slice(0, 44);
 }
 
-function matches(suggestion, filters) {
+// highlight: the description in the chosen language, so the search finds what is on screen
+function matches(suggestion, highlight, filters) {
   const search = filters.search.trim().toLowerCase();
 
   if (filters.type !== "all" && suggestion.type !== filters.type) return false;
@@ -62,7 +53,7 @@ function matches(suggestion, filters) {
   if (
     search &&
     !suggestion.title.toLowerCase().includes(search) &&
-    !suggestion.highlight.toLowerCase().includes(search)
+    !highlight.toLowerCase().includes(search)
   ) {
     return false;
   }
@@ -70,6 +61,9 @@ function matches(suggestion, filters) {
 }
 
 export default function InspirationSection({ destinations = [], onAdd }) {
+  const { t } = useLanguage();
+  // the description of an idea: in Romanian from ro.js, in English as it is in suggestions.js
+  const highlightOf = (suggestion) => t.highlights[suggestion.title] ?? suggestion.highlight;
   const [filters, setFilters] = useState(EMPTY_FILTERS);
   const [spread, setSpread] = useState(0);
   // the idea chosen by "Surprise me", it gets a gold frame
@@ -84,7 +78,9 @@ export default function InspirationSection({ destinations = [], onAdd }) {
     destinations.some((d) => (d.title || "").toLowerCase() === title.toLowerCase());
 
   // derived values, nothing extra in state
-  const visible = SUGGESTIONS.filter((suggestion) => matches(suggestion, filters));
+  const visible = SUGGESTIONS.filter((suggestion) =>
+    matches(suggestion, highlightOf(suggestion), filters)
+  );
   const spreadCount = Math.max(1, Math.ceil(visible.length / PER_SPREAD));
   const current = Math.min(spread, spreadCount - 1);
   const onSpread = visible.slice(current * PER_SPREAD, (current + 1) * PER_SPREAD);
@@ -138,7 +134,8 @@ export default function InspirationSection({ destinations = [], onAdd }) {
         periodFrom: suggestion.from,
         periodTo: suggestion.to,
         budget: suggestion.budget,
-        highlight: suggestion.highlight,
+        // saved in the language that is on screen when you add it
+        highlight: highlightOf(suggestion),
         photo: ""
       });
     } finally {
@@ -149,7 +146,7 @@ export default function InspirationSection({ destinations = [], onAdd }) {
   function renderVisa(suggestion) {
     const added = isAdded(suggestion.title);
     const saving = savingTitle === suggestion.title;
-    const budget = getBudget(suggestion.budget);
+    const budget = t.budgets[suggestion.budget];
 
     const classes = [
       styles.visa,
@@ -161,32 +158,37 @@ export default function InspirationSection({ destinations = [], onAdd }) {
       .join(" ");
 
     return (
-      <article key={suggestion.title} className={classes} data-visa={suggestion.title}>
+      <article
+        key={suggestion.title}
+        className={classes}
+        data-visa={suggestion.title}
+        data-stamp={t.inspire.added}
+      >
         <div className={styles.visaPhoto}>
           <DestinationPhoto title={suggestion.title} />
         </div>
 
         <div className={styles.visaBody}>
           <p className={styles.visaHead}>
-            <span>Visa</span>
-            <span className={styles.visaRegion}>{suggestion.region}</span>
+            <span>{t.inspire.visa}</span>
+            <span className={styles.visaRegion}>{t.regions[suggestion.region]}</span>
           </p>
 
           <h3 className={styles.visaTitle}>{suggestion.title}</h3>
-          <p className={styles.visaText}>{suggestion.highlight}</p>
+          <p className={styles.visaText}>{highlightOf(suggestion)}</p>
 
           <dl className={styles.visaFields}>
             <div>
-              <dt>Type</dt>
-              <dd>{TYPE_LABELS[suggestion.type]}</dd>
+              <dt>{t.inspire.type}</dt>
+              <dd>{t.types[suggestion.type]}</dd>
             </div>
             <div>
-              <dt>Budget</dt>
+              <dt>{t.common.budget}</dt>
               <dd>{budget?.short ?? suggestion.budget}</dd>
             </div>
             <div>
-              <dt>Best time</dt>
-              <dd>{formatPeriod(suggestion.from, suggestion.to)}</dd>
+              <dt>{t.inspire.bestTime}</dt>
+              <dd>{formatPeriod(suggestion.from, suggestion.to, t.months)}</dd>
             </div>
           </dl>
 
@@ -196,7 +198,7 @@ export default function InspirationSection({ destinations = [], onAdd }) {
             disabled={added || savingTitle !== ""}
             onClick={() => handleAdd(suggestion)}
           >
-            {added ? "In your list" : saving ? "Saving…" : "Add to my list"}
+            {added ? t.common.inList : saving ? t.common.saving : t.common.addToList}
           </button>
         </div>
 
@@ -211,60 +213,60 @@ export default function InspirationSection({ destinations = [], onAdd }) {
     <>
       {/* the filters, pressed into the leather above the passport */}
       <div className={styles.inspireDesk}>
-        <div className={styles.deskTabs} role="group" aria-label="Kind of trip">
+        <div className={styles.deskTabs} role="group" aria-label={t.inspire.tabsLabel}>
           {TYPE_TABS.map((tab) => (
             <button
-              key={tab.key}
+              key={tab}
               type="button"
               className={styles.deskTab}
-              aria-pressed={filters.type === tab.key}
-              onClick={() => changeFilter("type", tab.key)}
+              aria-pressed={filters.type === tab}
+              onClick={() => changeFilter("type", tab)}
             >
-              {tab.label}
+              {t.inspire.tabs[tab]}
             </button>
           ))}
         </div>
 
         <div className={styles.deskFields}>
           <label className={styles.deskField}>
-            <span>Region</span>
+            <span>{t.inspire.region}</span>
             <select
               value={filters.region}
               onChange={(e) => changeFilter("region", e.target.value)}
             >
-              <option value="">Anywhere</option>
+              <option value="">{t.inspire.anywhere}</option>
               {REGIONS.map((region) => (
                 <option key={region} value={region}>
-                  {region}
+                  {t.regions[region]}
                 </option>
               ))}
             </select>
           </label>
 
           <label className={styles.deskField}>
-            <span>Budget</span>
+            <span>{t.common.budget}</span>
             <select
               value={filters.budget}
               onChange={(e) => changeFilter("budget", e.target.value)}
             >
-              <option value="">Any budget</option>
+              <option value="">{t.common.anyBudget}</option>
               {BUDGET_OPTIONS.map((option) => (
                 <option key={option.key} value={option.key}>
-                  {option.label}
+                  {t.budgets[option.key].label}
                 </option>
               ))}
             </select>
           </label>
 
           <label className={styles.deskField}>
-            <span>When</span>
+            <span>{t.inspire.when}</span>
             <select
               value={filters.month}
               onChange={(e) => changeFilter("month", e.target.value)}
             >
-              <option value="">Any month</option>
-              {MONTH_NAMES.map((name, index) => (
-                <option key={name} value={String(index + 1)}>
+              <option value="">{t.common.anyMonth}</option>
+              {t.months.map((name, index) => (
+                <option key={index} value={String(index + 1)}>
                   {name}
                 </option>
               ))}
@@ -272,11 +274,11 @@ export default function InspirationSection({ destinations = [], onAdd }) {
           </label>
 
           <label className={`${styles.deskField} ${styles.deskSearch}`}>
-            <span>Search</span>
+            <span>{t.common.search}</span>
             <input
               type="search"
               value={filters.search}
-              placeholder="A city, a country, a word…"
+              placeholder={t.inspire.searchPlaceholder}
               onChange={(e) => changeFilter("search", e.target.value)}
             />
           </label>
@@ -287,17 +289,17 @@ export default function InspirationSection({ destinations = [], onAdd }) {
             disabled={notAddedYet.length === 0}
             onClick={surpriseMe}
           >
-            Surprise me
+            {t.inspire.surprise}
           </button>
         </div>
 
         <p className={styles.deskSummary} aria-live="polite">
           {visible.length === SUGGESTIONS.length
-            ? `${SUGGESTIONS.length} ideas in the passport.`
-            : `${visible.length} of ${SUGGESTIONS.length} ideas match.`}
+            ? t.inspire.all(SUGGESTIONS.length)
+            : t.inspire.matching(visible.length, SUGGESTIONS.length)}
           {hasFilters && (
             <button type="button" className={styles.deskClear} onClick={clearFilters}>
-              Clear filters
+              {t.common.clearFilters}
             </button>
           )}
         </p>
@@ -316,17 +318,14 @@ export default function InspirationSection({ destinations = [], onAdd }) {
           number={leftNumber}
           className={styles.visaPage}
         >
-          <h2 className="card-title">Get inspired</h2>
-          <p className={styles.inspireSubtitle}>
-            Each visa is an idea for a trip. Add one and it goes to My Travel List with its best
-            season as the period.
-          </p>
+          <h2 className="card-title">{t.inspire.title}</h2>
+          <p className={styles.inspireSubtitle}>{t.inspire.subtitle}</p>
 
           {visible.length === 0 ? (
             <div className={styles.visaEmpty}>
-              <p>No ideas match these filters.</p>
+              <p>{t.inspire.noMatch}</p>
               <button type="button" className="btn btn-primary" onClick={clearFilters}>
-                Clear filters
+                {t.common.clearFilters}
               </button>
             </div>
           ) : (
