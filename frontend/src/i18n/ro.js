@@ -359,8 +359,9 @@ export default {
     traveller: "Călător",
     then: (text) => `Apoi ${text}.`,
     landIn: (city) => `Aterizezi chiar în ${city}.`,
+    whyTwo: "De ce două căutări?",
     fewFlights: (airport, near) =>
-      `Din ${airport} pleacă puține zboruri, deci căutarea poate să nu găsească nimic. Caută atunci din ${near}, cel mai apropiat aeroport mare.`,
+      `Din ${airport} pleacă doar câteva zboruri, așa că poate nu găsești nimic. ${near} e cel mai apropiat aeroport mare și are mult mai multe.`,
     fields: {
       passenger: "Pasager",
       flight: "Zbor",

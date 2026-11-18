@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { HOME_AIRPORT, ROMANIAN_AIRPORTS, airportLabel } from "../data/airports.js";
 import { downloadPassImage } from "../utils/passImage.js";
@@ -25,8 +26,12 @@ export default function BoardingPass({ trip, passenger, boardingTime, onAdd, sav
   // from a small airport: the nearest big one, for a second search that finds more flights
   const near = ROMANIAN_AIRPORTS.find((airport) => airport.code === HOME.near);
   const nearLabel = near && airportLabel(near, t.airports);
+  // the small "i" next to the second search: open or closed
+  const [infoOpen, setInfoOpen] = useState(false);
   const name = (passenger.trim() || t.pass.traveller).toUpperCase();
   const code = trip.airport.code;
+  // a second search only when the nearest big airport is not where you are flying to
+  const hasSecondSearch = Boolean(near) && near.code !== code;
   const day = flightDay(trip.from, trip.to, trip.title);
   const date = printedDate(day, t.monthsPrinted);
   const seatClass = travelClass(trip.budget, t.pass.classes);
@@ -88,8 +93,6 @@ export default function BoardingPass({ trip, passenger, boardingTime, onAdd, sav
 
         {/* places without an airport of their own: how to get there from the one you land at */}
         <p className={styles.then}>{then}</p>
-        {/* from a small airport many routes do not exist; the nearest big one has more */}
-        {near && <p className={styles.fewFlights}>{t.pass.fewFlights(homeLabel, nearLabel)}</p>}
 
         <dl className={styles.fields}>
           <div>
@@ -146,17 +149,35 @@ export default function BoardingPass({ trip, passenger, boardingTime, onAdd, sav
             className="btn btn-ghost"
           >
             {/* with two searches, each button says where it searches from */}
-            {near && near.code !== code ? t.pass.ticketsFrom(homeLabel) : t.pass.tickets}
+            {hasSecondSearch ? t.pass.ticketsFrom(homeLabel) : t.pass.tickets}
           </a>
-          {near && near.code !== code && (
-            <a
-              href={ticketsUrl(near.code, code, day)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-ghost"
-            >
-              {t.pass.ticketsFrom(nearLabel)}
-            </a>
+          {hasSecondSearch && (
+            <span className={styles.secondSearch}>
+              <a
+                href={ticketsUrl(near.code, code, day)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-ghost"
+              >
+                {t.pass.ticketsFrom(nearLabel)}
+              </a>
+              {/* why there are two searches: shown on hover, on focus or on a tap, not printed on the pass */}
+              <button
+                type="button"
+                className={styles.infoButton}
+                aria-label={t.pass.whyTwo}
+                aria-expanded={infoOpen}
+                aria-describedby="pass-info"
+                onClick={() => setInfoOpen((open) => !open)}
+                onBlur={() => setInfoOpen(false)}
+                onKeyDown={(e) => e.key === "Escape" && setInfoOpen(false)}
+              >
+                i
+              </button>
+              <span id="pass-info" role="tooltip" className={styles.infoBubble} data-open={infoOpen}>
+                {t.pass.fewFlights(homeLabel, nearLabel)}
+              </span>
+            </span>
           )}
           <button type="button" className="btn btn-ghost" onClick={handleDownload}>
             {t.pass.download}

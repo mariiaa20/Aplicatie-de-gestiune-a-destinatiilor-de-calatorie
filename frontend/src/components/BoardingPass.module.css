@@ -100,13 +100,6 @@
   text-align: right;
 }
 
-.fewFlights {
-  margin-top: 4px;
-  color: var(--text-faint);
-  font-size: 0.76rem;
-  text-align: right;
-}
-
 .path {
   position: relative;
   display: grid;
@@ -173,10 +166,76 @@
 }
 
 .actions {
+  position: relative; /* the info bubble is placed above this row */
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
   margin-top: 20px;
+}
+
+/* the second search and its small "i", kept together on one line */
+.secondSearch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.infoButton {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-style: italic;
+  font-weight: 700;
+  line-height: 1;
+  cursor: help;
+  transition: background 0.2s ease;
+}
+
+.infoButton:hover,
+.infoButton[aria-expanded="true"] {
+  background: rgba(91, 26, 40, 0.08);
+}
+
+.infoButton:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* a small dark note above the buttons, on the right side of the pass */
+.infoBubble {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 10px);
+  z-index: 5;
+  width: min(320px, 100%);
+  padding: 10px 14px;
+  border: 1px solid rgba(201, 166, 107, 0.35); /* gold edge, so it stands out on the dark pass too */
+  border-radius: 10px;
+  background: var(--cover-deep);
+  color: var(--foil-text);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+  font-size: 0.8rem;
+  line-height: 1.45;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  pointer-events: none;
+}
+
+.infoButton:hover + .infoBubble,
+.infoBubble[data-open="true"] {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
 }
 
 /* the stub */

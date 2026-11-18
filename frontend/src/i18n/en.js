@@ -294,8 +294,9 @@ export default {
     traveller: "Traveller",
     then: (text) => `Then ${text}.`,
     landIn: (city) => `You land right in ${city}.`,
+    whyTwo: "Why two searches?",
     fewFlights: (airport, near) =>
-      `Few flights leave from ${airport}, so the search may find nothing. Then search from ${near}, the nearest big airport.`,
+      `Only a few flights leave from ${airport}, so the search may find nothing. ${near} is the nearest big airport and has many more.`,
     fields: {
       passenger: "Passenger",
       flight: "Flight",
