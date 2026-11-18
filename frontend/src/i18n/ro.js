@@ -338,6 +338,8 @@ export default {
     again: "Mai alege o dată",
     pick: "Alege-mi următoarea călătorie",
     noAirport: "Nu apar pe panou, pentru că nu știm ce aeroport au: ",
+    inRomania: "Nu apar pe panou, pentru că sunt în România și ajungi mai ușor fără avion: ",
+    viaOption: (city, airport) => `${city} (zbor din ${airport})`,
     // pe tablă intră doar litere fără diacritice, cel mult 9
     remarks: {
       boarding: "IMBARCARE",
@@ -359,9 +361,7 @@ export default {
     traveller: "Călător",
     then: (text) => `Apoi ${text}.`,
     landIn: (city) => `Aterizezi chiar în ${city}.`,
-    whyTwo: "De ce două căutări?",
-    fewFlights: (airport, near) =>
-      `Din ${airport} pleacă doar câteva zboruri, așa că poate nu găsești nimic. ${near} e cel mai apropiat aeroport mare și are mult mai multe.`,
+    byRoad: (road, city) => `${road} cu mașina din ${city}`,
     fields: {
       passenger: "Pasager",
       flight: "Zbor",
@@ -380,7 +380,6 @@ export default {
     },
     openPage: "Deschide pagina ei",
     tickets: "Caută bilete pe Skyscanner ↗",
-    ticketsFrom: (near) => `Caută din ${near} ↗`,
     download: "Descarcă biletul"
   },
 

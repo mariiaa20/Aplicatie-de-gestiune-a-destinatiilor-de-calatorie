@@ -273,6 +273,9 @@ export default {
     again: "Pick again",
     pick: "Pick my next trip",
     noAirport: "Not on the board, because they have no airport we know of: ",
+    inRomania: "Not on the board, because they are in Romania and easier to reach without a plane: ",
+    // a smaller city: the flight leaves from the nearest big airport
+    viaOption: (city, airport) => `${city} (flying from ${airport})`,
     // pe tablă intră doar litere fără diacritice, cel mult 9
     remarks: {
       boarding: "BOARDING",
@@ -294,9 +297,7 @@ export default {
     traveller: "Traveller",
     then: (text) => `Then ${text}.`,
     landIn: (city) => `You land right in ${city}.`,
-    whyTwo: "Why two searches?",
-    fewFlights: (airport, near) =>
-      `Only a few flights leave from ${airport}, so the search may find nothing. ${near} is the nearest big airport and has many more.`,
+    byRoad: (road, city) => `${road} by road from ${city}`,
     fields: {
       passenger: "Passenger",
       flight: "Flight",
@@ -315,7 +316,6 @@ export default {
     },
     openPage: "Open its page",
     tickets: "Find tickets on Skyscanner ↗",
-    ticketsFrom: (near) => `Search from ${near} ↗`,
     download: "Download pass"
   },
 

@@ -110,8 +110,10 @@ export async function downloadPassImage(pass) {
   ctx.textAlign = "right";
   ctx.fillText(pass.toCity, STUB - 34, 138);
   ctx.font = "italic 500 13px Manrope, sans-serif";
-  ctx.fillText(fit(ctx, pass.then, 400), STUB - 34, 162);
+  ctx.fillText(fit(ctx, pass.then, 360), STUB - 34, 162);
   ctx.textAlign = "left";
+  // the road to the airport, under the city you leave from (only from a smaller city)
+  if (pass.byRoad) ctx.fillText(fit(ctx, pass.byRoad, 230), 32, 162);
 
   ctx.strokeStyle = c.soft;
   ctx.setLineDash([2, 4]);

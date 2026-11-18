@@ -5,32 +5,43 @@
 
 // The 17 airports in Romania with commercial flights, to choose where the trip starts.
 // Bucharest Otopeni is first: it has by far the most flights.
-// near: din aeroporturile mici pleacă puține zboruri și Skyscanner găsește des 0 rezultate,
-// așa că biletul oferă și căutarea din cel mai apropiat aeroport mare
-// (Otopeni, Cluj-Napoca, Timișoara sau Iași). Cele patru mari nu au near.
+// Orașele din România din care poți pleca.
+// Zborul pleacă mereu dintr-un aeroport cu legături spre toată lumea: Otopeni, Cluj-Napoca,
+// Timișoara, Iași sau Sibiu (Sibiu are Lufthansa prin München și Austrian prin Viena).
+// Din celelalte orașe mergi întâi cu mașina până la cel mai apropiat dintre ele:
+// via = aeroportul de unde pleacă zborul, road = cât durează drumul.
+// Așa căutarea pe Skyscanner găsește zboruri. Aeroportul Arad, de exemplu, nu mai are
+// curse regulate din 2015, iar din aeroporturile mici pleacă doar câteva rute.
 export const ROMANIAN_AIRPORTS = [
   { code: "OTP", city: "Bucharest", name: "Otopeni" },
-  { code: "BBU", city: "Bucharest", name: "Băneasa", near: "OTP" },
   { code: "CLJ", city: "Cluj-Napoca" },
   { code: "TSR", city: "Timișoara" },
   { code: "IAS", city: "Iași" },
-  { code: "SBZ", city: "Sibiu", near: "CLJ" },
-  { code: "GHV", city: "Brașov", near: "OTP" },
-  { code: "CND", city: "Constanța", near: "OTP" },
-  { code: "BCM", city: "Bacău", near: "IAS" },
-  { code: "SCV", city: "Suceava", near: "IAS" },
-  { code: "CRA", city: "Craiova", near: "OTP" },
-  { code: "OMR", city: "Oradea", near: "CLJ" },
-  { code: "TGM", city: "Târgu Mureș", near: "CLJ" },
-  { code: "BAY", city: "Baia Mare", near: "CLJ" },
-  { code: "SUJ", city: "Satu Mare", near: "CLJ" },
-  { code: "ARW", city: "Arad", near: "TSR" },
-  { code: "TCE", city: "Tulcea", near: "OTP" }
+  { code: "SBZ", city: "Sibiu" },
+  { code: "GHV", city: "Brașov", via: "OTP", road: "3 h" },
+  { code: "CND", city: "Constanța", via: "OTP", road: "2 h 30" },
+  { code: "BCM", city: "Bacău", via: "IAS", road: "2 h" },
+  { code: "SCV", city: "Suceava", via: "IAS", road: "2 h" },
+  { code: "CRA", city: "Craiova", via: "OTP", road: "3 h" },
+  { code: "OMR", city: "Oradea", via: "CLJ", road: "2 h 30" },
+  { code: "TGM", city: "Târgu Mureș", via: "CLJ", road: "1 h 30" },
+  { code: "BAY", city: "Baia Mare", via: "CLJ", road: "2 h 30" },
+  { code: "SUJ", city: "Satu Mare", via: "CLJ", road: "3 h" },
+  { code: "ARW", city: "Arad", via: "TSR", road: "1 h" },
+  { code: "TCE", city: "Tulcea", via: "OTP", road: "4 h" }
 ];
+
+// the airport the flight really leaves from: the city's own, or the big one it drives to
+export function departureOf(city) {
+  return (city.via && ROMANIAN_AIRPORTS.find((airport) => airport.code === city.via)) || city;
+}
+
+// places in Romania are not flights from Romania: the board leaves them out
+export const isAbroad = (airport) => Boolean(airport) && airport.country !== "Romania";
 
 export const HOME_AIRPORT = ROMANIAN_AIRPORTS[0];
 
-// "Bucharest Băneasa", "Cluj-Napoca": the name shown in the list and on the pass
+// "Bucharest Otopeni", "Cluj-Napoca": the name shown in the list and on the pass
 // cities: numele orașelor în limba aleasă (t.airports), de exemplu Bucharest -> București
 export function airportLabel(airport, cities = {}) {
   const city = cities[airport.city] || airport.city;

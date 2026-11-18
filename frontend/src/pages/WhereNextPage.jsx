@@ -3,7 +3,7 @@ import { useOutletContext } from "react-router-dom";
 import DepartureBoard from "../components/DepartureBoard.jsx";
 import BoardingPass from "../components/BoardingPass.jsx";
 import { SUGGESTIONS } from "../data/suggestions.js";
-import { ROMANIAN_AIRPORTS, airportFor, airportLabel } from "../data/airports.js";
+import { ROMANIAN_AIRPORTS, airportFor, airportLabel, departureOf, isAbroad } from "../data/airports.js";
 import { BUDGET_OPTIONS, periodIncludesMonth } from "../utils/travelOptions.js";
 import { boardText, gateOf, pickOne, someOthers, timeFromNow } from "../utils/departures.js";
 import { unlockFlapSound } from "../utils/flapSound.js";
@@ -45,6 +45,8 @@ export default function WhereNextPage() {
     }
   });
   const home = ROMANIAN_AIRPORTS.find((a) => a.code === homeCode) || ROMANIAN_AIRPORTS[0];
+  // the airport the flight leaves from: Timișoara when you leave from Arad
+  const departure = departureOf(home);
   const [sound, setSound] = useState(true);
   const [pick, setPick] = useState(null); // the trip the board stops on
   const [rows, setRows] = useState([]); // what the board should show
@@ -67,19 +69,22 @@ export default function WhereNextPage() {
     const trips = source === "list" ? planned : [...planned, ...ideas];
     return (
       trips
-        // only places we can fly to: each one gets its airport
+        // only places abroad that we can fly to: each one gets its airport
         .map((t) => ({ ...t, airport: airportFor(t.title) }))
-        .filter((t) => t.airport)
-        // no flight to the airport you leave from (Sibiu from Sibiu)
-        .filter((t) => t.airport.code !== homeCode)
+        .filter((t) => isAbroad(t.airport))
         // places without a period can go any month
         .filter((t) => !month || !t.from || periodIncludesMonth(t.from, t.to, month))
         .filter((t) => !budget || t.budget === budget)
     );
-  }, [destinations, source, month, budget, homeCode, t]);
+  }, [destinations, source, month, budget, t]);
 
   // places from the list that the board leaves out, because we do not know their airport
   const noAirport = destinations.filter((d) => !d.visited && !airportFor(d.title));
+  // places from the list in Romania: no flight needed
+  const inRomania = destinations.filter((d) => {
+    const airport = airportFor(d.title);
+    return !d.visited && airport && !isAbroad(airport);
+  });
 
   // before the first pick, the board shows a few scheduled departures
   const idleRows = useMemo(
@@ -135,9 +140,9 @@ export default function WhereNextPage() {
   }
 
   // how many places each button can pick from (only places with an airport)
-  const planned = destinations.filter((d) => !d.visited && airportFor(d.title)).length;
+  const planned = destinations.filter((d) => !d.visited && isAbroad(airportFor(d.title))).length;
   const ideasLeft = SUGGESTIONS.filter(
-    (s) => airportFor(s.title) && !destinations.some((d) => d.title.toLowerCase() === s.title.toLowerCase())
+    (s) => isAbroad(airportFor(s.title)) && !destinations.some((d) => d.title.toLowerCase() === s.title.toLowerCase())
   ).length;
 
   return (
@@ -202,7 +207,7 @@ export default function WhereNextPage() {
         <label className={styles.field}>
           <span>{t.next.leavingFrom}</span>
           <select
-            value={homeCode}
+            value={home.code}
             onChange={(e) => {
               setHomeCode(e.target.value);
               try {
@@ -214,7 +219,12 @@ export default function WhereNextPage() {
           >
             {ROMANIAN_AIRPORTS.map((airport) => (
               <option key={airport.code} value={airport.code}>
-                {airportLabel(airport, t.airports)} ({airport.code})
+                {airport.via
+                  ? t.next.viaOption(
+                      airportLabel(airport, t.airports),
+                      airportLabel(departureOf(airport), t.airports)
+                    )
+                  : `${airportLabel(airport, t.airports)} (${airport.code})`}
               </option>
             ))}
           </select>
@@ -246,7 +256,7 @@ export default function WhereNextPage() {
           <DepartureBoard
             rows={boardRows}
             lines={LINES}
-            airport={`${airportLabel(home, t.airports)} ${home.code}`}
+            airport={`${airportLabel(departure, t.airports)} ${departure.code}`}
             highlight={phase === "landed"}
             rollKey={rolls}
             sound={sound && phase === "rolling"}
@@ -279,6 +289,12 @@ export default function WhereNextPage() {
             <p className={styles.note}>
               {t.next.noAirport}
               {noAirport.map((d) => d.title).join(", ")}.
+            </p>
+          )}
+          {inRomania.length > 0 && (
+            <p className={styles.note}>
+              {t.next.inRomania}
+              {inRomania.map((d) => d.title).join(", ")}.
             </p>
           )}
 

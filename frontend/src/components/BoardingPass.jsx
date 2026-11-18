@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
-import { HOME_AIRPORT, ROMANIAN_AIRPORTS, airportLabel } from "../data/airports.js";
+import { HOME_AIRPORT, airportLabel, departureOf } from "../data/airports.js";
 import { downloadPassImage } from "../utils/passImage.js";
 import {
   barcodeBars,
@@ -22,16 +21,12 @@ export default function BoardingPass({ trip, passenger, boardingTime, onAdd, sav
   const HOME = home;
   const { t } = useLanguage();
   const fields = t.pass.fields;
-  const homeLabel = airportLabel(HOME, t.airports);
-  // from a small airport: the nearest big one, for a second search that finds more flights
-  const near = ROMANIAN_AIRPORTS.find((airport) => airport.code === HOME.near);
-  const nearLabel = near && airportLabel(near, t.airports);
-  // the small "i" next to the second search: open or closed
-  const [infoOpen, setInfoOpen] = useState(false);
+  // the flight leaves from a big airport; from a smaller city you drive there first
+  const departure = departureOf(HOME);
+  const departureLabel = airportLabel(departure, t.airports);
+  const byRoad = HOME.via ? t.pass.byRoad(HOME.road, airportLabel(HOME, t.airports)) : "";
   const name = (passenger.trim() || t.pass.traveller).toUpperCase();
   const code = trip.airport.code;
-  // a second search only when the nearest big airport is not where you are flying to
-  const hasSecondSearch = Boolean(near) && near.code !== code;
   const day = flightDay(trip.from, trip.to, trip.title);
   const date = printedDate(day, t.monthsPrinted);
   const seatClass = travelClass(trip.budget, t.pass.classes);
@@ -50,8 +45,9 @@ export default function BoardingPass({ trip, passenger, boardingTime, onAdd, sav
     downloadPassImage({
       labels: { heading: t.pass.heading, ...fields },
       name,
-      fromCode: HOME.code,
-      fromCity: homeLabel,
+      fromCode: departure.code,
+      fromCity: departureLabel,
+      byRoad,
       toCode: code,
       toCity: trip.airport.city,
       then,
@@ -77,8 +73,8 @@ export default function BoardingPass({ trip, passenger, boardingTime, onAdd, sav
 
         <div className={styles.route}>
           <div>
-            <p className={styles.code}>{HOME.code}</p>
-            <p className={styles.city}>{homeLabel}</p>
+            <p className={styles.code}>{departure.code}</p>
+            <p className={styles.city}>{departureLabel}</p>
           </div>
           <div className={styles.path} aria-hidden="true">
             <svg viewBox="0 0 24 24">
@@ -91,8 +87,12 @@ export default function BoardingPass({ trip, passenger, boardingTime, onAdd, sav
           </div>
         </div>
 
-        {/* places without an airport of their own: how to get there from the one you land at */}
-        <p className={styles.then}>{then}</p>
+        {/* the road before the flight (from Arad to Timișoara) and the one after it
+            (from the airport to a place without its own) */}
+        <div className={styles.legs}>
+          {byRoad && <p className={styles.byRoad}>{byRoad}</p>}
+          <p className={styles.then}>{then}</p>
+        </div>
 
         <dl className={styles.fields}>
           <div>
@@ -143,42 +143,13 @@ export default function BoardingPass({ trip, passenger, boardingTime, onAdd, sav
           )}
           {/* a real search for this flight, on that day; opens in a new tab */}
           <a
-            href={ticketsUrl(HOME.code, code, day)}
+            href={ticketsUrl(departure.code, code, day)}
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-ghost"
           >
-            {/* with two searches, each button says where it searches from */}
-            {hasSecondSearch ? t.pass.ticketsFrom(homeLabel) : t.pass.tickets}
+            {t.pass.tickets}
           </a>
-          {hasSecondSearch && (
-            <span className={styles.secondSearch}>
-              <a
-                href={ticketsUrl(near.code, code, day)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-ghost"
-              >
-                {t.pass.ticketsFrom(nearLabel)}
-              </a>
-              {/* why there are two searches: shown on hover, on focus or on a tap, not printed on the pass */}
-              <button
-                type="button"
-                className={styles.infoButton}
-                aria-label={t.pass.whyTwo}
-                aria-expanded={infoOpen}
-                aria-describedby="pass-info"
-                onClick={() => setInfoOpen((open) => !open)}
-                onBlur={() => setInfoOpen(false)}
-                onKeyDown={(e) => e.key === "Escape" && setInfoOpen(false)}
-              >
-                i
-              </button>
-              <span id="pass-info" role="tooltip" className={styles.infoBubble} data-open={infoOpen}>
-                {t.pass.fewFlights(homeLabel, nearLabel)}
-              </span>
-            </span>
-          )}
           <button type="button" className="btn btn-ghost" onClick={handleDownload}>
             {t.pass.download}
           </button>
@@ -189,7 +160,7 @@ export default function BoardingPass({ trip, passenger, boardingTime, onAdd, sav
       <aside className={styles.stub} aria-hidden="true">
         <p className={styles.stubName}>{name}</p>
         <p className={styles.stubRoute}>
-          {HOME.code} <span>›</span> {code}
+          {departure.code} <span>›</span> {code}
         </p>
         <dl className={styles.stubFields}>
           <div>

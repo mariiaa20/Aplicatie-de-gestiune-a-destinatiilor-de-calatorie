@@ -53,15 +53,26 @@ export function timeFromNow(minutes, now = new Date()) {
 
 const MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
-// The day of the flight: in the first month of the best season, starting next month.
+// Companiile vând bilete cam cu 11 luni înainte, iar pentru o zi prea apropiată
+// rămân puține locuri: zborul e între 2 săptămâni și 300 de zile de azi.
+const MIN_DAYS_AHEAD = 14;
+const MAX_DAYS_AHEAD = 300;
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+// The day of the flight: in the first month of the best season that can still be booked.
 // "4" -> "6" in November gives a day in April next year. Returns a Date.
 export function flightDay(from, to, title, today = new Date()) {
   const day = (hashOf(title) % 27) + 1;
-  for (let step = 1; step <= 12; step++) {
+  const earliest = today.getTime() + MIN_DAYS_AHEAD * DAY_MS;
+  const latest = new Date(today.getTime() + MAX_DAYS_AHEAD * DAY_MS);
+  for (let step = 0; step <= 12; step++) {
     const date = new Date(today.getFullYear(), today.getMonth() + step, day);
+    if (date.getTime() < earliest) continue;
+    if (date > latest) break;
     if (!from || periodIncludesMonth(from, to, String(date.getMonth() + 1))) return date;
   }
-  return new Date(today.getFullYear(), today.getMonth() + 1, day);
+  // the season is too far away to book: the last day that can be booked, the closest to it
+  return new Date(latest.getFullYear(), latest.getMonth(), latest.getDate());
 }
 
 // "15 APR 2027", as printed on the pass
