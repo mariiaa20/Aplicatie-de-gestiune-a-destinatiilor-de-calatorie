@@ -1,0 +1,11 @@
+/* the message of a page that could not open: the lines one under the other, with air between */
+.pageError {
+  display: grid;
+  justify-items: start;
+  gap: 14px;
+}
+
+.pageError .details {
+  width: 100%;
+  margin: 0;
+}

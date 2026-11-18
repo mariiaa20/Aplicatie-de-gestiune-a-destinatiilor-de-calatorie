@@ -98,7 +98,7 @@ export default function PassportBook({
         forward: target > spread,
         oldPages: pages.map((page, side) => copyOf(page, side)),
         places: pages.map((page) => placeOf(page, book)),
-        height: book.offsetHeight
+        reduceMotion
       };
     }
 
@@ -123,27 +123,34 @@ export default function PassportBook({
     const newPages = pagesOf(book);
     if (!book || !layer || newPages.length !== 2) return;
 
-    const { forward, oldPages, places, height } = pending;
+    const { forward, oldPages, places } = pending;
+
+    // The two spreads can have different heights (the globe is much taller than the
+    // visited places). While the page turns, both are as tall as the taller one, so
+    // nothing sticks out of the book; afterwards the book slides to its new height.
+    const pagesBox = book.querySelector(`:scope > .${styles.bookPages}`);
+    const newHeight = pagesBox.offsetHeight;
+    const tall = Math.max(newHeight, places[0].height, places[1].height);
+    pagesBox.style.minHeight = `${tall}px`;
+    const sized = (place) => ({ ...place, height: tall });
 
     // Forward: the right page lifts, turns over the spine and lands on the left.
     // Its front is the old right page, its back is the new left page.
     // Until it lands, the old left page stays where it was.
     const still = forward ? oldPages[0] : oldPages[1];
     const front = forward ? oldPages[1] : oldPages[0];
-    const back = copyOf(forward ? newPages[0] : newPages[1], forward ? 0 : 1);
+    const backSide = forward ? 0 : 1;
+    let back = copyOf(newPages[backSide], backSide);
 
     const leaf = document.createElement("div");
     leaf.className = styles.bookLeaf;
     back.classList.add(styles.bookLeafBack);
     leaf.append(front, back);
 
-    putAt(still, forward ? places[0] : places[1]);
-    putAt(leaf, forward ? places[1] : places[0]);
+    putAt(still, sized(forward ? places[0] : places[1]));
+    putAt(leaf, sized(forward ? places[1] : places[0]));
     leaf.style.transformOrigin = forward ? "left center" : "right center";
     layer.append(still, leaf);
-
-    // keep the book as tall as before while the page turns
-    book.style.minHeight = `${height}px`;
 
     const timing = { duration: TURN_MS, easing: "cubic-bezier(0.645, 0.045, 0.355, 1)" };
     const turn = leaf.animate(
@@ -154,17 +161,45 @@ export default function PassportBook({
       ...timing,
       duration: TURN_MS / 2
     });
-    const backShade = addShade(back).animate([{ opacity: 1 }, { opacity: 0 }], {
+    const backShadeElement = addShade(back);
+    const backShade = backShadeElement.animate([{ opacity: 1 }, { opacity: 0 }], {
       ...timing,
       duration: TURN_MS / 2,
       delay: TURN_MS / 2,
       fill: "backwards"
     });
 
+    // The back of the leaf was copied the moment the new page appeared, before it had
+    // finished loading (the globe still said "0 countries"). Halfway through the turn,
+    // when the leaf stands on its edge and nobody sees it, it gets a fresh copy.
+    const refresh = window.setTimeout(() => {
+      const page = pagesOf(book)[backSide];
+      if (!page || !back.isConnected) return;
+      const fresh = copyOf(page, backSide);
+      fresh.classList.add(styles.bookLeafBack);
+      fresh.append(backShadeElement);
+      back.replaceWith(fresh);
+      back = fresh;
+    }, TURN_MS / 2 - 40);
+
     function finish() {
+      window.clearTimeout(refresh);
       layer.replaceChildren();
-      book.style.minHeight = "";
-      turningRef.current = null;
+      if (newHeight < tall && !pending.reduceMotion && book.isConnected) {
+        // the book slides to its new height instead of jumping
+        const shrink = pagesBox.animate(
+          [{ minHeight: `${tall}px` }, { minHeight: `${newHeight}px` }],
+          { duration: 420, easing: "cubic-bezier(0.4, 0, 0.2, 1)" }
+        );
+        pagesBox.style.minHeight = "";
+        turningRef.current = [shrink];
+        shrink.onfinish = shrink.oncancel = () => {
+          turningRef.current = null;
+        };
+      } else {
+        pagesBox.style.minHeight = "";
+        turningRef.current = null;
+      }
     }
 
     turningRef.current = [turn, frontShade, backShade];

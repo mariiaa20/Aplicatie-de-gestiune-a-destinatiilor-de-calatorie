@@ -403,6 +403,12 @@ export default {
     skip: "Skip"
   },
 
+  pageError: {
+    title: "This page could not open",
+    text: "Reload the page. If it happens again, the message below says what went wrong.",
+    reload: "Reload the page"
+  },
+
   notFound: {
     title: "Page not found",
     text: "There is no page at this address. Maybe the link is old."

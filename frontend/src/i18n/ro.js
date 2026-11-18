@@ -469,6 +469,12 @@ export default {
     skip: "Sari peste"
   },
 
+  pageError: {
+    title: "Pagina nu s-a putut deschide",
+    text: "Reîncarcă pagina. Dacă se întâmplă din nou, mesajul de mai jos spune ce nu a mers.",
+    reload: "Reîncarcă pagina"
+  },
+
   notFound: {
     title: "Pagina nu există",
     text: "La această adresă nu e nicio pagină. Poate linkul e vechi."

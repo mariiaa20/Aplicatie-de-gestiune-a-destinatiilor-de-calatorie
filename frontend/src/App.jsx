@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout.jsx";
+import PageErrorBoundary from "./components/PageErrorBoundary.jsx";
 import DestinationsPage from "./pages/DestinationsPage.jsx";
 import DestinationDetailPage from "./pages/DestinationDetailPage.jsx";
 import InspirationPage from "./pages/InspirationPage.jsx";
@@ -21,7 +22,12 @@ function PageLoading() {
 }
 
 // wraps a lazy page, so React knows what to show while it loads
-const later = (page) => <Suspense fallback={<PageLoading />}>{page}</Suspense>;
+const later = (page) => (
+  // dacă pagina nu se poate încărca sau se strică, apare un mesaj, nu un ecran alb
+  <PageErrorBoundary>
+    <Suspense fallback={<PageLoading />}>{page}</Suspense>
+  </PageErrorBoundary>
+);
 
 // The map of the app: which page is drawn for which address.
 // Layout has no path, so every page is drawn inside it, in the place of <Outlet />.
