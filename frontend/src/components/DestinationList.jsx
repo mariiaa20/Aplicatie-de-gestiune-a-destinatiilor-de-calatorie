@@ -8,7 +8,8 @@ export default function DestinationList({
   onToggle,
   onDelete,
   onRate,
-  emptyMessage
+  emptyMessage,
+  firstIndex = 0 // the second page of a list keeps counting from the first, for the stamps
 }) {
   const { t } = useLanguage();
   if (!destinations || destinations.length === 0) {
@@ -17,9 +18,10 @@ export default function DestinationList({
 
   return (
     <ul className={styles.destinationsList}>
-      {destinations.map((destination) => (
+      {destinations.map((destination, index) => (
         <DestinationCard
           key={destination.id}
+          stampIndex={firstIndex + index}
           destination={destination}
           onToggle={onToggle}
           onDelete={onDelete}

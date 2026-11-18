@@ -49,11 +49,14 @@ export default function useDestinations() {
   }
 
   // "Get inspired" has no form of its own, so a failed save is shown on the page
+  // returns true when it was saved, so the page can put its stamp on
   async function addSuggestion(details) {
     try {
       await addDestination(details);
+      return true;
     } catch (err) {
       setError(err.message);
+      return false;
     }
   }
 

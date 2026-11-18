@@ -65,6 +65,10 @@
 }
 
 /* visited: an entry stamp in ink */
+.destinationCard.done {
+  --tilt: -14deg;
+}
+
 .destinationCard.done::after {
   content: attr(data-stamp); /* the word comes from the page, in the chosen language */
   position: absolute;
@@ -82,7 +86,8 @@
   letter-spacing: 0.16em;
   line-height: 1;
   text-transform: uppercase;
-  transform: rotate(-14deg);
+  transform: rotate(var(--tilt));
+  animation: stampPress 0.6s cubic-bezier(0.2, 0.8, 0.3, 1) var(--stamp-delay, 0ms) both;
   -webkit-mask-image: var(--ink-texture);
   mask-image: var(--ink-texture);
   -webkit-mask-size: 90px 90px;
@@ -100,13 +105,36 @@
   color: var(--stamp-beach);
 }
 
-.destinationCard.done:nth-child(3n + 2)::after {
-  transform: rotate(9deg);
+.destinationCard.done:nth-child(3n + 2) {
+  --tilt: 9deg;
 }
 
-.destinationCard.done:nth-child(3n + 3)::after {
-  transform: rotate(-5deg);
+.destinationCard.done:nth-child(3n + 3) {
+  --tilt: -5deg;
 }
+
+/* the stamp is pressed on the paper: it comes down big and tilted, hits, bounces back a little.
+   --tilt is the angle it stays at, --stamp-delay lets a row of stamps land one after another */
+@keyframes stampPress {
+  0% {
+    opacity: 0;
+    transform: scale(2.2) rotate(calc(var(--tilt) - 16deg));
+    filter: blur(2px);
+  }
+  45% {
+    opacity: 1;
+    transform: scale(0.9) rotate(calc(var(--tilt) + 2deg));
+    filter: blur(0);
+  }
+  62% {
+    transform: scale(1.05) rotate(var(--tilt));
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(var(--tilt));
+  }
+}
+
 
 /* Stage 8: the title opens the detail page */
 .titleLink {

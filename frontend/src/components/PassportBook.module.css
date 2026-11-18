@@ -26,6 +26,13 @@ Home is pages 2-3. */
   color: var(--ink);
 }
 
+/* a copy of a page that is turning: what is on it is already there, so nothing animates again */
+.isCopy *,
+.isCopy *::before,
+.isCopy *::after {
+  animation: none !important;
+}
+
 /* left page: shadow towards the spine on its right side */
 .bookPages > .bookPage:first-child,
 .bookPage.isLeft {

@@ -48,6 +48,7 @@ export default function GlobePassport({ destinations, onToggle, onDelete, onRate
             {visited.length > 1 && (
               <DestinationList
                 destinations={visited.slice(half)}
+                firstIndex={half}
                 onToggle={onToggle}
                 onDelete={onDelete}
                 onRate={onRate}

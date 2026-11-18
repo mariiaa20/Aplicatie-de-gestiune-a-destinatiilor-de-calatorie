@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { playStamp } from "../utils/flapSound.js";
 import { HOME_AIRPORT, airportLabel, departureOf } from "../data/airports.js";
 import { downloadPassImage } from "../utils/passImage.js";
 import {
@@ -20,6 +22,7 @@ import styles from "./BoardingPass.module.css";
 export default function BoardingPass({ trip, passenger, boardingTime, onAdd, saving, home = HOME_AIRPORT }) {
   const HOME = home;
   const { t } = useLanguage();
+  const [stamped, setStamped] = useState(false); // added to the list from this pass
   const fields = t.pass.fields;
   // the flight leaves from a big airport; from a smaller city you drive there first
   const departure = departureOf(HOME);
@@ -39,6 +42,15 @@ export default function BoardingPass({ trip, passenger, boardingTime, onAdd, sav
     ? t.pass.then(t.then[trip.airport.then] ?? trip.airport.then)
     : t.pass.landIn(trip.title.split(",")[0]);
   let x = 0;
+
+  // saved in My Travel List: the pass gets an "Added" stamp, with its thud
+  async function handleAdd() {
+    const saved = await onAdd();
+    if (saved) {
+      setStamped(true);
+      playStamp();
+    }
+  }
 
   // the same ticket, drawn as a picture you can keep or send
   function handleDownload() {
@@ -66,6 +78,12 @@ export default function BoardingPass({ trip, passenger, boardingTime, onAdd, sav
   return (
     <article className={styles.pass} aria-label={t.pass.label(trip.title)}>
       <div className={styles.main}>
+        {stamped && (
+          <span className={styles.passStamp} aria-hidden="true">
+            {t.inspire.added}
+          </span>
+        )}
+
         <header className={styles.band}>
           <span>{t.pass.heading}</span>
           <span className={styles.airline}>Passport Air</span>
@@ -137,7 +155,7 @@ export default function BoardingPass({ trip, passenger, boardingTime, onAdd, sav
               {t.pass.openPage}
             </Link>
           ) : (
-            <button type="button" className="btn btn-primary" onClick={onAdd} disabled={saving}>
+            <button type="button" className="btn btn-primary" onClick={handleAdd} disabled={saving}>
               {saving ? t.common.saving : t.common.addToList}
             </button>
           )}

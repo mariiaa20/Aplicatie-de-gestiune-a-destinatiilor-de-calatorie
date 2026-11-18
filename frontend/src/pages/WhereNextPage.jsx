@@ -124,7 +124,8 @@ export default function WhereNextPage() {
   async function handleAdd() {
     setSaving(true);
     try {
-      await addSuggestion({
+      // true when it was saved: the pass then gets its stamp
+      return await addSuggestion({
         title: pick.title,
         type: pick.type,
         category: "Vacation",

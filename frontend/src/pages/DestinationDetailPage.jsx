@@ -115,6 +115,8 @@ export default function DestinationDetailPage() {
     if (!destination.visited) {
       setStamped(true);
       playStamp();
+    } else {
+      setStamped(false); // so the next stamp falls again
     }
     save({ visited: !destination.visited });
   }
@@ -137,7 +139,7 @@ export default function DestinationDetailPage() {
   return (
     <div className={styles.page}>
       <section
-        className={`card-box ${styles.detail} ${INK[destination.type] ?? ""}`}
+        className={`card-box ${styles.detail} ${INK[destination.type] ?? ""} ${stamped ? styles.thump : ""}`}
         data-testid="detail"
       >
         <Link to="/" className={styles.back}>

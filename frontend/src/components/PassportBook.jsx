@@ -34,6 +34,7 @@ function copyOf(page, side) {
   });
   copy.setAttribute("inert", "");
   copy.classList.add(side === 0 ? styles.isLeft : styles.isRight);
+  copy.classList.add(styles.isCopy); // the stamps on it are already down: no animation
   return copy;
 }
 

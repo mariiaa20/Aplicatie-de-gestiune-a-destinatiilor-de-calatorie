@@ -100,10 +100,14 @@ export default function StatsPage() {
 
           <h3 className={styles.heading}>{t.stats.continentsTitle}</h3>
           <ul className={styles.continents}>
-            {CONTINENTS.map((name) => {
+            {CONTINENTS.map((name, i) => {
               const count = continentCount(name);
               return (
-                <li key={name} className={count ? styles.seen : styles.notYet}>
+                <li
+                  key={name}
+                  className={count ? styles.seen : styles.notYet}
+                  style={{ "--stamp-delay": `${200 + i * 120}ms` }}
+                >
                   {t.continents[name]}
                   <span>{count ? t.stats.trips(count) : t.stats.notYet}</span>
                 </li>
@@ -113,7 +117,21 @@ export default function StatsPage() {
 
           <h3 className={styles.heading}>{t.stats.countriesTitle}</h3>
           {countries.length ? (
-            <p className={styles.countries}>{countries.join(", ")}.</p>
+            // every country is a small entry stamp, pressed one after another
+            <ul className={styles.countries}>
+              {countries.map((country, i) => (
+                <li
+                  key={country}
+                  className={styles.countryStamp}
+                  style={{
+                    "--tilt": `${[-4, 3, -2, 5, -5, 2][i % 6]}deg`,
+                    "--stamp-delay": `${500 + i * 130}ms`
+                  }}
+                >
+                  {country}
+                </li>
+              ))}
+            </ul>
           ) : (
             <p className={styles.empty}>
               {t.stats.noStampsBefore}

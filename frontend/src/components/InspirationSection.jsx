@@ -4,6 +4,7 @@ import PassportBook, { BookPage } from "./PassportBook.jsx";
 import { BUDGET_OPTIONS, formatPeriod, periodIncludesMonth } from "../utils/travelOptions.js";
 import { REGIONS, SUGGESTIONS } from "../data/suggestions.js";
 import { useLanguage } from "../i18n/LanguageContext.js";
+import { playStamp } from "../utils/flapSound.js";
 import styles from "./InspirationSection.module.css";
 
 // the coloured line of each visa: one ink per kind of place (mountain is the default)
@@ -71,6 +72,7 @@ export default function InspirationSection({ destinations = [], onAdd }) {
   // Stage 7: the title being saved; while it is set, every Add button waits,
   // so a double click cannot create the same destination twice
   const [savingTitle, setSavingTitle] = useState("");
+  const [justAdded, setJustAdded] = useState(""); // the visa that was stamped a moment ago
   // the passport, so "Surprise me" can turn its pages
   const bookRef = useRef(null);
 
@@ -126,7 +128,7 @@ export default function InspirationSection({ destinations = [], onAdd }) {
   async function handleAdd(suggestion) {
     setSavingTitle(suggestion.title);
     try {
-      await onAdd({
+      const saved = await onAdd({
         title: suggestion.title,
         type: suggestion.type,
         category: "Vacation",
@@ -138,12 +140,18 @@ export default function InspirationSection({ destinations = [], onAdd }) {
         highlight: highlightOf(suggestion),
         photo: ""
       });
+      // saved: the stamp falls on the visa, with its thud
+      if (saved) {
+        setJustAdded(suggestion.title);
+        playStamp();
+      }
     } finally {
       setSavingTitle("");
     }
   }
 
-  function renderVisa(suggestion) {
+  // index: the place of the visa on its page, so the stamps of a page land one after another
+  function renderVisa(suggestion, index) {
     const added = isAdded(suggestion.title);
     const saving = savingTitle === suggestion.title;
     const budget = t.budgets[suggestion.budget];
@@ -152,7 +160,8 @@ export default function InspirationSection({ destinations = [], onAdd }) {
       styles.visa,
       VISA_INK[suggestion.type],
       added ? styles.isAdded : "",
-      picked === suggestion.title ? styles.isPicked : ""
+      picked === suggestion.title ? styles.isPicked : "",
+      justAdded === suggestion.title ? styles.isJustAdded : ""
     ]
       .filter(Boolean)
       .join(" ");
@@ -163,6 +172,8 @@ export default function InspirationSection({ destinations = [], onAdd }) {
         className={classes}
         data-visa={suggestion.title}
         data-stamp={t.inspire.added}
+        // added now: the stamp lands at once; already in the list: one after another
+        style={{ "--stamp-delay": justAdded === suggestion.title ? "0ms" : `${250 + index * 160}ms` }}
       >
         <div className={styles.visaPhoto}>
           <DestinationPhoto title={suggestion.title} />

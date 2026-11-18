@@ -4,7 +4,8 @@ import DeleteButton from "./DeleteButton.jsx";
 import { useLanguage } from "../i18n/LanguageContext.js";
 import styles from "./DestinationCard.module.css";
 
-export default function DestinationCard({ destination, onToggle, onDelete, onRate }) {
+// stampIndex: the place of the card in its list, so the stamps land one after another
+export default function DestinationCard({ destination, onToggle, onDelete, onRate, stampIndex = 0 }) {
   const { id, title, category, type, visited, rating = 0 } = destination;
   const { t } = useLanguage();
 
@@ -12,6 +13,8 @@ export default function DestinationCard({ destination, onToggle, onDelete, onRat
     <li
       className={visited ? `${styles.destinationCard} ${styles.done}` : styles.destinationCard}
       data-stamp={t.detail.stamp}
+      // the stamps of a list land one after another
+      style={{ "--stamp-delay": `${150 + stampIndex * 140}ms` }}
     >
       <div className={styles.cardRow}>
         {/* Stage 8: a div instead of a label, because the title is now a link;

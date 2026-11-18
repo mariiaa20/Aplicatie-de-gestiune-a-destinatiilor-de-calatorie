@@ -99,7 +99,10 @@ export default function AboutPage() {
               <li
                 key={entry.stage}
                 className={`${styles.stamp} ${SHAPES[entry.shape]} ${INKS[i % INKS.length]}`}
-                style={{ "--tilt": `${[-8, 5, -3, 9, -11, 4, -6, 7][i]}deg` }}
+                style={{
+                  "--tilt": `${[-8, 5, -3, 9, -11, 4, -6, 7][i]}deg`,
+                  "--stamp-delay": `${300 + i * 170}ms`
+                }}
               >
                 <span className={styles.stampStage}>{about.stage(entry.stage)}</span>
                 <span className={styles.stampTitle}>{about.stages[entry.stage][0]}</span>
@@ -108,7 +111,10 @@ export default function AboutPage() {
               </li>
             ))}
             {/* the next stage has no stamp yet */}
-            <li className={`${styles.stamp} ${styles.next}`}>
+            <li
+              className={`${styles.stamp} ${styles.next}`}
+              style={{ "--stamp-delay": `${300 + ENTRIES.length * 170}ms` }}
+            >
               <span className={styles.stampStage}>{about.stage(NEXT_STAGE)}</span>
               <span className={styles.stampTitle}>{about.stages[NEXT_STAGE][0]}</span>
               <span className={styles.stampNote}>{about.stages[NEXT_STAGE][1]}</span>
